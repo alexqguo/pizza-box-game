@@ -4,7 +4,7 @@ import AppBar from './AppBar';
 import Drawer from './Drawer';
 import Main from './Main';
 import useStyles from '../styles';
-import GameForm from './GameForm';
+import GameModal from './GameModal';
 
 function App() {
   const classes = useStyles();
@@ -15,7 +15,7 @@ function App() {
       <AppBar />
       <Drawer />
       <Main />
-      <GameForm />
+      <GameModal />
     </div>
   );
 }

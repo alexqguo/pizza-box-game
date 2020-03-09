@@ -13,6 +13,38 @@ Each player flips their quarter once per round. Keep going until the box is fill
 ## Tech
 * React, Mobx, MaterialUI, Firebase
 
+### State
+Game {
+  currentPlayer: Player
+  isBusy: true
+}
+Player {
+  id: string
+  name: string
+}
+Rule {
+  displayText: string,
+  data: ? // SVG string or JSON. We'll see
+}
+
+Overall state (in Firebase) will look like this:
+{
+  game: Game
+  players: Player[]
+  rules: Rule[]
+}
+
+Ideally each rule object contains its own shape data. It will be much easier to manage and organize that way.
+
+### Drawing
+Options:
+* [fabric.js](http://fabricjs.com/)
+  * This seems to be the most mature and has all the features I need
+* [konva.js](https://konvajs.org/)
+* [paper.js](http://paperjs.org/)
+* [svg.draw.js](https://github.com/svgdotjs/svg.draw.js) (svg.js extension)
+* plenty of others
+
 ## Features for MVP
 * Game is playable locally and online
   * Can make every game a "remote" game with one player (whoever creates the game perhaps) acting as an admin. For a local game, the admin player can just control everything
@@ -23,3 +55,4 @@ Each player flips their quarter once per round. Keep going until the box is fill
 
 ## Questions
 * What is the end game condition? Should there even be one?
+

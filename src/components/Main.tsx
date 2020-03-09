@@ -1,5 +1,6 @@
 import React from 'react';
 import useStyles from '../styles';
+import Canvas from './Canvas';
 
 // This may need to change to a class component at some point. We'll see
 export default () => {
@@ -9,6 +10,8 @@ export default () => {
     <main className={classes.main}>
       <div className={classes.toolbarOffset} />
       Hello there! This is the main content of my application.
+
+      <Canvas />
     </main>
   );
 }

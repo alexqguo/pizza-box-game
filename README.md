@@ -16,6 +16,8 @@ Each player flips their quarter once per round. Keep going until the box is fill
 ## Features for MVP
 * Game is playable locally and online
   * Can make every game a "remote" game with one player (whoever creates the game perhaps) acting as an admin. For a local game, the admin player can just control everything
+  * What happens when the admin leaves the page? Perhaps that's fine, or maybe just make everyone an admin
+  * When a user is in the middle of their turn, put a hold on other actions so remote players can't change stuff
 * Not restricted to just circles. Can be any shape
   * Need a way to serialize these shapes. SVG may be a better option than canvas
 

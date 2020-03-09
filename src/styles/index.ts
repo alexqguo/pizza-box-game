@@ -24,6 +24,24 @@ export default makeStyles((theme: Theme) => (
       flexGrow: 1,
       padding: theme.spacing(3)
     },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    modalPaper: {
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      width: '70%'
+    },
+    formInputs: {
+      width: 300,
+      marginBottom: 30
+    },
+    gameFormTextField: {
+      marginBottom: 5
+    },
     activePlayer: {
       fontWeight: 'bold',
       '&::after': {

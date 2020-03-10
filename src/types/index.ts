@@ -2,6 +2,16 @@ export interface BaseProps {
   store: Object
 }
 
-export interface GameStoreData {
+export interface SessionData {
+  game: GameData,
+  players: Player[],
+}
+
+export interface Player {
+  id: string,
+  name: string,
+}
+
+export interface GameData {
   id: string,
 }

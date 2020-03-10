@@ -12,7 +12,7 @@ export default () => {
           <Typography variant="h6" noWrap>
             <span role="img" aria-label="Pizza box game logo">
               🍕🖋🍺
-            </span>
+            </span>&nbsp;
           </Typography>
         </Toolbar>
       </AppBar>

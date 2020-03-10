@@ -10,7 +10,9 @@ export default () => {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
-            🍕🖋🍺
+            <span role="img" aria-label="Pizza box game logo">
+              🍕🖋🍺
+            </span>
           </Typography>
         </Toolbar>
       </AppBar>

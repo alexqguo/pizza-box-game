@@ -16,7 +16,7 @@ const StoreProvider = ({ children }: any) => {
   )
 };
 
-function App() {
+export default () => {
   const classes = useStyles();
   
   return (
@@ -30,6 +30,4 @@ function App() {
       </div>
     </StoreProvider>
   );
-}
-
-export default App;
+};

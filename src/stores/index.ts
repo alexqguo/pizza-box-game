@@ -45,10 +45,11 @@ class RootStore {
       this.playerStore.setPlayers(value);
     });
 
-    await db.ref(`${prefix}`).set(sessionData);  
+    await db.ref(`${prefix}`).set(sessionData);
   }
 }
 
 const rootStore = new RootStore();
-// (window as any).rootStore = rootStore;
+if (window.location.hostname === 'localhost') (window as any).rootStore = rootStore;
+
 export default rootStore;

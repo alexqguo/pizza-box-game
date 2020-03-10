@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useObserver, Observer } from 'mobx-react';
+import { useObserver } from 'mobx-react';
 import useStyles from '../styles';
 import Canvas from './Canvas';
 import { StoreContext } from './App';

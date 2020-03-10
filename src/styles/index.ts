@@ -19,6 +19,11 @@ export default makeStyles((theme: Theme) => (
     drawerPaper: {
       width: drawerWidth,
     },
+    drawerIconButtonBox: {
+      display: 'inlineBlock',
+      margin: '0 auto',
+      padding: 5
+    },
     toolbarOffset: theme.mixins.toolbar,
     main: {
       flexGrow: 1,

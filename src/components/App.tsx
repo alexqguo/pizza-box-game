@@ -5,18 +5,30 @@ import Drawer from './Drawer';
 import Main from './Main';
 import useStyles from '../styles';
 import GameModal from './GameModal';
+import RootStore from '../stores';
+
+export const StoreContext = React.createContext<any>(null);
+const StoreProvider = ({ children }: any) => {
+  return (
+    <StoreContext.Provider value={RootStore}>
+      {children}
+    </StoreContext.Provider>
+  )
+};
 
 function App() {
   const classes = useStyles();
   
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar />
-      <Drawer />
-      <Main />
-      <GameModal />
-    </div>
+    <StoreProvider>
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar />
+        <Drawer />
+        <Main />
+        <GameModal />
+      </div>
+    </StoreProvider>
   );
 }
 

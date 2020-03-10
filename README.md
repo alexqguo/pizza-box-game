@@ -15,6 +15,7 @@ Each player flips their quarter once per round. Keep going until the box is fill
 
 ### State
 Game {
+  id: string
   currentPlayer: Player
   isBusy: true
 }

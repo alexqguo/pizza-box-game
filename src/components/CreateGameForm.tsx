@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@material-ui/core';
 import useStyles from '../styles';
-import fabric from 'fabric';
+import RootStore from '../stores';
+// import fabric from 'fabric';
 
 interface Props {
   closeModal: Function
@@ -15,7 +16,7 @@ export default ({ closeModal }: Props) => {
   const [players, setPlayers] = useState(['', ''])
   const [canSubmit, setCanSubmit] = useState(false);
 
-  const validateForm = () => {
+  const validateForm = async () => {
     // Begin shitty validation
     /**
      * - Validate form inputs
@@ -25,6 +26,7 @@ export default ({ closeModal }: Props) => {
     const isValid = new Set(players).size === players.length;
 
     if (isValid) {
+      await RootStore.createGame(players);
       closeModal();
     }
   };

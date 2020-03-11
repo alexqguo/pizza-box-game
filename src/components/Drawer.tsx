@@ -41,7 +41,7 @@ export default () => {
       </List>
       <Divider />
 
-      <Button onClick={() => { alert('Not implemented yet!') }}>
+      <Button onClick={() => {}}>
         Add player
       </Button>
       <Divider />

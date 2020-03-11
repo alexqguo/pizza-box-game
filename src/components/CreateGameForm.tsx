@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@material-ui/core';
 import useStyles from '../styles';
 import RootStore from '../stores';
-// import fabric from 'fabric';
 
 interface Props {
   closeModal: Function

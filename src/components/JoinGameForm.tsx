@@ -1,7 +1,18 @@
 import React from 'react';
+import { TextField, Button, Box } from '@material-ui/core';
 
-export default () => {
+interface Props {
+  gameId: string | null,
+}
+
+export default ({ gameId }: Props) => {
   return (
-    <span>Join game</span>
+    <Box>
+      {gameId ? 
+        <>
+        Join with {gameId}.
+        </>
+      : <>Enter a gameId</>}
+    </Box>
   );
 };

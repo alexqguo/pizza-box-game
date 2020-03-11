@@ -4,10 +4,15 @@ import useStyles from '../styles';
 import CreateGameForm from './CreateGameForm';
 import JoinGameForm from './JoinGameForm';
 
+const createGameTab = 0;
+const joinGameTab = 1;
+
 export default () => {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(true);
-  const [currentTab, setCurrentTab] = useState(0);
+  const urlParams = new URLSearchParams(document.location.search);
+  const gameId = urlParams.get('join');
+  const [currentTab, setCurrentTab] = useState(gameId ? joinGameTab : createGameTab);
 
   const onTabChange = (event: any, newValue: number) => {
     setCurrentTab(newValue);
@@ -21,12 +26,12 @@ export default () => {
           <Tab label="Join existing game" />
         </Tabs>
 
-        <Box hidden={0 !== currentTab}>
+        <Box hidden={createGameTab !== currentTab}>
           <CreateGameForm closeModal={() => setIsOpen(false)}/>
         </Box>
 
-        <Box hidden={1 !== currentTab}>
-          <JoinGameForm />
+        <Box hidden={joinGameTab !== currentTab}>
+          <JoinGameForm gameId={gameId} />
         </Box>
       </div>
     </Modal>

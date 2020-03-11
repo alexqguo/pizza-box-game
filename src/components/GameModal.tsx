@@ -31,7 +31,7 @@ export default () => {
         </Box>
 
         <Box hidden={joinGameTab !== currentTab}>
-          <JoinGameForm gameId={gameId} />
+          <JoinGameForm gameId={gameId} closeModal={() => setIsOpen(false)} />
         </Box>
       </div>
     </Modal>

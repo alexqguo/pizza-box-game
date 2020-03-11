@@ -43,14 +43,12 @@ class RootStore {
     // Subscribe the gameStore to the Firebase DB
     db.ref(`${prefix}/game`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: GameData = snap.val();
-      console.log(value);
       this.gameStore.setId(value.id);
     });
 
     // Subscribe the playerStore to the Firebase DB
     db.ref(`${prefix}/players`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: Player[] = snap.val();
-      console.log(value);
       this.playerStore.setPlayers(value);
     });
   }

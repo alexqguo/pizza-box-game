@@ -1,16 +1,20 @@
+import { fabric } from 'fabric';
 import GameStore from './gameStore';
-import { GameData, SessionData, Player } from '../types';
+import { SessionData, GameData, Rule, Player } from '../types';
 import { db } from '../firebase';
 import { createId } from '../utils';
 import PlayerStore from './playerStore';
+import RuleStore from './ruleStore';
 
 class RootStore {
   gameStore: GameStore;
   playerStore: PlayerStore;
+  ruleStore: RuleStore;
   
   constructor() {
     this.gameStore = new GameStore();
     this.playerStore = new PlayerStore();
+    this.ruleStore = new RuleStore();
   }
 
   /**
@@ -22,16 +26,48 @@ class RootStore {
     const prefix: string = `sessions/${gameId}`;
 
     const gameData: GameData = {
-      id: gameId
+      id: gameId,
     };
+
+    const playerData: Player[] = playerNames.map((p: string) => ({
+      id: createId('player'),
+      name: p
+    }));
+
+    // The initial shapes
+    const ruleData: Rule[] = playerData.map((p: Player, i: number) => {
+      const circle = new fabric.Circle({
+        radius: 36,
+        fill: '#ddd',
+        originX: 'center',
+        originY: 'center'
+      });
+      
+      const text = new fabric.Text(p.name, {
+        fontSize: 14,
+        fontFamily: 'Roboto',
+        originX: 'center',
+        originY: 'center'
+      });
+
+      const group = new fabric.Group([circle, text], {
+        left: 60 * (i + 1),
+        top: 60 * (i + 1)
+      });
+
+      return {
+        id: createId('rule'),
+        playerId: p.id,
+        displayText: p.name,
+        data: group.toJSON(),
+      };
+    });
 
     const sessionData: SessionData = {
       game: gameData,
-      players: playerNames.map((p: string) => ({
-        id: createId('player'),
-        name: p
-      })),
-    };
+      players: playerData,
+      rules: ruleData,
+    }
 
     this.subscribeToGame(gameId);
     await db.ref(`${prefix}`).set(sessionData);
@@ -40,16 +76,22 @@ class RootStore {
   subscribeToGame(gameId: string) {
     const prefix: string = `sessions/${gameId}`;
 
-    // Subscribe the gameStore to the Firebase DB
+    // Subscribe the gameStore to Firebase
     db.ref(`${prefix}/game`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: GameData = snap.val();
       this.gameStore.setId(value.id);
     });
 
-    // Subscribe the playerStore to the Firebase DB
+    // Subscribe the playerStore to Firebase
     db.ref(`${prefix}/players`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: Player[] = snap.val();
       this.playerStore.setPlayers(value);
+    });
+
+    // Subscriibe the ruleStore to Firebase
+    db.ref(`${prefix}/rules`).on('value', (snap: firebase.database.DataSnapshot) => {
+      const value: Rule[] = snap.val();
+      this.ruleStore.setRules(value);
     });
   }
 }

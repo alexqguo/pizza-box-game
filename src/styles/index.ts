@@ -50,11 +50,6 @@ export default makeStyles((theme: Theme) => (
     gameModalTabs: {
       marginBottom: 16,
     },
-    canvas: {
-      display: 'block',
-      margin: 'auto',
-      border: '1px solid black'
-    },
     activePlayer: {
       fontWeight: 'bold',
       '&::after': {

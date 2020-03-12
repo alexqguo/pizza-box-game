@@ -5,11 +5,19 @@ export interface BaseProps {
 export interface SessionData {
   game: GameData,
   players: Player[],
+  rules: Rule[],
 }
 
 export interface Player {
   id: string,
   name: string,
+}
+
+export interface Rule {
+  id: string,
+  playerId: string, // ID of the player who created the rule
+  displayText: string,
+  data: string, // SVG representation (for now...)
 }
 
 export interface GameData {

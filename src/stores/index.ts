@@ -5,6 +5,7 @@ import { db } from '../firebase';
 import { createId } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
+import { getCanvas } from '../components/Canvas';
 
 class RootStore {
   gameStore: GameStore;
@@ -55,13 +56,19 @@ class RootStore {
         top: 60 * (i + 1)
       });
 
+      // this works
+      // getCanvas()?.add(group);
+
       return {
         id: createId('rule'),
         playerId: p.id,
         displayText: p.name,
-        data: group.toJSON(),
+        data: JSON.stringify(group),
       };
     });
+
+    // Using these does NOT work. NOT an issue with firebase
+    (window as any).r = ruleData;
 
     const sessionData: SessionData = {
       game: gameData,

@@ -14,6 +14,7 @@ export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
   const { gameStore, playerStore } = store;
+  const { game } = gameStore;
 
   return useObserver(() => (
     <Drawer 
@@ -46,7 +47,7 @@ export default () => {
       </Button>
       <Divider />
 
-      <Button href={`/?join=${gameStore.id}`} rel="noopener" target="_blank">
+      <Button href={`/?join=${game.id}`} rel="noopener" target="_blank">
         Share game
       </Button>
       <Divider />

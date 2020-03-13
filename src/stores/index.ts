@@ -26,10 +26,6 @@ class RootStore {
     const gameId: string = createId('game');
     const prefix: string = `sessions/${gameId}`;
 
-    const gameData: GameData = {
-      id: gameId,
-    };
-
     const playerData: Player[] = playerNames.map((p: string) => ({
       id: createId('player'),
       name: p
@@ -41,34 +37,35 @@ class RootStore {
         radius: 36,
         fill: '#ddd',
         originX: 'center',
-        originY: 'center'
+        originY: 'center',
       });
       
       const text = new fabric.Text(p.name, {
         fontSize: 14,
         fontFamily: 'Roboto',
         originX: 'center',
-        originY: 'center'
+        originY: 'center',
       });
 
       const group = new fabric.Group([circle, text], {
         left: 60 * (i + 1),
-        top: 60 * (i + 1)
+        top: 60 * (i + 1),
+        selectable: false,
       });
-
-      // this works
-      // getCanvas()?.add(group);
 
       return {
         id: createId('rule'),
         playerId: p.id,
         displayText: p.name,
-        data: JSON.stringify(group),
+        // This... can't be right. Why doesn't "selectable" show up normally?
+        data: JSON.stringify(group.toJSON(['selectable'])),
       };
     });
 
-    // Using these does NOT work. NOT an issue with firebase
-    (window as any).r = ruleData;
+    const gameData: GameData = {
+      id: gameId,
+      currentPlayerId: playerData[0].id,
+    };
 
     const sessionData: SessionData = {
       game: gameData,
@@ -86,7 +83,7 @@ class RootStore {
     // Subscribe the gameStore to Firebase
     db.ref(`${prefix}/game`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: GameData = snap.val();
-      this.gameStore.setId(value.id);
+      this.gameStore.setGame(value);
     });
 
     // Subscribe the playerStore to Firebase
@@ -104,6 +101,5 @@ class RootStore {
 }
 
 const rootStore = new RootStore();
-if (window.location.hostname === 'localhost') (window as any).rootStore = rootStore;
 
 export default rootStore;

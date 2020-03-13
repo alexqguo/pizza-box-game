@@ -1,9 +1,13 @@
 import { observable, action } from 'mobx';
+import { GameData } from '../types';
 
 export default class GameStore {
-  @observable id: string = '';
-
-  @action setId = (id: string) => {
-    this.id = id;
+  @observable game: GameData = {
+    id: '',
+    currentPlayerId: ''
+  };
+  
+  @action setGame = (game: GameData) => {
+    this.game = game;
   }
 }

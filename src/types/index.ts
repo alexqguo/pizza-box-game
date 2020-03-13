@@ -22,4 +22,5 @@ export interface Rule {
 
 export interface GameData {
   id: string,
+  currentPlayerId: string,
 }

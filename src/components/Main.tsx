@@ -8,12 +8,14 @@ import { StoreContext } from './App';
 export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
+  const { gameStore } = store;
+  const { game } = gameStore;
 
   return useObserver(() => (
     <main className={classes.main}>
       <div className={classes.toolbarOffset} />
       Hello there! This is the main content of my application.
-      The current GameID is {store.gameStore.id || 'blank'}.
+      The current GameID is {game.id || 'blank'}.
 
       <Canvas />
     </main>

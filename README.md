@@ -11,12 +11,21 @@ If the quarter lands in an empty area, the player writes a rule in that location
 Each player flips their quarter once per round. Keep going until the box is filled with rules.
 
 ## Tech
-* React, Mobx, MaterialUI, Firebase
+* React, Mobx, MaterialUI, Firebase, Fabric
+
+### Drawing
+Options:
+* [fabric.js](http://fabricjs.com/)
+  * This seems to be the most mature and has all the features I need
+* [konva.js](https://konvajs.org/)
+* [paper.js](http://paperjs.org/)
+* [svg.draw.js](https://github.com/svgdotjs/svg.draw.js) (svg.js extension)
+* plenty of others
 
 ### State
 Game {
   id: string
-  currentPlayer: Player
+  currentPlayerId: string
   isBusy: true
 }
 Player {
@@ -24,8 +33,10 @@ Player {
   name: string
 }
 Rule {
-  displayText: string,
-  data: ? // SVG string or JSON. We'll see
+  id: string
+  displayText: string
+  playerId: string
+  data: string (JSON)
 }
 
 Overall state (in Firebase) will look like this:
@@ -37,14 +48,17 @@ Overall state (in Firebase) will look like this:
 
 Ideally each rule object contains its own shape data. It will be much easier to manage and organize that way.
 
-### Drawing
-Options:
-* [fabric.js](http://fabricjs.com/)
-  * This seems to be the most mature and has all the features I need
-* [konva.js](https://konvajs.org/)
-* [paper.js](http://paperjs.org/)
-* [svg.draw.js](https://github.com/svgdotjs/svg.draw.js) (svg.js extension)
-* plenty of others
+## Remaining sequence of work
+* Can make a shape, with description, and persist it
+* Shapes cannot be modified once they're created
+* Game keeps track of current player
+* Players get colors so that their rules are that color
+* Better (or possibly random?) placement of the initial rules
+* Quarter flipping
+* Only the current player can actually make the move, all others blocked
+  * This is the only difference between local games and fully remote games. In a local game the "current player" can make moves for everyone since they're all sharing the same screen. Need to think about how to approach this. Not a super hard requirement
+  * Potentially have a switch or something on the screen that allows all players to perform operations
+* End game condition?
 
 ## Features for MVP
 * Game is playable locally and online
@@ -56,4 +70,3 @@ Options:
 
 ## Questions
 * What is the end game condition? Should there even be one?
-

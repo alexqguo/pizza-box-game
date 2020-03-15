@@ -24,3 +24,7 @@ export interface GameData {
   id: string,
   currentPlayerId: string,
 }
+
+export interface ObjWithRuleId extends fabric.Object {
+  ruleId: string,
+}

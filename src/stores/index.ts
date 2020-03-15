@@ -33,6 +33,7 @@ class RootStore {
 
     // The initial shapes
     const ruleData: Rule[] = playerData.map((p: Player, i: number) => {
+      const ruleId: string = createId('rule');
       const circle = new fabric.Circle({
         radius: 36,
         fill: '#ddd',
@@ -51,14 +52,16 @@ class RootStore {
         left: 60 * (i + 1),
         top: 60 * (i + 1),
         selectable: false,
+        // @ts-ignore Additional property
+        ruleId,
       });
 
       return {
-        id: createId('rule'),
+        id: ruleId,
         playerId: p.id,
-        displayText: p.name,
+        displayText: `${p.name} drinks!`,
         // This... can't be right. Why doesn't "selectable" show up normally?
-        data: JSON.stringify(group.toJSON(['selectable'])),
+        data: JSON.stringify(group.toJSON(['selectable', 'ruleId'])),
       };
     });
 

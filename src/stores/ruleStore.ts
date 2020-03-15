@@ -14,8 +14,7 @@ export default class RuleStore {
       .map((r: Rule) => JSON.parse(r.data));
 
     // Update the rules. I guess technically should clear the map too
-    this.rules = new Map();
-    this.rules.forEach((r: Rule) => { this.rules.set(r.id, r) });
+    rules.forEach((r: Rule) => { this.rules.set(r.id, r) });
 
     const canvas = getCanvas();
     // @ts-ignore This function works just fine with just the objects and callback

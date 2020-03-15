@@ -36,7 +36,7 @@ export default () => {
         <AppBar />
         <Drawer />
         <Main />
-        {/* <GameModal /> */}
+        <GameModal />
       </div>
     </StoreProvider>
   );

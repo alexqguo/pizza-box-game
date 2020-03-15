@@ -22,6 +22,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
+    "jest-canvas-mock": "^2.2.0",
     "react-scripts": "3.4.0"
   },
   "scripts": {

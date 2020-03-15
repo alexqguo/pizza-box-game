@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { fabric } from 'fabric';
 
-window.fabric = fabric;
 let canvas: fabric.Canvas;
 
 // Perhaps use a ref for this instead?

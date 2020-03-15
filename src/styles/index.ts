@@ -57,6 +57,16 @@ export default makeStyles((theme: Theme) => (
         display: 'block',
         marginLeft: '5px'
       }
+    },
+    createRuleContainer: {
+      marginBottom: 20,
+    },
+    createRuleInput: {
+      width: 400,
+    },
+    createRuleButton: {
+      verticalAlign: 'bottom',
+      marginLeft: 10,
     }
   })
 ));

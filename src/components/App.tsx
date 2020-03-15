@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { fabric } from 'fabric';
 import { CssBaseline } from '@material-ui/core';
 import AppBar from './AppBar';
 import Drawer from './Drawer';
@@ -24,17 +25,18 @@ export default () => {
     if (window.location.hostname === 'localhost') {
       (window as any).rootStore = RootStore;
       (window as any).c = getCanvas();
+      (window as any).fabric = fabric;
     }
   });
   
   return (
     <StoreProvider>
-      <div className={classes.root}>
+      <div className={classes.root} data-testid="asdf">
         <CssBaseline />
         <AppBar />
         <Drawer />
         <Main />
-        <GameModal />
+        {/* <GameModal /> */}
       </div>
     </StoreProvider>
   );

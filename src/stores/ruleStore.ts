@@ -2,12 +2,12 @@ import { observable, action } from 'mobx';
 import { fabric } from 'fabric';
 import { Rule } from '../types';
 import { getCanvas } from '../components/Canvas';
-import { Canvas } from 'fabric/fabric-impl';
 
 export default class RuleStore {
   @observable rules: Map<string, Rule> = new Map();
 
   @action setRules = (rules: Rule[]) => {
+    console.log(rules);
     // TODO: optimize this. Maybe we can only subscribe to rule UPDATES and not wholesale changes
     // Also, this can be done with a reduce
     const objectsToAddToCanvas: Object[] = rules.filter((r: Rule) => !this.rules.has(r.id))

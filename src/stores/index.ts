@@ -2,7 +2,7 @@ import { fabric } from 'fabric';
 import GameStore from './gameStore';
 import { SessionData, GameData, Rule, Player } from '../types';
 import { db } from '../firebase';
-import { createId } from '../utils';
+import { createId, serializeGroup } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
 import { getCanvas } from '../components/Canvas';
@@ -11,6 +11,8 @@ class RootStore {
   gameStore: GameStore;
   playerStore: PlayerStore;
   ruleStore: RuleStore;
+  prefix: string = '';
+  // TODO - save the refs as instance vars
   
   constructor() {
     this.gameStore = new GameStore();
@@ -19,12 +21,14 @@ class RootStore {
   }
 
   /**
-   * This basically hydrates the entire game in firebase
+   * This basically hydrates the entire game in firebase.
+   * Also in charge of setting prefix and DB ref instance vars.
+   * Should only be called once.
    * @param playerNames 
    */
   async createGame(playerNames: string[]) {
     const gameId: string = createId('game');
-    const prefix: string = `sessions/${gameId}`;
+    this.prefix = `sessions/${gameId}`;
 
     const playerData: Player[] = playerNames.map((p: string) => ({
       id: createId('player'),
@@ -61,7 +65,7 @@ class RootStore {
         playerId: p.id,
         displayText: `${p.name} drinks!`,
         // This... can't be right. Why doesn't "selectable" show up normally?
-        data: JSON.stringify(group.toJSON(['selectable', 'ruleId'])),
+        data: serializeGroup(group),
       };
     });
 
@@ -76,27 +80,38 @@ class RootStore {
       rules: ruleData,
     }
 
-    this.subscribeToGame(gameId);
-    await db.ref(`${prefix}`).set(sessionData);
+    this.subscribeToGame();
+    await db.ref(`${this.prefix}`).set(sessionData);
   }
 
-  subscribeToGame(gameId: string) {
-    const prefix: string = `sessions/${gameId}`;
+  /**
+   * Creates a new rule in the DB and advances the turn
+   */
+  async createRule(newRule: Rule) {
+    // TODO: lists of data need to be done with a push ref. need to refactor a bit
+    await db.ref(`${this.prefix}/rules`).push().set(newRule)
+  }
 
+  restoreGame(gameId: string) {
+    this.prefix = `sessions/${gameId}`;
+    this.subscribeToGame();
+  }
+
+  subscribeToGame() {
     // Subscribe the gameStore to Firebase
-    db.ref(`${prefix}/game`).on('value', (snap: firebase.database.DataSnapshot) => {
+    db.ref(`${this.prefix}/game`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: GameData = snap.val();
       this.gameStore.setGame(value);
     });
 
     // Subscribe the playerStore to Firebase
-    db.ref(`${prefix}/players`).on('value', (snap: firebase.database.DataSnapshot) => {
+    db.ref(`${this.prefix}/players`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: Player[] = snap.val();
       this.playerStore.setPlayers(value);
     });
 
     // Subscriibe the ruleStore to Firebase
-    db.ref(`${prefix}/rules`).on('value', (snap: firebase.database.DataSnapshot) => {
+    db.ref(`${this.prefix}/rules`).on('value', (snap: firebase.database.DataSnapshot) => {
       const value: Rule[] = snap.val();
       this.ruleStore.setRules(value);
     });

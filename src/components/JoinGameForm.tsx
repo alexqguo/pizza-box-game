@@ -24,8 +24,8 @@ export default ({ gameId, closeModal }: Props) => {
   }
 
   const submitForm = () => {
-    if (isValidGameId(value)) {
-      store.subscribeToGame(value as string);
+    if (value && isValidGameId(value)) {
+      store.restoreGame(value);
       closeModal();
     }
   }

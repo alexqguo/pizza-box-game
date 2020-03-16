@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { fabric } from 'fabric';
+import { Tooltip } from '@material-ui/core';
 import { ObjWithRuleId, Rule } from '../types';
 import RootStore from '../stores';
 
@@ -42,10 +43,15 @@ export default class Canvas extends PureComponent<{}, State> {
   render() {
     return (
       <div>
-        {this.state.tooltipStr ? this.state.tooltipStr : null}
-        <div> {/* DO NOT PUT ANTHING ELSE IN HERE */}
-          <canvas id="c" width="1000" height="700" style={{border: '1px solid gray'}}/>
-        </div>
+        <Tooltip 
+          title={this.state.tooltipStr} 
+          open={!!this.state.tooltipStr}
+          placement="top"
+        >
+          <div> {/* DO NOT PUT ANTHING ELSE IN HERE */}
+            <canvas id="c" width="1000" height="700" style={{border: '1px solid gray'}}/>
+          </div>
+        </Tooltip>
       </div>
     );
   }

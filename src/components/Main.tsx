@@ -10,7 +10,7 @@ import { Rule } from '../types';
 import rootStore from '../stores';
 
 interface State {
-  shapeCreated: boolean,
+  inputText?: string,
   currentShape?: fabric.Object,
 }
 
@@ -19,9 +19,7 @@ export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
   const { gameStore } = store; // Cannot destructure past this point for observer to work
-  const [state, setState] = useState<State>({
-    shapeCreated: false,
-  });
+  const [state, setState] = useState<State>({});
   const updateState = (newState: State) => {
     setState({ ...state, ...newState });
   };
@@ -58,7 +56,6 @@ export default () => {
 
       canvas.add(shape);
       updateState({ 
-        shapeCreated: true,
         currentShape: shape,
       });
     };
@@ -73,7 +70,7 @@ export default () => {
   const createRule = () => {
     const shape: fabric.Object | undefined = state.currentShape;
 
-    if (shape) {
+    if (shape && state.inputText) {
       shape.selectable = false;
       shape.hasControls = false;
       const ruleId: string = createId('rule');
@@ -86,12 +83,19 @@ export default () => {
       const newRule: Rule = {
         id: ruleId,
         playerId: gameStore.game.currentPlayerId,
-        displayText: 'asdf', // TODO - use actual value
+        displayText: state.inputText,
         data: serializeGroup(shape)
       };
       
       rootStore.createRule(newRule);
+      setState({}); // Clear state
     }
+  };
+
+  const updateInputText = (target: EventTarget) => {
+    updateState({
+      inputText: (target as HTMLInputElement).value,
+    });
   };
 
   return useObserver(() => (
@@ -104,14 +108,16 @@ export default () => {
           label="Rule"
           size="small"
           className={classes.createRuleInput}
-          disabled={!state.shapeCreated}
+          disabled={(!state.currentShape)}
+          onChange={({ target }) => { updateInputText(target) }}
+          value={state.inputText || ''}
         />
         <Button 
           variant="contained" 
           color="primary" 
           size="small"
           className={classes.createRuleButton}
-          disabled={!state.shapeCreated}
+          disabled={(!state.currentShape)}
           onClick={createRule}
         >
           Create

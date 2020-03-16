@@ -26,7 +26,7 @@ Options:
 Game {
   id: string
   currentPlayerId: string
-  isBusy: true
+  isPlayerBusy: true
 }
 Player {
   id: string

@@ -4,7 +4,8 @@ import { GameData } from '../types';
 export default class GameStore {
   @observable game: GameData = {
     id: '',
-    currentPlayerId: ''
+    currentPlayerId: '',
+    isPlayerBusy: false
   };
   
   @action setGame = (game: GameData) => {

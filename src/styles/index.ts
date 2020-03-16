@@ -50,12 +50,21 @@ export default makeStyles((theme: Theme) => (
     gameModalTabs: {
       marginBottom: 16,
     },
-    activePlayer: {
+    currentPlayer: {
       fontWeight: 'bold',
+    },
+    idlePlayer: {
       '&::after': {
         content: '"👈"', // Who the fuck knows why it needs quotes but it does
         display: 'block',
-        marginLeft: '5px'
+        marginLeft: 5
+      }
+    },
+    busyPlayer: {
+      '&::after': {
+        content: '"💭"',
+        display: 'block',
+        marginLeft: 5
       }
     },
     createRuleContainer: {

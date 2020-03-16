@@ -73,6 +73,7 @@ class RootStore {
     const gameData: GameData = {
       id: gameId,
       currentPlayerId: playerData[0].id,
+      isPlayerBusy: false,
     };
 
     const sessionData: SessionData = {
@@ -100,6 +101,7 @@ class RootStore {
     const nextPlayerId: string = this.playerStore.players[nextPlayerIdx].id;
     this.gameRef?.update({
       currentPlayerId: nextPlayerId,
+      isPlayerBusy: false,
     });
   }
 

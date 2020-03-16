@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { useObserver } from 'mobx-react';
-import { List, ListItem, Divider, Drawer, Box, Button, IconButton } from '@material-ui/core';
+import { List, Divider, Drawer, Box, Button, IconButton } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HelpIcon from '@material-ui/icons/Help';
 import useStyles from '../styles';
 import { Player } from '../types';
 import { StoreContext } from './App';
+import PlayerName from './PlayerName';
 
 /**
  * will observe state and bold the name of the player whose turn it is
@@ -34,9 +35,7 @@ export default () => {
 
       <List>
         {playerStore.players.map((p: Player) => (
-          <ListItem key={p.id} className={p.id === gameStore.game.currentPlayerId ? classes.activePlayer : ''}>
-            {p.name}
-          </ListItem>
+          <PlayerName player={p} key={p.id} />
         ))}
       </List>
       <Divider />

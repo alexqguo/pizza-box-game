@@ -23,6 +23,7 @@ export interface Rule {
 export interface GameData {
   id: string,
   currentPlayerId: string,
+  isPlayerBusy: boolean,
 }
 
 export interface ObjWithRuleId extends fabric.Object {

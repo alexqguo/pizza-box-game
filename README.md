@@ -54,10 +54,10 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 * Game keeps track of current player
 * Players get colors so that their rules are that color
 * Better (or possibly random?) placement of the initial rules
-* Quarter flipping
 * Only the current player can actually make the move, all others blocked
   * This is the only difference between local games and fully remote games. In a local game the "current player" can make moves for everyone since they're all sharing the same screen. Need to think about how to approach this. Not a super hard requirement
   * Potentially have a switch or something on the screen that allows all players to perform operations
+* Quarter flipping
 * Theme MUI for consistent primary/secondary colors
 * End game condition?
 * Error boundary

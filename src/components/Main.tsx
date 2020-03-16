@@ -86,7 +86,7 @@ export default () => {
       const newRule: Rule = {
         id: ruleId,
         playerId: gameStore.game.currentPlayerId,
-        displayText: 'asdf',
+        displayText: 'asdf', // TODO - use actual value
         data: serializeGroup(shape)
       };
       

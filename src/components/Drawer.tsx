@@ -14,7 +14,6 @@ export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
   const { gameStore, playerStore } = store;
-  const { game } = gameStore;
 
   return useObserver(() => (
     <Drawer 
@@ -34,8 +33,8 @@ export default () => {
       <Divider />
 
       <List>
-        {playerStore.players.map((p: Player, i: number) => (
-          <ListItem key={p.id} className={i === 0 ? classes.activePlayer : ''}>
+        {playerStore.players.map((p: Player) => (
+          <ListItem key={p.id} className={p.id === gameStore.game.currentPlayerId ? classes.activePlayer : ''}>
             {p.name}
           </ListItem>
         ))}
@@ -47,7 +46,7 @@ export default () => {
       </Button>
       <Divider />
 
-      <Button href={`/?join=${game.id}`} rel="noopener" target="_blank">
+      <Button href={`/?join=${gameStore.game.id}`} rel="noopener" target="_blank">
         Share game
       </Button>
       <Divider />

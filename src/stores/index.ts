@@ -5,7 +5,6 @@ import { db } from '../firebase';
 import { createId, serializeGroup } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
-import { getCanvas } from '../components/Canvas';
 
 class RootStore {
   gameStore: GameStore;
@@ -15,7 +14,6 @@ class RootStore {
   gameRef: firebase.database.Reference | null = null;
   playerRef: firebase.database.Reference | null = null;
   ruleRef: firebase.database.Reference | null = null;
-  // TODO - save the refs as instance vars
   
   constructor() {
     this.gameStore = new GameStore();
@@ -91,12 +89,24 @@ class RootStore {
    * Creates a new rule in the DB and advances the turn
    */
   async createRule(newRule: Rule) {
-    // TODO: lists of data need to be done with a push ref. need to refactor a bit
     if (this.ruleRef) {
       await this.ruleRef.push().set(newRule);
     }
+
+    // TODO: this code is rough and prone to failures
+    const playerIds: string[] = this.playerStore.players.map((p: Player) => p.id);
+    const currentPlayerIdx: number = playerIds.indexOf(this.gameStore.game.currentPlayerId);
+    const nextPlayerIdx: number = (currentPlayerIdx + 1) % playerIds.length;
+    const nextPlayerId: string = this.playerStore.players[nextPlayerIdx].id;
+    this.gameRef?.update({
+      currentPlayerId: nextPlayerId,
+    });
   }
 
+  /**
+   * Doesn't do much.
+   * @param gameId the game ID to hydrate from
+   */
   restoreGame(gameId: string) {
     this.prefix = `sessions/${gameId}`;
     this.subscribeToGame();

@@ -12,6 +12,9 @@ class RootStore {
   playerStore: PlayerStore;
   ruleStore: RuleStore;
   prefix: string = '';
+  gameRef: firebase.database.Reference | null = null;
+  playerRef: firebase.database.Reference | null = null;
+  ruleRef: firebase.database.Reference | null = null;
   // TODO - save the refs as instance vars
   
   constructor() {
@@ -22,7 +25,7 @@ class RootStore {
 
   /**
    * This basically hydrates the entire game in firebase.
-   * Also in charge of setting prefix and DB ref instance vars.
+   * Also in charge of setting prefix instance var.
    * Should only be called once.
    * @param playerNames 
    */
@@ -89,7 +92,9 @@ class RootStore {
    */
   async createRule(newRule: Rule) {
     // TODO: lists of data need to be done with a push ref. need to refactor a bit
-    await db.ref(`${this.prefix}/rules`).push().set(newRule)
+    if (this.ruleRef) {
+      await this.ruleRef.push().set(newRule);
+    }
   }
 
   restoreGame(gameId: string) {
@@ -97,24 +102,32 @@ class RootStore {
     this.subscribeToGame();
   }
 
+  /**
+   * Hooks the user up to the Firebase instance, preexisting or not.
+   * In charge of setting up the DB ref instance vars.
+   */
   subscribeToGame() {
     // Subscribe the gameStore to Firebase
-    db.ref(`${this.prefix}/game`).on('value', (snap: firebase.database.DataSnapshot) => {
+    this.gameRef = db.ref(`${this.prefix}/game`);
+    this.gameRef.on('value', (snap: firebase.database.DataSnapshot) => {
       const value: GameData = snap.val();
       this.gameStore.setGame(value);
     });
 
     // Subscribe the playerStore to Firebase
-    db.ref(`${this.prefix}/players`).on('value', (snap: firebase.database.DataSnapshot) => {
+    this.playerRef = db.ref(`${this.prefix}/players`);
+    this.playerRef.on('value', (snap: firebase.database.DataSnapshot) => {
       const value: Player[] = snap.val();
       this.playerStore.setPlayers(value);
     });
 
     // Subscriibe the ruleStore to Firebase
-    db.ref(`${this.prefix}/rules`).on('value', (snap: firebase.database.DataSnapshot) => {
-      const value: Rule[] = snap.val();
-      this.ruleStore.setRules(value);
+    this.ruleRef = db.ref(`${this.prefix}/rules`);
+    this.ruleRef.on('child_added', (snap: firebase.database.DataSnapshot) => {
+      const value: Rule = snap.val();
+      this.ruleStore.addRule(value);
     });
+    // TODO: consider a 'child_removed' listener here as well if it ever becomes necessary
   }
 }
 

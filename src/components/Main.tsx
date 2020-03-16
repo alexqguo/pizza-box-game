@@ -58,7 +58,7 @@ export default () => {
       });
     };
 
-    if (gameStore.game.isPlayerBusy) {
+    if (gameStore.game.isPlayerBusy && !state.currentShape) {
       // Only allow the user to create a shape if they're busy. This will change later
       canvas.on('mouse:up', canvasClickHandler);
     } else {

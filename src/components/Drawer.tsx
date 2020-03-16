@@ -16,6 +16,14 @@ export default () => {
   const store = useContext(StoreContext);
   const { gameStore, playerStore } = store;
 
+  const skipTurn = () => {
+    store.advanceTurn();
+  };
+
+  const flip = () => {
+    store.setPlayerAsBusy();
+  };
+
   return useObserver(() => (
     <Drawer 
       variant="permanent" 
@@ -27,10 +35,22 @@ export default () => {
       <div className={classes.toolbarOffset} />
       <Divider />
 
-      <Button color="primary" disabled>Flip</Button>
+      <Button
+        color="primary"
+        disabled={gameStore.game.isPlayerBusy}
+        onClick={flip}
+      >
+        Flip
+      </Button>
       <Divider />
 
-      <Button color="secondary" disabled>Skip turn</Button>
+      <Button 
+        color="secondary"
+        disabled={gameStore.game.isPlayerBusy}
+        onClick={skipTurn}
+      >
+        Skip turn
+      </Button>
       <Divider />
 
       <List>

@@ -94,7 +94,14 @@ class RootStore {
       await this.ruleRef.push().set(newRule);
     }
 
-    // TODO: this code is rough and prone to failures
+    this.advanceTurn();
+  }
+
+  /**
+   * Advances the turn. Not much else
+   * TODO: this code is rough and prone to failures. Fix it!
+   */
+  advanceTurn() {
     const playerIds: string[] = this.playerStore.players.map((p: Player) => p.id);
     const currentPlayerIdx: number = playerIds.indexOf(this.gameStore.game.currentPlayerId);
     const nextPlayerIdx: number = (currentPlayerIdx + 1) % playerIds.length;
@@ -102,6 +109,15 @@ class RootStore {
     this.gameRef?.update({
       currentPlayerId: nextPlayerId,
       isPlayerBusy: false,
+    });
+  }
+
+  /**
+   * Sets the player as busy.
+   */
+  setPlayerAsBusy() {
+    this.gameRef?.update({
+      isPlayerBusy: true,
     });
   }
 

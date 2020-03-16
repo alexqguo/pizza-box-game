@@ -50,8 +50,6 @@ export default () => {
         lockMovementX: true,
         lockMovementY: true,
         centeredScaling: true,
-        // @ts-ignore Additional property
-        ruleId: 'asdf',
       });
 
       canvas.add(shape);
@@ -60,10 +58,11 @@ export default () => {
       });
     };
 
-    if (state.currentShape) {
-      canvas.off('mouse:up');
-    } else {
+    if (gameStore.game.isPlayerBusy) {
+      // Only allow the user to create a shape if they're busy. This will change later
       canvas.on('mouse:up', canvasClickHandler);
+    } else {
+      canvas.off('mouse:up');
     }
   });
 
@@ -78,7 +77,6 @@ export default () => {
       shape.ruleId = ruleId;
       shape.selectable = false;
       shape.hasControls = false;
-      // TODO: 
 
       const newRule: Rule = {
         id: ruleId,

@@ -27,6 +27,7 @@ export default () => {
   useEffect(() => {
     const canvas = getCanvas();
     const canvasClickHandler = (e: fabric.IEvent) => {
+      // TODO - an error message of some sort. Use the Snackbar component
       if (e.target) return; // Can't create shape on top of an existing one
 
       /**
@@ -101,7 +102,7 @@ export default () => {
     <main className={classes.main}>
       <div className={classes.toolbarOffset} />
       Game: {JSON.stringify(gameStore.game)}<br />
-      State: {JSON.stringify(state)}
+      {'<Main>'} State: {JSON.stringify(state)}
       <Box className={classes.createRuleContainer}>
         <TextField
           label="Rule"

@@ -17,7 +17,7 @@ export default class Canvas extends PureComponent<{}, State> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      tooltipStr: null,
+      tooltipStr: '',
     };
   }
 
@@ -44,7 +44,7 @@ export default class Canvas extends PureComponent<{}, State> {
     return (
       <div>
         <Tooltip 
-          title={this.state.tooltipStr} 
+          title={this.state.tooltipStr || ''} 
           open={!!this.state.tooltipStr}
           placement="top"
         >

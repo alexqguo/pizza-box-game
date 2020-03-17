@@ -27,13 +27,14 @@ export default () => {
   useEffect(() => {
     const canvas = getCanvas();
     const canvasClickHandler = (e: fabric.IEvent) => {
+      if (e.target) return; // Can't create shape on top of an existing one
+
       /**
        * Cannot intersect with another shape
        *  https://codepen.io/stephanrusu/pen/vmgeNb
        *  https://github.com/jriecken/sat-js
        *  https://github.com/fabricjs/fabric.js/issues/595
        *  https://github.com/fabricjs/fabric.js/issues/601
-       * Cannot go offscreen
        * Should have a max size
        * Cannot place a shape on another shape
        */

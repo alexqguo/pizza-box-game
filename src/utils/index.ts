@@ -5,3 +5,7 @@ export function createId(prefix?: string) {
 export function serializeGroup(obj: fabric.Object) {
   return JSON.stringify(obj.toJSON(['selectable', 'ruleId']));
 }
+
+export function randomWithinRange(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}

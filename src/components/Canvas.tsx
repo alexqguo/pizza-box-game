@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { fabric } from 'fabric';
 import { Tooltip } from '@material-ui/core';
-import { ObjWithRuleId, Rule } from '../types';
+import { ObjWithRuleId, Rule, Point } from '../types';
+import { randomWithinRange } from '../utils';
 import RootStore from '../stores';
 
 interface State {
@@ -27,25 +28,52 @@ export const doesTargetIntersect = (targetObj: fabric.Object) => {
   return getIntersectingObjects(targetObj).length > 0;
 }
 
-export const getArea = (targetObj: fabric.Object) => {
-  switch (targetObj.type) {
-    case 'circle':
-      const radius = (targetObj as fabric.Circle).radius || 0;
-      return Math.PI * radius * radius;
-    case 'rect':
-      const width = targetObj.width || 0;
-      const height = targetObj.height || 0;
-      return width * height;
-    default:
-      console.error(`Unknown shape type: ${targetObj.type}`);
-      return 0;
+export const flip = async () => {
+  const coords: Point = await determineFlipCoords();
+  return await randomizePoint(coords);
+}
+(window as any).f = flip;
+
+/**
+ * Takes a given x/y point and returns a new one within a small area of it.
+ * Shows a little indicator on the canvas
+ * @param coords 
+ */
+const randomizePoint = (coords: Point): Promise<Point> => {
+  const radius = 100;
+  const fade = (obj: fabric.Object, opacityValue: string, onComplete: Function) => {
+    obj.animate('opacity', opacityValue, {
+      duration: 1250,
+      onChange: canvas.renderAll.bind(canvas),
+      onComplete,
+    });
   }
+  return new Promise((resolve) => {
+    const indicator = new fabric.Circle({
+      top: coords.y - radius,
+      left: coords.x - radius,
+      radius,
+      fill: 'rgba(200, 200, 200, 0.5)',
+      opacity: 0
+    });
+
+    canvas.add(indicator);
+    fade(indicator, '1', () => {
+      fade(indicator, '0', () => {
+        canvas.remove(indicator);
+        resolve({
+          x: randomWithinRange(coords.x - radius, coords.x + radius),
+          y: randomWithinRange(coords.y - radius, coords.y + radius),
+        });
+      })
+    });
+  });
 }
 
 /**
  * returns [x, y]. that is not clear
  */
-export const flip = () => {
+const determineFlipCoords = (): Promise<Point> => {
   return new Promise((resolve) => {
 
     let raf: number;
@@ -83,9 +111,9 @@ export const flip = () => {
       } else {
         window.cancelAnimationFrame(raf);
         canvas.remove(yIndicator, xIndicator);
-        resolve(coords);
+        resolve({ x: coords[0], y: coords[1] });
       }
-      
+
       canvas.renderAll();
       raf = window.requestAnimationFrame(render);
     };
@@ -108,7 +136,6 @@ export const flip = () => {
     document.addEventListener('keydown', keyHandler);
   });
 }
-(window as any).f = flip;
 
 export default class Canvas extends PureComponent<{}, State> {
   constructor(props: {}) {

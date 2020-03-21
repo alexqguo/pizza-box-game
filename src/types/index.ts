@@ -29,3 +29,8 @@ export interface GameData {
 export interface ObjWithRuleId extends fabric.Object {
   ruleId: string,
 }
+
+export interface Point {
+  x: number,
+  y: number
+}

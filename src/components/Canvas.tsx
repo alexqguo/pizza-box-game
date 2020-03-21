@@ -42,6 +42,74 @@ export const getArea = (targetObj: fabric.Object) => {
   }
 }
 
+/**
+ * returns [x, y]. that is not clear
+ */
+export const flip = () => {
+  return new Promise((resolve) => {
+
+    let raf: number;
+    const baseSpeed = 50;
+    const canvasWidth = canvas.getWidth();
+    const canvasHeight = canvas.getHeight();
+    const coords: number[] = [];
+  
+    let xSpeed = baseSpeed;
+    const xIndicator = new fabric.Text('⬇', {
+      fontSize: 12,
+      top: 0,
+      left: 0,
+    });
+    let ySpeed = baseSpeed;
+    const yIndicator = new fabric.Text('➡', {
+      fontSize: 12,
+      top: 0,
+      left: 0,
+    });
+  
+    const render = () => {
+      if (typeof xIndicator.left === 'undefined' || typeof xIndicator.width === 'undefined'
+        || typeof yIndicator.top === 'undefined' || typeof yIndicator.height === 'undefined') return;
+  
+      // First we get X
+      if (coords.length === 0) {
+        xSpeed = (xIndicator.left + xIndicator.width > canvasWidth || xIndicator.left < 0) ? -xSpeed : xSpeed;
+        xIndicator.left += xSpeed;
+      // Then we get Y
+      } else if (coords.length === 1) {
+        ySpeed = (yIndicator.top + yIndicator.height > canvasHeight || yIndicator.top < 0) ? -ySpeed : ySpeed;
+        yIndicator.top += ySpeed;
+      // Then we're done!
+      } else {
+        window.cancelAnimationFrame(raf);
+        canvas.remove(yIndicator, xIndicator);
+        resolve(coords);
+      }
+      
+      canvas.renderAll();
+      raf = window.requestAnimationFrame(render);
+    };
+  
+    const keyHandler = (e: KeyboardEvent) => {
+      e.preventDefault();
+      if (e.keyCode === 32) {
+        // Really these should be the middle, not top/left, but no one will notice
+        if (coords.length === 0) {
+          coords.push(xIndicator.left || 0);
+        } else if (coords.length === 1) {
+          coords.push(yIndicator.top || 0);
+          document.removeEventListener('keydown', keyHandler);
+        }
+      }
+    };
+  
+    canvas.add(yIndicator, xIndicator);
+    window.requestAnimationFrame(render);
+    document.addEventListener('keydown', keyHandler);
+  });
+}
+(window as any).f = flip;
+
 export default class Canvas extends PureComponent<{}, State> {
   constructor(props: {}) {
     super(props);
@@ -77,8 +145,9 @@ export default class Canvas extends PureComponent<{}, State> {
           open={!!this.state.tooltipStr}
           placement="top"
         >
-          <div> {/* DO NOT PUT ANTHING ELSE IN HERE */}
-            <canvas id="c" width="1000" height="700" style={{border: '1px solid gray'}}/>
+          <div>
+            {/* DO NOT PUT ANTHING ELSE IN HERE */}
+            <canvas id="c" width="1000" height="700" style={{ border: '1px solid gray' }} />
           </div>
         </Tooltip>
       </div>

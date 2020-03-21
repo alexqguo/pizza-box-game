@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { TextField, Button, Box } from '@material-ui/core';
 import { fabric } from 'fabric';
-import Canvas, { getCanvas } from './Canvas';
+import Canvas, { getCanvas, doesTargetIntersect } from './Canvas';
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeGroup } from '../utils';
@@ -12,7 +12,10 @@ import rootStore from '../stores';
 interface State {
   inputText?: string,
   currentShape?: fabric.Object,
+  isIntersecting?: boolean
 }
+
+const INITIAL_RADIUS = 10;
 
 // This may need to change to a class component at some point. We'll see
 export default () => {
@@ -30,6 +33,29 @@ export default () => {
       // TODO - an error message of some sort. Use the Snackbar component
       if (e.target) return; // Can't create shape on top of an existing one
 
+      const { pointer } = e;
+      const initialPlacement: [number, number] = pointer && pointer.x && pointer.y ? 
+        [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS] : [0, 0];
+      const shape = new fabric.Circle({
+        left: initialPlacement[0],
+        top: initialPlacement[1],
+        radius: INITIAL_RADIUS,
+        fill: 'blue',
+        hasControls: true,
+        lockMovementX: true,
+        lockMovementY: true,
+        centeredScaling: true,
+      });
+
+      if (!doesTargetIntersect(shape)) {
+        canvas.add(shape);
+        updateState({ 
+          currentShape: shape,
+        });
+      }
+    };
+
+    canvas.on('object:scaling', (e: fabric.IEvent) => {
       /**
        * Cannot intersect with another shape
        *  https://codepen.io/stephanrusu/pen/vmgeNb
@@ -39,26 +65,22 @@ export default () => {
        * Should have a max size
        * Cannot place a shape on another shape
        */
-      const initialRadius = 20;
-      const { pointer } = e;
-      const initialPlacement: [number, number] = pointer && pointer.x && pointer.y ? 
-        [pointer.x - initialRadius, pointer.y - initialRadius] : [0, 0];
-      const shape = new fabric.Circle({
-        left: initialPlacement[0],
-        top: initialPlacement[1],
-        radius: initialRadius,
-        fill: 'blue',
-        hasControls: true,
-        lockMovementX: true,
-        lockMovementY: true,
-        centeredScaling: true,
-      });
+      // @ts-ignore The TS interface doesn't have target on transform for some reason
+      const targetObj: fabric.Object = e.transform.target;
+      if (!targetObj) return;
 
-      canvas.add(shape);
-      updateState({ 
-        currentShape: shape,
-      });
-    };
+      const isIntersecting: boolean = doesTargetIntersect(targetObj);
+      targetObj.set('fill', isIntersecting ? 'red' : 'blue');
+    }); // Consider debouncing
+
+    canvas.on('object:scaled', (e: fabric.IEvent) => {
+      // @ts-ignore stupid interface is wrong
+      const targetObj: fabric.Object = e.transform.target;
+      if (!targetObj) return;
+      // TODO: also check area
+      const isIntersecting: boolean = doesTargetIntersect(targetObj);
+      updateState({ isIntersecting });
+    });
 
     if (gameStore.game.isPlayerBusy && !state.currentShape) {
       // Only allow the user to create a shape if they're busy. This will change later
@@ -98,6 +120,8 @@ export default () => {
     });
   };
 
+  const canSubmit = !!state.currentShape && !state.isIntersecting && !!state.inputText;
+
   return useObserver(() => (
     <main className={classes.main}>
       <div className={classes.toolbarOffset} />
@@ -117,7 +141,7 @@ export default () => {
           color="primary" 
           size="small"
           className={classes.createRuleButton}
-          disabled={(!state.currentShape)}
+          disabled={!canSubmit}
           onClick={createRule}
         >
           Create

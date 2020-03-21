@@ -59,6 +59,7 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 * Theme MUI for consistent primary/secondary colors
 * End game condition?
 * Error boundary
+* Implement better area checking
 * Fix RootStore typing with TS
   * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
 

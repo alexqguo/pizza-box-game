@@ -13,6 +13,35 @@ let canvas: fabric.Canvas;
 // Perhaps use a ref for this instead?
 export const getCanvas = () => canvas;
 
+export const getIntersectingObjects = (targetObj: fabric.Object) => {
+  const intersectingObjects: fabric.Object[] = [];
+  canvas.forEachObject((obj: fabric.Object) => {
+    if (targetObj === obj) return;
+    if (targetObj.intersectsWithObject(obj)) intersectingObjects.push(obj);
+  });
+
+  return intersectingObjects;
+}
+
+export const doesTargetIntersect = (targetObj: fabric.Object) => {
+  return getIntersectingObjects(targetObj).length > 0;
+}
+
+export const getArea = (targetObj: fabric.Object) => {
+  switch (targetObj.type) {
+    case 'circle':
+      const radius = (targetObj as fabric.Circle).radius || 0;
+      return Math.PI * radius * radius;
+    case 'rect':
+      const width = targetObj.width || 0;
+      const height = targetObj.height || 0;
+      return width * height;
+    default:
+      console.error(`Unknown shape type: ${targetObj.type}`);
+      return 0;
+  }
+}
+
 export default class Canvas extends PureComponent<{}, State> {
   constructor(props: {}) {
     super(props);

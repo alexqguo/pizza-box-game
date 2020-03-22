@@ -1,96 +1,91 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { useObserver } from 'mobx-react';
 import { TextField, Button, Box } from '@material-ui/core';
 import { fabric } from 'fabric';
-import Canvas, { getCanvas, doesTargetIntersect } from './Canvas';
+import Canvas, { getCanvas, doesTargetIntersect, flip, getObjectAtPoint } from './Canvas';
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeGroup } from '../utils';
-import { Rule } from '../types';
+import { Rule, Point } from '../types';
 import rootStore from '../stores';
 
 interface State {
   inputText?: string,
   currentShape?: fabric.Object,
-  isIntersecting?: boolean
+  isIntersecting?: boolean,
+  existingShape?: fabric.Object,
+}
+
+interface Dispatch {
+  type: string,
+  newState?: Object
 }
 
 const INITIAL_RADIUS = 10;
 
+const reducer = (state: State, action: Dispatch) => {
+  switch (action.type) {
+    case 'clear':
+      return {};
+    case 'merge':
+      return { ...state, ...action.newState };
+    default:
+      return {};
+  }
+};
+
 // This may need to change to a class component at some point. We'll see
 export default () => {
+  const canvas = getCanvas();
   const classes = useStyles();
   const store = useContext(StoreContext);
   const { gameStore } = store; // Cannot destructure past this point for observer to work
-  const [state, setState] = useState<State>({});
-  const updateState = (newState: State) => {
-    setState({ ...state, ...newState });
+  const [state, dispatch] = useReducer(reducer, {});
+
+  const newShapeHandler = (pointer: Point) => {
+    const existingShape: fabric.Object | null = getObjectAtPoint(pointer);
+    if (existingShape) {
+      dispatch({
+        type: 'merge',
+        newState: { existingShape }
+      });
+      return;
+    };
+
+    // TODO: check if space is on canvas
+    const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
+    const shape = new fabric.Circle({
+      left: initialPlacement[0],
+      top: initialPlacement[1],
+      radius: INITIAL_RADIUS,
+      fill: 'blue',
+      hasControls: true,
+      lockMovementX: true,
+      lockMovementY: true,
+      centeredScaling: true,
+    });
+
+    if (!doesTargetIntersect(shape)) {
+      canvas.add(shape);
+      dispatch({ type: 'merge', newState: { currentShape: shape }});
+    }
+  };
+
+  const scaledHandler = (e: fabric.IEvent) => {
+    // @ts-ignore stupid interface is wrong
+    const targetObj: fabric.Object = e.transform.target;
+    if (!targetObj) return;
+    // TODO: also enforce max area
+    const isIntersecting: boolean = doesTargetIntersect(targetObj);
+    dispatch({ type: 'merge', newState: { isIntersecting }});
   };
 
   useEffect(() => {
     const canvas = getCanvas();
-    const canvasClickHandler = (e: fabric.IEvent) => {
-      // TODO - an error message of some sort. Use the Snackbar component
-      if (e.target) return; // Can't create shape on top of an existing one
+    canvas.on('object:scaled', scaledHandler);
+  }, []);
 
-      const { pointer } = e;
-      const initialPlacement: [number, number] = pointer && pointer.x && pointer.y ? 
-        [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS] : [0, 0];
-      const shape = new fabric.Circle({
-        left: initialPlacement[0],
-        top: initialPlacement[1],
-        radius: INITIAL_RADIUS,
-        fill: 'blue',
-        hasControls: true,
-        lockMovementX: true,
-        lockMovementY: true,
-        centeredScaling: true,
-      });
-
-      if (!doesTargetIntersect(shape)) {
-        canvas.add(shape);
-        updateState({ 
-          currentShape: shape,
-        });
-      }
-    };
-
-    canvas.on('object:scaling', (e: fabric.IEvent) => {
-      /**
-       * Cannot intersect with another shape
-       *  https://codepen.io/stephanrusu/pen/vmgeNb
-       *  https://github.com/jriecken/sat-js
-       *  https://github.com/fabricjs/fabric.js/issues/595
-       *  https://github.com/fabricjs/fabric.js/issues/601
-       * Should have a max size
-       * Cannot place a shape on another shape
-       */
-      // @ts-ignore The TS interface doesn't have target on transform for some reason
-      const targetObj: fabric.Object = e.transform.target;
-      if (!targetObj) return;
-
-      const isIntersecting: boolean = doesTargetIntersect(targetObj);
-      targetObj.set('fill', isIntersecting ? 'red' : 'blue');
-    }); // Consider debouncing
-
-    canvas.on('object:scaled', (e: fabric.IEvent) => {
-      // @ts-ignore stupid interface is wrong
-      const targetObj: fabric.Object = e.transform.target;
-      if (!targetObj) return;
-      // TODO: also check area
-      const isIntersecting: boolean = doesTargetIntersect(targetObj);
-      updateState({ isIntersecting });
-    });
-
-    if (gameStore.game.isPlayerBusy && !state.currentShape) {
-      // Only allow the user to create a shape if they're busy. This will change later
-      canvas.on('mouse:up', canvasClickHandler);
-    } else {
-      canvas.off('mouse:up');
-    }
-  });
-
-  const createRule = () => {
+  const createRule = async () => {
     const shape: fabric.Object | undefined = state.currentShape;
 
     if (shape && state.inputText) {
@@ -109,18 +104,26 @@ export default () => {
         data: serializeGroup(shape)
       };
       
-      rootStore.createRule(newRule);
-      setState({}); // Clear state
+      await rootStore.createRule(newRule);
+      dispatch({ type: 'clear' }); // Clear state
     }
   };
 
   const updateInputText = (target: EventTarget) => {
-    updateState({
-      inputText: (target as HTMLInputElement).value,
+    dispatch({
+      type: 'merge',
+      newState: { inputText: (target as HTMLInputElement).value },
     });
   };
 
   const canSubmit = !!state.currentShape && !state.isIntersecting && !!state.inputText;
+
+  if (gameStore.game.isPlayerBusy && !state.currentShape) {
+    flip().then(newShapeHandler);
+  } else if (!gameStore.game.isPlayerBusy && canvas) {
+    canvas.off('object:scaling');
+    canvas.off('object:modified');
+  }
 
   return useObserver(() => (
     <main className={classes.main}>

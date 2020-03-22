@@ -60,6 +60,7 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 * End game condition?
 * Error boundary
 * Implement better area checking
+* Enforce max size of new shape
 * Fix RootStore typing with TS
   * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
 

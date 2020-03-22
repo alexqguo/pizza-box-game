@@ -14,6 +14,14 @@ let canvas: fabric.Canvas;
 // Perhaps use a ref for this instead?
 export const getCanvas = () => canvas;
 
+/**
+ * For true intersection. FabricJS only supports bounding boxes without customization
+ *  https://codepen.io/stephanrusu/pen/vmgeNb
+ *  https://github.com/jriecken/sat-js
+ *  https://github.com/fabricjs/fabric.js/issues/595
+ *  https://github.com/fabricjs/fabric.js/issues/601
+ * Should have a max size
+ */
 export const getIntersectingObjects = (targetObj: fabric.Object) => {
   const intersectingObjects: fabric.Object[] = [];
   canvas.forEachObject((obj: fabric.Object) => {
@@ -26,6 +34,16 @@ export const getIntersectingObjects = (targetObj: fabric.Object) => {
 
 export const doesTargetIntersect = (targetObj: fabric.Object) => {
   return getIntersectingObjects(targetObj).length > 0;
+}
+
+export const getObjectAtPoint = (point: Point): fabric.Object | null => {
+  const fabricPoint = new fabric.Point(point.x, point.y);
+  let res: fabric.Object | null = null;
+  canvas.forEachObject((obj: fabric.Object) => {
+    if (obj.containsPoint(fabricPoint)) res = obj;
+  });
+
+  return res;
 }
 
 export const flip = async () => {
@@ -119,8 +137,8 @@ const determineFlipCoords = (): Promise<Point> => {
     };
   
     const keyHandler = (e: KeyboardEvent) => {
-      e.preventDefault();
       if (e.keyCode === 32) {
+        e.preventDefault();
         // Really these should be the middle, not top/left, but no one will notice
         if (coords.length === 0) {
           coords.push(xIndicator.left || 0);
@@ -162,6 +180,15 @@ export default class Canvas extends PureComponent<{}, State> {
         tooltipStr: null
       });
     });
+
+    canvas.on('object:scaling', (e: fabric.IEvent) => {
+      // @ts-ignore The TS interface doesn't have target on transform for some reason
+      const targetObj: fabric.Object = e.transform.target;
+      if (!targetObj) return;
+
+      const isIntersecting: boolean = doesTargetIntersect(targetObj);
+      targetObj.set('fill', isIntersecting ? 'red' : 'blue');
+    }); // Consider debouncing
   }
 
   render() {

@@ -46,7 +46,6 @@ export default () => {
 
       <Button 
         color="secondary"
-        disabled={gameStore.game.isPlayerBusy}
         onClick={skipTurn}
       >
         Skip turn

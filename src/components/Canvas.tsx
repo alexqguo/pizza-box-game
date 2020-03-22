@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { fabric } from 'fabric';
 import { Tooltip } from '@material-ui/core';
+import { throttle } from 'lodash';
 import { ObjWithRuleId, Rule, Point } from '../types';
 import { randomWithinRange } from '../utils';
 import RootStore from '../stores';
@@ -8,6 +9,9 @@ import RootStore from '../stores';
 interface State {
   tooltipStr: string | null;
 }
+
+const QUARTER_RADIUS = 6;
+const INDICATOR_RADIUS = 100;
 
 let canvas: fabric.Canvas;
 
@@ -25,7 +29,7 @@ export const getCanvas = () => canvas;
 export const getIntersectingObjects = (targetObj: fabric.Object) => {
   const intersectingObjects: fabric.Object[] = [];
   canvas.forEachObject((obj: fabric.Object) => {
-    if (targetObj === obj) return;
+    if (targetObj === obj || (obj as any).ignoreIntersection) return;
     if (targetObj.intersectsWithObject(obj)) intersectingObjects.push(obj);
   });
 
@@ -46,46 +50,58 @@ export const getObjectAtPoint = (point: Point): fabric.Object | null => {
   return res;
 }
 
-export const flip = async () => {
-  const coords: Point = await determineFlipCoords();
-  return await randomizePoint(coords);
-}
-(window as any).f = flip;
+export const createQuarter = (point: Point) => {
+  return new fabric.Circle({
+    top: point.y - QUARTER_RADIUS,
+    left: point.x - QUARTER_RADIUS,
+    radius: QUARTER_RADIUS,
+    fill: 'gray',
+    selectable: false,
+    hasControls: false,
+    // @ts-ignore TODO
+    ignoreIntersection: true,
+  });
+};
 
-/**
- * Takes a given x/y point and returns a new one within a small area of it.
- * Shows a little indicator on the canvas
- * @param coords 
- */
-const randomizePoint = (coords: Point): Promise<Point> => {
-  const radius = 100;
+export const createIndicator = (point: Point) => {
+  return new fabric.Circle({
+    top: point.y - INDICATOR_RADIUS,
+    left: point.x - INDICATOR_RADIUS,
+    radius: INDICATOR_RADIUS,
+    fill: 'rgba(200, 200, 200, 0.5)',
+    hasControls: false,
+    selectable: false,
+    opacity: 0
+  });
+}
+
+export const fadeIndicator = (obj: fabric.Object) => {
   const fade = (obj: fabric.Object, opacityValue: string, onComplete: Function) => {
     obj.animate('opacity', opacityValue, {
       duration: 1250,
       onChange: canvas.renderAll.bind(canvas),
       onComplete,
     });
-  }
-  return new Promise((resolve) => {
-    const indicator = new fabric.Circle({
-      top: coords.y - radius,
-      left: coords.x - radius,
-      radius,
-      fill: 'rgba(200, 200, 200, 0.5)',
-      opacity: 0
-    });
+  };
 
-    canvas.add(indicator);
-    fade(indicator, '1', () => {
-      fade(indicator, '0', () => {
-        canvas.remove(indicator);
-        resolve({
-          x: randomWithinRange(coords.x - radius, coords.x + radius),
-          y: randomWithinRange(coords.y - radius, coords.y + radius),
-        });
-      })
-    });
-  });
+  fade(obj, '1', () => { fade(obj, '0', () => {}) });
+}
+
+export const flip = async () => {
+  return await determineFlipCoords();
+  // return await randomizePoint(coords);
+}
+
+/**
+ * Takes a given x/y point and returns a new one within a small area of it.
+ * Shows a little indicator on the canvas
+ * @param coords 
+ */
+export const randomizePoint = (coords: Point): Point => {
+  return {
+    x: randomWithinRange(coords.x - INDICATOR_RADIUS, coords.x + INDICATOR_RADIUS),
+    y: randomWithinRange(coords.y - INDICATOR_RADIUS, coords.y + INDICATOR_RADIUS),
+  };
 }
 
 /**
@@ -181,14 +197,14 @@ export default class Canvas extends PureComponent<{}, State> {
       });
     });
 
-    canvas.on('object:scaling', (e: fabric.IEvent) => {
+    canvas.on('object:scaling', throttle((e: fabric.IEvent) => {
       // @ts-ignore The TS interface doesn't have target on transform for some reason
       const targetObj: fabric.Object = e.transform.target;
       if (!targetObj) return;
 
       const isIntersecting: boolean = doesTargetIntersect(targetObj);
       targetObj.set('fill', isIntersecting ? 'red' : 'blue');
-    }); // Consider debouncing
+    }, 50)); // Consider debouncing
   }
 
   render() {

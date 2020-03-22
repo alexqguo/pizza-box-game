@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { useObserver } from 'mobx-react';
 import { TextField, Button, Box } from '@material-ui/core';
 import { fabric } from 'fabric';
-import Canvas, { getCanvas, doesTargetIntersect, flip, getObjectAtPoint } from './Canvas';
+import Canvas, { getCanvas, doesTargetIntersect, flip, getObjectAtPoint, randomizePoint } from './Canvas';
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeGroup } from '../utils';
@@ -49,10 +49,11 @@ export default () => {
         type: 'merge',
         newState: { existingShape }
       });
+      rootStore.setQuarterLocation(pointer);
       return;
     };
 
-    // TODO: check if space is on canvas
+    // TODO: check if enough space on canvas
     const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
     const shape = new fabric.Circle({
       left: initialPlacement[0],
@@ -66,6 +67,7 @@ export default () => {
     });
 
     if (!doesTargetIntersect(shape)) {
+      rootStore.setQuarterLocation(pointer);
       canvas.add(shape);
       dispatch({ type: 'merge', newState: { currentShape: shape }});
     }
@@ -118,18 +120,22 @@ export default () => {
 
   const canSubmit = !!state.currentShape && !state.isIntersecting && !!state.inputText;
 
-  if (gameStore.game.isPlayerBusy && !state.currentShape) {
-    flip().then(newShapeHandler);
-  } else if (!gameStore.game.isPlayerBusy && canvas) {
-    canvas.off('object:scaling');
-    canvas.off('object:modified');
+  if (gameStore.game.isPlayerBusy && !gameStore.game.quarterLocation 
+    && !gameStore.game.indicatorLocation && !state.currentShape) {
+    // flip().then(newShapeHandler);
+    flip().then((point: Point) => {
+      rootStore.setIndicatorLocation(point);
+      setTimeout(() => {
+        const quarterLocation: Point = randomizePoint(point);
+        newShapeHandler(quarterLocation);
+        console.log('hello');
+      }, 2500);
+    });
   }
 
   return useObserver(() => (
     <main className={classes.main}>
       <div className={classes.toolbarOffset} />
-      Game: {JSON.stringify(gameStore.game)}<br />
-      {'<Main>'} State: {JSON.stringify(state)}
       <Box className={classes.createRuleContainer}>
         <TextField
           label="Rule"
@@ -152,6 +158,12 @@ export default () => {
       </Box>
       
       <Canvas />
+
+      {window.location.hostname === 'localhost' ? 
+        <>
+          Game: {JSON.stringify(gameStore.game)}<br />
+          {'<Main>'} State: {JSON.stringify(state)}
+        </> : null}
     </main>
   ));
 }

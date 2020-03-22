@@ -1,6 +1,6 @@
 import { fabric } from 'fabric';
 import GameStore from './gameStore';
-import { SessionData, GameData, Rule, Player } from '../types';
+import { SessionData, GameData, Rule, Player, Point } from '../types';
 import { db } from '../firebase';
 import { createId, serializeGroup } from '../utils';
 import PlayerStore from './playerStore';
@@ -74,6 +74,8 @@ class RootStore {
       id: gameId,
       currentPlayerId: playerData[0].id,
       isPlayerBusy: false,
+      quarterLocation: null,
+      indicatorLocation: null,
     };
 
     const sessionData: SessionData = {
@@ -109,6 +111,8 @@ class RootStore {
     this.gameRef?.update({
       currentPlayerId: nextPlayerId,
       isPlayerBusy: false,
+      quarterLocation: null,
+      indicatorLocation: null,
     });
   }
 
@@ -118,6 +122,18 @@ class RootStore {
   setPlayerAsBusy() {
     this.gameRef?.update({
       isPlayerBusy: true,
+    });
+  }
+
+  setQuarterLocation(loc: Point) {
+    this.gameRef?.update({
+      quarterLocation: loc,
+    });
+  }
+
+  setIndicatorLocation(loc: Point) {
+    this.gameRef?.update({
+      indicatorLocation: loc,
     });
   }
 

@@ -49,20 +49,28 @@ Overall state (in Firebase) will look like this:
 Ideally each rule object contains its own shape data. It will be much easier to manage and organize that way.
 
 ## Remaining sequence of work
-* Collision detection
-* Better (or possibly random?) placement of the initial rules
+* Share the following over firebase:
+  * If the canvas was missed or not
+  * Randomizer indicator
+  * Quarter location
+  * On new turn make sure to clear both objects from the canvas
 * Only the current player can actually make the move, all others blocked
   * This is the only difference between local games and fully remote games. In a local game the "current player" can make moves for everyone since they're all sharing the same screen. Need to think about how to approach this. Not a super hard requirement
   * Potentially have a switch or something on the screen that allows all players to perform operations
-* Quarter flipping
 * Players get colors so that their rules are that color
+* Better (or possibly random?) placement of the initial rules
 * Theme MUI for consistent primary/secondary colors
+* Better collision detection
 * End game condition?
 * Error boundary
 * Implement better area checking
 * Enforce max size of new shape
+* Event log
 * Fix RootStore typing with TS
   * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
+
+## Known bugs
+* If you leave the screen after you've flipped but before you've submitted your rule, when you rejoin the quarter will be there but you cannot create a rule to continue
 
 ## Features for MVP
 * Game is playable locally and online

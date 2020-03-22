@@ -27,7 +27,7 @@ export default () => {
       (window as any).c = getCanvas();
       (window as any).fabric = fabric;
     }
-  });
+  }, []);
   
   return (
     <StoreProvider>

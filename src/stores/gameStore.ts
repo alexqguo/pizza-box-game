@@ -39,14 +39,6 @@ export default class GameStore {
     }
   }
 
-  addQuarter = () => {
-
-  }
-
-  addIndicator = () => {
-
-  }
-
   removeCommonObject(obj: fabric.Object | null) {
     if (obj) {
       getCanvas().remove(obj);

@@ -76,6 +76,7 @@ class RootStore {
       isPlayerBusy: false,
       quarterLocation: null,
       indicatorLocation: null,
+      hasFlipped: false
     };
 
     const sessionData: SessionData = {
@@ -113,6 +114,7 @@ class RootStore {
       isPlayerBusy: false,
       quarterLocation: null,
       indicatorLocation: null,
+      hasFlipped: false,
     });
   }
 
@@ -134,7 +136,12 @@ class RootStore {
   setIndicatorLocation(loc: Point) {
     this.gameRef?.update({
       indicatorLocation: loc,
+      hasFlipped: true,
     });
+  }
+
+  clearIndicatorLocation() {
+    this.gameRef?.update({ indicatorLocation: null });
   }
 
   /**

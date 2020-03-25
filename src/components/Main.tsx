@@ -120,15 +120,15 @@ export default () => {
 
   const canSubmit = !!state.currentShape && !state.isIntersecting && !!state.inputText;
 
-  if (gameStore.game.isPlayerBusy && !gameStore.game.quarterLocation 
-    && !gameStore.game.indicatorLocation && !state.currentShape) {
-    // flip().then(newShapeHandler);
+  if (gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped) {
+    console.log(gameStore.game.isPlayerBusy, gameStore.game.hasFlipped);
     flip().then((point: Point) => {
       rootStore.setIndicatorLocation(point);
+
       setTimeout(() => {
         const quarterLocation: Point = randomizePoint(point);
         newShapeHandler(quarterLocation);
-        console.log('hello');
+        rootStore.clearIndicatorLocation();
       }, 2500);
     });
   }

@@ -44,6 +44,7 @@ export const getObjectAtPoint = (point: Point): fabric.Object | null => {
   const fabricPoint = new fabric.Point(point.x, point.y);
   let res: fabric.Object | null = null;
   canvas.forEachObject((obj: fabric.Object) => {
+    if ((obj as any).ignoreIntersection) return;
     if (obj.containsPoint(fabricPoint)) res = obj;
   });
 
@@ -71,7 +72,9 @@ export const createIndicator = (point: Point) => {
     fill: 'rgba(200, 200, 200, 0.5)',
     hasControls: false,
     selectable: false,
-    opacity: 0
+    opacity: 0,
+    // @ts-ignore TODO
+    ignoreIntersection: true,
   });
 }
 

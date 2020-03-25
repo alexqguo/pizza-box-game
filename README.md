@@ -71,6 +71,7 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 
 ## Known bugs
 * If you leave the screen after you've flipped but before you've submitted your rule, when you rejoin the quarter will be there but you cannot create a rule to continue
+* If you skip your turn after you flip but before you submit your shape, the shape doesn't get deleted
 
 ## Features for MVP
 * Game is playable locally and online

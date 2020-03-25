@@ -26,6 +26,7 @@ export interface GameData {
   isPlayerBusy: boolean,
   quarterLocation: Point | null,
   indicatorLocation: Point | null,
+  hasFlipped: boolean,
 }
 
 export interface ObjWithRuleId extends fabric.Object {

@@ -78,5 +78,9 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 * Not restricted to just circles. Can be any shape
   * Need a way to serialize these shapes. SVG may be a better option than canvas
 
+## Future features
+* Any type of shapes
+* Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
+
 ## Questions
 * What is the end game condition? Should there even be one?

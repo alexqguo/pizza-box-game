@@ -20,6 +20,9 @@ export default ({ gameId, closeModal }: Props) => {
 
   const isValidGameId = (gameId: string | null) => {
     // TODO: check firebase for existing game
+    // Game must be a remote type game
+    // List all the players who are NOT active, you can join those
+    // Needs to update on the fly, can use the store updater for that
     return !!gameId;
   }
 

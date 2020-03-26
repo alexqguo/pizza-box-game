@@ -35,13 +35,16 @@ class RootStore {
 
     const playerData: Player[] = playerNames.map((name: string) => {
       const id: string = createId('player');
+      let isActive: boolean = false;
       if (name === localPlayer && gameType === GameType.remote) {
         this.gameStore.setLocalPlayerId(id);
+        isActive = true;
       }
 
       return {
         id,
         name,
+        ...(gameType === GameType.remote ? { isActive } : undefined),
       };
     });
 
@@ -74,7 +77,6 @@ class RootStore {
         id: ruleId,
         playerId: p.id,
         displayText: `${p.name} drinks!`,
-        // This... can't be right. Why doesn't "selectable" show up normally?
         data: serializeGroup(group),
       };
     });

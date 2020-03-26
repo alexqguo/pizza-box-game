@@ -11,6 +11,7 @@ export interface SessionData {
 export interface Player {
   id: string,
   name: string,
+  isActive?: boolean,
 }
 
 export interface Rule {

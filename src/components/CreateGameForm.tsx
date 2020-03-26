@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box } from '@material-ui/core';
+import { 
+  TextField,
+  Button,
+  Typography,
+  Box,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+} from '@material-ui/core';
 import useStyles from '../styles';
+import { GameType } from '../types';
 import RootStore from '../stores';
 
 interface Props {
@@ -12,8 +23,9 @@ interface Props {
  */
 export default ({ closeModal }: Props) => {
   const classes = useStyles();
-  const [players, setPlayers] = useState(['', ''])
-  const [canSubmit, setCanSubmit] = useState(false);
+  const [players, setPlayers] = useState<string[]>(['', ''])
+  const [gameType, setGameType] = useState<string>('');
+  const [localPlayer, setLocalPlayer] = useState<string>('');
 
   const validateForm = async () => {
     // Begin shitty validation
@@ -25,7 +37,7 @@ export default ({ closeModal }: Props) => {
     const isValid = new Set(players).size === players.length;
 
     if (isValid) {
-      await RootStore.createGame(players);
+      await RootStore.createGame(players, localPlayer, gameType);
       closeModal();
     }
   };
@@ -39,11 +51,23 @@ export default ({ closeModal }: Props) => {
     const inputValue: string = (target as HTMLInputElement).value;
     players[i] = inputValue
     setPlayers([...players]);
-
-    if (players.filter((p: string) => isValidName(p)).length >= 2) {
-      setCanSubmit(true);
-    }
   };
+
+  const handleRadioChange = (target: HTMLInputElement) => {
+    setGameType(target.value);
+  }
+
+  const handleLocalPlayerChange = (target: HTMLInputElement) => {
+    setLocalPlayer(target.value);
+  }
+
+  const determineSubmissionValidity = () => {
+    const isValidGameType: boolean = gameType === GameType.local || gameType === GameType.remote;
+    const hasEnoughPlayers: boolean = players.filter((p: string) => isValidName(p)).length >= 2;
+    const hasLocalPlayer: boolean = gameType === GameType.remote ? !!localPlayer : true;
+
+    return isValidGameType && hasEnoughPlayers && hasLocalPlayer;
+  }
 
   return (
     <Box>
@@ -53,30 +77,55 @@ export default ({ closeModal }: Props) => {
 
       <form autoComplete="off">
         <div className={classes.formInputs}>
-          {players.map((name: string, i: number) => (
-            <TextField
-              label="Name"
-              size="small"
-              fullWidth
-              key={i}
-              onChange={({ target }) => { updatePlayerName(target, i); }}
-              className={classes.gameFormTextField}
-              value={name}
-            />
-          ))}
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <FormLabel component="legend">Enter the player names</FormLabel>
+              {players.map((name: string, i: number) => (
+                <TextField
+                  label="Name"
+                  size="small"
+                  fullWidth
+                  key={i}
+                  onChange={({ target }) => { updatePlayerName(target, i); }}
+                  className={classes.gameFormTextField}
+                  value={name}
+                />
+              ))}
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => setPlayers([...players, ''])}
+              >
+                + Player
+              </Button>
+            </Grid>
 
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            onClick={() => setPlayers([...players, ''])}
-          >
-            + Player
-          </Button>
-        </div>
+            <Grid item xs={6}>
+              <FormLabel component="legend">Are you playing locally or remotely?</FormLabel>
+              <RadioGroup value={gameType} onChange={({ target }) => handleRadioChange(target)}>
+                <FormControlLabel value={GameType.local} control={<Radio />} label="Local" />
+                <FormControlLabel value={GameType.remote} control={<Radio />} label="Remote" />
+              </RadioGroup>
+
+              {gameType === GameType.remote ? 
+                <>
+                  <FormLabel component="legend">Who are you playing as?</FormLabel>
+                  <RadioGroup value={localPlayer} onChange={({ target }) => handleLocalPlayerChange(target)}>
+                    {players.filter((n: string) => !!n).map((name: string, i: number) => (
+                      <FormControlLabel key={i} value={name} control={<Radio />} label={name} />
+                    ))}
+                  </RadioGroup>
+                  {players.filter((n: string) => !!n).length === 0 ? 'Please enter player names' : null}
+                </>
+                : null
+              }
+            </Grid>
+          </Grid>
+          </div>
 
         <Button 
-          disabled={!canSubmit}
+          disabled={!determineSubmissionValidity()}
           variant="contained" 
           color="primary" 
           onClick={validateForm}>

@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx';
 import { GameData } from '../types';
-import RootStore from '../stores';
 import { getCanvas, createQuarter, createIndicator, fadeIndicator } from '../components/Canvas';
 
 export default class GameStore {
@@ -11,10 +10,11 @@ export default class GameStore {
     hasFlipped: false,
     quarterLocation: null,
     indicatorLocation: null,
+    type: '',
   };
+  @observable localPlayerId: string = '';
   quarter: fabric.Object | null = null;
   indicator: fabric.Object | null = null;
-
   
   @action setGame = (game: GameData) => {
     this.game = game;
@@ -43,5 +43,9 @@ export default class GameStore {
     if (obj) {
       getCanvas().remove(obj);
     }
+  }
+
+  @action setLocalPlayerId = (localPlayerId: string) => {
+    this.localPlayerId = localPlayerId;
   }
 }

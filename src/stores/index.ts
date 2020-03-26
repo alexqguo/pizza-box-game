@@ -1,6 +1,6 @@
 import { fabric } from 'fabric';
 import GameStore from './gameStore';
-import { SessionData, GameData, Rule, Player, Point } from '../types';
+import { SessionData, GameData, Rule, Player, Point, GameType } from '../types';
 import { db } from '../firebase';
 import { createId, serializeGroup } from '../utils';
 import PlayerStore from './playerStore';
@@ -27,15 +27,23 @@ class RootStore {
    * Also in charge of setting prefix instance var.
    * Should only be called once.
    * @param playerNames 
+   * @param localPlayer
    */
-  async createGame(playerNames: string[]) {
+  async createGame(playerNames: string[], localPlayer: string, gameType: string) {
     const gameId: string = createId('game');
     this.prefix = `sessions/${gameId}`;
 
-    const playerData: Player[] = playerNames.map((p: string) => ({
-      id: createId('player'),
-      name: p
-    }));
+    const playerData: Player[] = playerNames.map((name: string) => {
+      const id: string = createId('player');
+      if (name === localPlayer && gameType === GameType.remote) {
+        this.gameStore.setLocalPlayerId(id);
+      }
+
+      return {
+        id,
+        name,
+      };
+    });
 
     // The initial shapes
     const ruleData: Rule[] = playerData.map((p: Player, i: number) => {
@@ -77,7 +85,8 @@ class RootStore {
       isPlayerBusy: false,
       quarterLocation: null,
       indicatorLocation: null,
-      hasFlipped: false
+      hasFlipped: false,
+      type: gameType,
     };
 
     const sessionData: SessionData = {

@@ -41,7 +41,6 @@ export default makeStyles((theme: Theme) => (
       width: '70%'
     },
     formInputs: {
-      width: 300,
       marginBottom: 30
     },
     gameFormTextField: {

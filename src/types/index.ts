@@ -27,6 +27,12 @@ export interface GameData {
   quarterLocation: Point | null,
   indicatorLocation: Point | null,
   hasFlipped: boolean,
+  type: string,
+}
+
+export enum GameType {
+  local = 'local',
+  remote = 'remote',
 }
 
 export interface ObjWithRuleId extends fabric.Object {

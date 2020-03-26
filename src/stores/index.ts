@@ -14,7 +14,6 @@ class RootStore {
   gameRef: firebase.database.Reference | null = null;
   playerRef: firebase.database.Reference | null = null;
   ruleRef: firebase.database.Reference | null = null;
-  // localPlayer
   
   constructor() {
     this.gameStore = new GameStore();

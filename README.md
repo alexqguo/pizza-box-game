@@ -79,7 +79,9 @@ Ideally each rule object contains its own shape data. It will be much easier to 
   * Need a way to serialize these shapes. SVG may be a better option than canvas
 
 ## Future features
-* Any type of shapes
+* Add (and remove?) players on the fly
+* Any type of shapes not just circles/ovals
+* Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
 
 ## Questions

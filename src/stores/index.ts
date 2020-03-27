@@ -159,16 +159,17 @@ class RootStore {
    * Doesn't do much.
    * @param gameId the game ID to hydrate from
    */
-  restoreGame(gameId: string) {
+  async restoreGame(gameId: string, localPlayerId: string) {
     this.prefix = `sessions/${gameId}`;
-    this.subscribeToGame();
+    this.gameStore.setLocalPlayerId(localPlayerId);
+    await this.subscribeToGame();
   }
 
   /**
    * Hooks the user up to the Firebase instance, preexisting or not.
    * In charge of setting up the DB ref instance vars.
    */
-  subscribeToGame() {
+  async subscribeToGame() {
     // Subscribe the gameStore to Firebase
     this.gameRef = db.ref(`${this.prefix}/game`);
     this.gameRef.on('value', (snap: firebase.database.DataSnapshot) => {
@@ -190,6 +191,19 @@ class RootStore {
       this.ruleStore.addRule(value);
     });
     // TODO: consider a 'child_removed' listener here as well if it ever becomes necessary
+
+    window.addEventListener('unload', async () => {
+      if (this.gameStore.localPlayerId) {
+        // TODO: firebase has to have a better way to do this
+        const playersSnap = await this.playerRef?.once('value');
+        if (!playersSnap) return;
+        playersSnap.forEach((playerSnap) => {
+          if (playerSnap.val().id === this.gameStore.localPlayerId) {
+            db.ref(`${this.prefix}/players/${playerSnap.key}`).update({ isActive: false });
+          }
+        });
+      }
+    });
   }
 }
 

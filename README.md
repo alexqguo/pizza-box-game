@@ -78,7 +78,9 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 * Not restricted to just circles. Can be any shape
   * Need a way to serialize these shapes. SVG may be a better option than canvas
 
-## Future features
+## Future features/changes
+* Fix react complaining about doing a state update on an unmounted component when joining a remote game
+* Break up some of the larger components
 * Add (and remove?) players on the fly
 * Any type of shapes not just circles/ovals
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions

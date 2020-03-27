@@ -10,10 +10,27 @@ interface Props {
   closeModal: Function
 }
 
+enum GameSearchStatus {
+  found = 'found',
+  invalid = 'invalid',
+  notFound = 'notFound',
+}
+
+interface State {
+  gameId: string,
+  gameSearchStatus: GameSearchStatus,
+  canJoin?: boolean,
+}
+
 export default ({ gameId, closeModal }: Props) => {
   const classes = useStyles();
-  const [value, setValue] = useState(gameId);
-  const [canSubmit, setCanSubmit] = useState(!!gameId);
+  const [state, setState] = useState<State>({
+    gameId: gameId || '',
+    gameSearchStatus: GameSearchStatus.notFound,
+  });
+  const updateState = (newState: Object) => {
+    setState({ ...state, ...newState });
+  }
 
   // These should be the only direct interactions with firebase other than the rootStore
   const getGame = async (gameId: string) => {
@@ -22,21 +39,22 @@ export default ({ gameId, closeModal }: Props) => {
   }
 
   const onInputChange = (value: string) => {
-    setValue(value);
-    setCanSubmit(!!value);
+    updateState({
+      gameId: value,
+    });
   }
 
-  const submitForm = async () => {
-    if (!value) return;
-    const game: GameData = await getGame(value);
-
-    console.log(game)
+  const findGame = async () => {
+    if (!state.gameId) return;
+    const game: GameData = await getGame(state.gameId);
     const isValidGame = game && game.id && (game.type === GameType.remote || game.type === GameType.local);
     if (!isValidGame) return; // TODO - better error messaging
 
     if (game.type === GameType.local) {
-      store.restoreGame(value);
-      closeModal();
+      updateState({
+        canJoin: true,
+        gameSearchStatus: GameSearchStatus.found,
+      });
     } else {
       // If it's a remote game:
       // List all the players who are NOT active, you can join those
@@ -46,11 +64,16 @@ export default ({ gameId, closeModal }: Props) => {
     }
   }
 
+  const joinGame = () => {
+    store.restoreGame(state.gameId);
+    closeModal();
+  }
+
   return (
     <Box>
       <form autoComplete="off">
         <div className={classes.formInputs}>
-          <Grid container>
+          <Grid container alignItems="center" spacing={3}>
             <Grid item xs={4}>
               <TextField
                 label="Game ID"
@@ -58,17 +81,27 @@ export default ({ gameId, closeModal }: Props) => {
                 fullWidth
                 onChange={({ target }) => onInputChange(target.value)}
                 className={classes.gameFormTextField}
+                disabled={state.gameSearchStatus === GameSearchStatus.found}
                 defaultValue={gameId}
               />
+            </Grid>
+            <Grid item xs={2}>
+              <Button size="small"
+                variant="contained"
+                color="primary"
+                disabled={!state.gameId || state.gameSearchStatus === GameSearchStatus.found}
+                onClick={findGame}>
+                Find game
+              </Button>
             </Grid>
           </Grid>
         </div>
 
         <Button 
-          disabled={!canSubmit}
+          disabled={!state.canJoin}
           variant="contained" 
           color="primary" 
-          onClick={submitForm}>
+          onClick={joinGame}>
           Join game
         </Button>
       </form>

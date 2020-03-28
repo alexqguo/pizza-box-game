@@ -13,7 +13,7 @@ import Canvas, {
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeObject } from '../utils';
-import { Rule, Point, GameType } from '../types';
+import { Rule, Point, GameType, ObjWithRuleId } from '../types';
 import rootStore from '../stores';
 
 interface State {
@@ -46,13 +46,12 @@ export default () => {
   const canvas = getCanvas();
   const classes = useStyles();
   const store = useContext(StoreContext);
-  const { gameStore } = store; // Cannot destructure past this point for observer to work
+  const { gameStore, ruleStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
 
   const newShapeHandler = (pointer: Point) => {
     const existingShape: fabric.Object | null = getObjectAtPoint(pointer);
     if (existingShape) {
-      console.log('existing shape');
       dispatch({
         type: 'merge',
         newState: { existingShape }
@@ -78,6 +77,7 @@ export default () => {
       originalFill: playerColor,
     });
 
+    // TODO: check if enough space on canvas
     if (!doesTargetIntersect(shape)) {
       rootStore.setQuarterLocation(pointer);
       canvas.add(shape);
@@ -148,11 +148,17 @@ export default () => {
           const name = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
           store.setAlertMessage(`${name} missed the board and drinks four!`);
         }
+
         rootStore.clearIndicatorLocation();
       }, 2500);
     });
   } else if (state.existingShape) {
-    console.log(state.existingShape);
+    const name = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    const ruleText = ruleStore.rules
+      .get((state.existingShape as ObjWithRuleId).ruleId)
+      .displayText;
+    store.setAlertMessage(`${name} -- ${ruleText}`);
+    dispatch({ type: 'clear' });
   }
 
   return useObserver(() => (

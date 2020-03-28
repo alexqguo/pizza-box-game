@@ -220,7 +220,9 @@ export default class Canvas extends PureComponent<{}, State> {
         >
           <div>
             {/* DO NOT PUT ANTHING ELSE IN HERE */}
-            <canvas id="c" width="1000" height="700" style={{ border: '1px solid gray' }} />
+            <canvas id="c" width="1000" height="700" style={{ 
+              boxShadow: '0px 0px 5px 0px rgba(100,100,100,0.5)'
+            }} />
           </div>
         </Tooltip>
       </div>

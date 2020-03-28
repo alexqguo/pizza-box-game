@@ -30,6 +30,7 @@ export interface GameData {
   indicatorLocation: Point | null,
   hasFlipped: boolean,
   type: string,
+  alertMessage: string,
 }
 
 export enum GameType {

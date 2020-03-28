@@ -83,6 +83,9 @@ export default makeStyles((theme: Theme) => (
     createRuleButton: {
       verticalAlign: 'bottom',
       marginLeft: 10,
+    },
+    alertText: {
+      fontSize: '1.5rem'
     }
   })
 ));

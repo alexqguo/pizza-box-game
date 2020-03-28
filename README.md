@@ -14,39 +14,19 @@ Each player flips their quarter once per round. Keep going until the box is fill
 * React, Mobx, MaterialUI, Firebase, Fabric
 
 ### Drawing
+Core needs
+* Canvas integration
+* Supports polygons
+* Object serialization and deserialization (JSON preferred, SVG okay)
+* Collision detection
+
 Options:
 * [fabric.js](http://fabricjs.com/)
-  * This seems to be the most mature and has all the features I need
 * [konva.js](https://konvajs.org/)
 * [paper.js](http://paperjs.org/)
 * [svg.draw.js](https://github.com/svgdotjs/svg.draw.js) (svg.js extension)
-* plenty of others
-
-### State
-Game {
-  id: string
-  currentPlayerId: string
-  isPlayerBusy: true
-}
-Player {
-  id: string
-  name: string
-}
-Rule {
-  id: string
-  displayText: string
-  playerId: string
-  data: string (JSON)
-}
-
-Overall state (in Firebase) will look like this:
-{
-  game: Game
-  players: Player[]
-  rules: Rule[]
-}
-
-Ideally each rule object contains its own shape data. It will be much easier to manage and organize that way.
+* [two.js](https://two.js.org/)
+* Others
 
 ## Remaining sequence of work
 * Proper error states for landing on an existing rule or landing off the board
@@ -78,6 +58,7 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 * Background image for the canvas
 * Customize shape of the canvas
 * Max number of players in a game (10?)
+* Separate alerts into their own store if the functionality grows
 
 ## Questions
 * What is the end game condition? Should there even be one?

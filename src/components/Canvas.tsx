@@ -18,6 +18,13 @@ let canvas: fabric.Canvas;
 // Perhaps use a ref for this instead?
 export const getCanvas = () => canvas;
 
+export const isPointWithinCanvas = (point: Point) => {
+  return point.x > 0 && 
+    point.x < canvas.getWidth() &&
+    point.y > 0 &&
+    point.y < canvas.getHeight();
+}
+
 /**
  * For true intersection. FabricJS only supports bounding boxes without customization
  *  https://codepen.io/stephanrusu/pen/vmgeNb
@@ -30,6 +37,7 @@ export const getIntersectingObjects = (targetObj: fabric.Object) => {
   const intersectingObjects: fabric.Object[] = [];
   canvas.forEachObject((obj: fabric.Object) => {
     if (targetObj === obj || (obj as any).ignoreIntersection) return;
+
     if (targetObj.intersectsWithObject(obj)) intersectingObjects.push(obj);
   });
 
@@ -37,7 +45,8 @@ export const getIntersectingObjects = (targetObj: fabric.Object) => {
 }
 
 export const doesTargetIntersect = (targetObj: fabric.Object) => {
-  return getIntersectingObjects(targetObj).length > 0;
+  const intersectingObjects: fabric.Object[] = getIntersectingObjects(targetObj);
+  return intersectingObjects.length > 0;
 }
 
 export const getObjectAtPoint = (point: Point): fabric.Object | null => {

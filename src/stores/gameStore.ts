@@ -11,6 +11,7 @@ export default class GameStore {
     quarterLocation: null,
     indicatorLocation: null,
     type: '',
+    alertMessage: '',
   };
   @observable localPlayerId: string = '';
   quarter: fabric.Object | null = null;

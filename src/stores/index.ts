@@ -103,6 +103,7 @@ class RootStore {
       indicatorLocation: null,
       hasFlipped: false,
       type: gameType,
+      alertMessage: '',
     };
 
     const sessionData: SessionData = {
@@ -170,13 +171,24 @@ class RootStore {
     this.gameRef?.update({ indicatorLocation: null });
   }
 
-  getColorForPlayer(playerId: string) {
-    let color = '';
+  async setAlertMessage(alertMessage: string) {
+    await this.gameRef?.update({ alertMessage });
+  }
+
+  async clearAlertMessage() {
+    await this.gameRef?.update({ alertMessage: null });
+  }
+
+  // TODO: enforce propName
+  getPropertyOfPlayer(playerId: string, propName: string) {
+    let value = '';
     this.playerStore.players.forEach((p: Player) => {
-      if (p.id === playerId) color = p.color;
+      if (p.id === playerId) {
+        value = (p as any)[propName];
+      }
     });
     
-    return color;
+    return value;
   }
 
   /**

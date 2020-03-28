@@ -2,7 +2,14 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { useObserver } from 'mobx-react';
 import { TextField, Button, Box } from '@material-ui/core';
 import { fabric } from 'fabric';
-import Canvas, { getCanvas, doesTargetIntersect, flip, getObjectAtPoint, randomizePoint } from './Canvas';
+import Canvas, {
+  getCanvas,
+  doesTargetIntersect,
+  flip,
+  getObjectAtPoint,
+  randomizePoint,
+  isPointWithinCanvas,
+} from './Canvas';
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeObject } from '../utils';
@@ -45,6 +52,7 @@ export default () => {
   const newShapeHandler = (pointer: Point) => {
     const existingShape: fabric.Object | null = getObjectAtPoint(pointer);
     if (existingShape) {
+      console.log('existing shape');
       dispatch({
         type: 'merge',
         newState: { existingShape }
@@ -56,7 +64,7 @@ export default () => {
     // TODO: check if enough space on canvas
     const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
 
-    const playerColor = rootStore.getColorForPlayer(gameStore.game.currentPlayerId);
+    const playerColor = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'color');
     const shape = new fabric.Circle({
       left: initialPlacement[0],
       top: initialPlacement[1],
@@ -133,10 +141,18 @@ export default () => {
 
       setTimeout(() => {
         const quarterLocation: Point = randomizePoint(point);
-        newShapeHandler(quarterLocation);
+        
+        if (isPointWithinCanvas(quarterLocation)) {
+          newShapeHandler(quarterLocation);
+        } else {
+          const name = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+          store.setAlertMessage(`${name} missed the board and drinks four!`);
+        }
         rootStore.clearIndicatorLocation();
       }, 2500);
     });
+  } else if (state.existingShape) {
+    console.log(state.existingShape);
   }
 
   return useObserver(() => (

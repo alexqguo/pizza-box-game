@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { fabric } from 'fabric';
 import { CssBaseline } from '@material-ui/core';
+import Alert from './Alert';
 import AppBar from './AppBar';
 import Drawer from './Drawer';
 import Main from './Main';
 import useStyles from '../styles';
-import GameModal from './GameModal';
+import WelcomeModal from './WelcomeModal';
 import { getCanvas } from './Canvas';
 import RootStore from '../stores';
 
@@ -36,7 +37,8 @@ export default () => {
         <AppBar />
         <Drawer />
         <Main />
-        <GameModal />
+        <WelcomeModal />
+        <Alert />
       </div>
     </StoreProvider>
   );

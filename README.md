@@ -29,32 +29,27 @@ Options:
 * Others
 
 ## Remaining sequence of work
-* Proper error states for landing on an existing rule or landing off the board
-* Better (or possibly random?) placement of the initial rules
-* Theme MUI for consistent primary/secondary colors
-* Better collision detection
-* End game condition
-* Implement better area checking
-* Enforce max size of new shape
+* Better collision detection - convert to squares for now
+* Implement better area checking/enforce max size of new shape
 * Event log
 * Fix quarter showing up on top of the new shape
-* Disable game sharing of local games. Can't have multiple people join at the same time
-* Fix RootStore typing with TS
-  * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
+* Better (or possibly random?) placement of the initial rules
+* End game condition
 
 ## Known bugs
 * If you leave the screen after you've flipped but before you've submitted your rule, when you rejoin the quarter will be there but you cannot create a rule to continue
   * Maybe keep the currentShape in localStorage
 
 ## Future features/changes
-* Fix react complaining about doing a state update on an unmounted component when joining a remote game
+* Theme MUI for consistent primary/secondary colors
+* Fix RootStore typing with TS
+  * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
 * Break up some of the larger components
 * Add (and remove?) players on the fly
-* Any type of shapes not just circles/ovals
+* Free draw shapes instead of squares
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
 * Error boundary so the whole app doesn't crash
-* Allow circles or squares when creating a new shape
 * Background image for the canvas
 * Customize shape of the canvas
 * Max number of players in a game (10?)

@@ -60,10 +60,14 @@ export default () => {
       </Button>
       <Divider />
 
-      <Button href={`/?join=${gameStore.game.id}`} rel="noopener" target="_blank">
-        Share game
-      </Button>
-      <Divider />
+      {gameStore.game.type === GameType.remote ?  
+        <>
+          <Button href={`/?join=${gameStore.game.id}`} rel="noopener" target="_blank">
+            Share game
+          </Button>
+          <Divider />
+        </>
+      : null}
 
       <Box className={classes.drawerIconButtonBox}>
         <IconButton color="default" aria-label="Github" 

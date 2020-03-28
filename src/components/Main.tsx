@@ -82,6 +82,8 @@ export default () => {
       rootStore.setQuarterLocation(pointer);
       canvas.add(shape);
       dispatch({ type: 'merge', newState: { currentShape: shape }});
+    } else {
+      
     }
   };
 

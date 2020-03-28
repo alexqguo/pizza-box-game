@@ -50,7 +50,6 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 
 ## Remaining sequence of work
 * Proper error states for landing on an existing rule or landing off the board
-* Players get colors so that their rules are that color
 * Better (or possibly random?) placement of the initial rules
 * Theme MUI for consistent primary/secondary colors
 * Better collision detection

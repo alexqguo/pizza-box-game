@@ -10,9 +10,8 @@ const joinGameTab = 1;
 export default () => {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(true);
-  const urlParams = new URLSearchParams(document.location.search);
-  const gameId = urlParams.get('join');
-  const [currentTab, setCurrentTab] = useState(gameId ? joinGameTab : createGameTab);
+  const existingGameId = window.location.hash.substring(1);
+  const [currentTab, setCurrentTab] = useState(existingGameId ? joinGameTab : createGameTab);
 
   const onTabChange = (event: any, newValue: number) => {
     setCurrentTab(newValue);
@@ -31,7 +30,7 @@ export default () => {
         </Box>
 
         <Box hidden={joinGameTab !== currentTab}>
-          <JoinGameForm gameId={gameId} closeModal={() => setIsOpen(false)} />
+          <JoinGameForm gameId={existingGameId} closeModal={() => setIsOpen(false)} />
         </Box>
       </div>
     </Modal>

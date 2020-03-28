@@ -12,6 +12,7 @@ class RootStore {
   playerStore: PlayerStore;
   ruleStore: RuleStore;
   prefix: string = '';
+  gameId: string = '';
   gameRef: firebase.database.Reference | null = null;
   playerRef: firebase.database.Reference | null = null;
   ruleRef: firebase.database.Reference | null = null;
@@ -23,6 +24,18 @@ class RootStore {
   }
 
   /**
+   * One of two entry points into a game.
+   * @param gameId the game ID to hydrate from
+   */
+  async restoreGame(gameId: string, localPlayerId: string) {
+    this.prefix = `sessions/${gameId}`;
+    this.gameId = gameId;
+    this.gameStore.setLocalPlayerId(localPlayerId);
+    await this.subscribeToGame();
+  }
+
+  /**
+   * One of two entry points into a game
    * This basically hydrates the entire game in firebase.
    * Also in charge of setting prefix instance var.
    * Should only be called once.
@@ -32,6 +45,7 @@ class RootStore {
   async createGame(playerNames: string[], localPlayer: string, gameType: string) {
     const gameId: string = createId('game');
     this.prefix = `sessions/${gameId}`;
+    this.gameId = gameId;
 
     const shuffledColors = shuffle(playerColors);
     const playerData: Player[] = playerNames.map((name: string, i: number) => {
@@ -166,16 +180,6 @@ class RootStore {
   }
 
   /**
-   * Doesn't do much.
-   * @param gameId the game ID to hydrate from
-   */
-  async restoreGame(gameId: string, localPlayerId: string) {
-    this.prefix = `sessions/${gameId}`;
-    this.gameStore.setLocalPlayerId(localPlayerId);
-    await this.subscribeToGame();
-  }
-
-  /**
    * Hooks the user up to the Firebase instance, preexisting or not.
    * In charge of setting up the DB ref instance vars.
    */
@@ -214,6 +218,8 @@ class RootStore {
         });
       }
     });
+
+    window.location.hash = this.gameId;
   }
 }
 

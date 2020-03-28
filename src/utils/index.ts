@@ -20,7 +20,7 @@ export const playerColors = [
   'tan',
   'midnightblue',
   'yellow',
-  'lightgoldenrodyellow',
+  'palegoldenrod',
   'indigo',
   'fuchsia',
   'darkseagreen',

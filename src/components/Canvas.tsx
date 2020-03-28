@@ -206,7 +206,7 @@ export default class Canvas extends PureComponent<{}, State> {
       if (!targetObj) return;
 
       const isIntersecting: boolean = doesTargetIntersect(targetObj);
-      targetObj.set('fill', isIntersecting ? 'red' : 'blue');
+      targetObj.set('fill', isIntersecting ? 'red' : (targetObj as any).originalFill);
     }, 50)); // Consider debouncing
   }
 

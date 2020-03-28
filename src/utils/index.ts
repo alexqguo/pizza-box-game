@@ -2,9 +2,9 @@ export function createId(prefix?: string) {
   return `${prefix ? prefix + '__' : ''}${Math.random().toString(36).substring(2)}${Date.now().toString(36)}`;
 };
 
-export function serializeGroup(obj: fabric.Object) {
+export function serializeObject(obj: fabric.Object) {
   // This... can't be right. Why doesn't "selectable" show up normally?
-  return JSON.stringify(obj.toJSON(['selectable', 'ruleId']));
+  return JSON.stringify(obj.toJSON(['selectable', 'ruleId', 'originalFill']));
 }
 
 export function randomWithinRange(min: number, max: number) {
@@ -24,10 +24,11 @@ export const playerColors = [
   'indigo',
   'fuchsia',
   'darkseagreen',
-  'azure',
-  'whitesmoke',
   'forestgreen',
   'darkred',
   'crimson',
   'gold',
+  // Too light
+  // 'azure',
+  // 'whitesmoke',
 ];

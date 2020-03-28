@@ -59,6 +59,7 @@ Ideally each rule object contains its own shape data. It will be much easier to 
 * Enforce max size of new shape
 * Event log
 * Fix quarter showing up on top of the new shape
+* Disable game sharing of local games. Can't have multiple people join at the same time
 * Fix RootStore typing with TS
   * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
 

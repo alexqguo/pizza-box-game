@@ -3,7 +3,7 @@ import { shuffle } from 'lodash';
 import GameStore from './gameStore';
 import { SessionData, GameData, Rule, Player, Point, GameType } from '../types';
 import { db } from '../firebase';
-import { createId, serializeGroup, playerColors } from '../utils';
+import { createId, serializeObject, playerColors } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
 
@@ -53,33 +53,31 @@ class RootStore {
     // The initial shapes
     const ruleData: Rule[] = playerData.map((p: Player, i: number) => {
       const ruleId: string = createId('rule');
-      const circle = new fabric.Circle({
+      const shape = new fabric.Circle({
         radius: 36,
-        fill: '#ddd',
+        fill: p.color,
         originX: 'center',
         originY: 'center',
-      });
-      
-      const text = new fabric.Text(p.name, {
-        fontSize: 14,
-        fontFamily: 'Roboto',
-        originX: 'center',
-        originY: 'center',
-      });
-
-      const group = new fabric.Group([circle, text], {
+        selectable: false,
         left: 60 * (i + 1),
         top: 60 * (i + 1),
-        selectable: false,
-        // @ts-ignore Additional property
-        ruleId,
+        // @ts-ignore Additional properties
+        ruleId, 
+        originalFill: p.color
       });
+
+      /**
+       * Can create a text object and group here if we want
+       * 
+       * text = new fabric.Text('text', { ... })
+       * group = new fabric.Group([shape, text], { ... })
+       */
 
       return {
         id: ruleId,
         playerId: p.id,
         displayText: `${p.name} drinks!`,
-        data: serializeGroup(group),
+        data: serializeObject(shape),
       };
     });
 
@@ -156,6 +154,15 @@ class RootStore {
 
   clearIndicatorLocation() {
     this.gameRef?.update({ indicatorLocation: null });
+  }
+
+  getColorForPlayer(playerId: string) {
+    let color = '';
+    this.playerStore.players.forEach((p: Player) => {
+      if (p.id === playerId) color = p.color;
+    });
+    
+    return color;
   }
 
   /**

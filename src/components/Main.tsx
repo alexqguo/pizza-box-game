@@ -5,7 +5,7 @@ import { fabric } from 'fabric';
 import Canvas, { getCanvas, doesTargetIntersect, flip, getObjectAtPoint, randomizePoint } from './Canvas';
 import { StoreContext } from './App';
 import useStyles from '../styles';
-import { createId, serializeGroup } from '../utils';
+import { createId, serializeObject } from '../utils';
 import { Rule, Point, GameType } from '../types';
 import rootStore from '../stores';
 
@@ -55,15 +55,19 @@ export default () => {
 
     // TODO: check if enough space on canvas
     const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
+
+    const playerColor = rootStore.getColorForPlayer(gameStore.game.currentPlayerId);
     const shape = new fabric.Circle({
       left: initialPlacement[0],
       top: initialPlacement[1],
       radius: INITIAL_RADIUS,
-      fill: 'blue',
+      fill: playerColor,
       hasControls: true,
       lockMovementX: true,
       lockMovementY: true,
       centeredScaling: true,
+      // @ts-ignore
+      originalFill: playerColor,
     });
 
     if (!doesTargetIntersect(shape)) {
@@ -103,7 +107,7 @@ export default () => {
         id: ruleId,
         playerId: gameStore.game.currentPlayerId,
         displayText: state.inputText,
-        data: serializeGroup(shape)
+        data: serializeObject(shape)
       };
       
       await rootStore.createRule(newRule);
@@ -121,8 +125,7 @@ export default () => {
   const canSubmit = !!state.currentShape && !state.isIntersecting && !!state.inputText;
 
   if (
-    gameStore.game.isPlayerBusy && 
-    !gameStore.game.hasFlipped &&
+    gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped &&
     (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId)
   ) {
     flip().then((point: Point) => {

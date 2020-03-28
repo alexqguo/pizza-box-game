@@ -1,8 +1,9 @@
 import { fabric } from 'fabric';
+import { shuffle } from 'lodash';
 import GameStore from './gameStore';
 import { SessionData, GameData, Rule, Player, Point, GameType } from '../types';
 import { db } from '../firebase';
-import { createId, serializeGroup } from '../utils';
+import { createId, serializeGroup, playerColors } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
 
@@ -32,7 +33,8 @@ class RootStore {
     const gameId: string = createId('game');
     this.prefix = `sessions/${gameId}`;
 
-    const playerData: Player[] = playerNames.map((name: string) => {
+    const shuffledColors = shuffle(playerColors);
+    const playerData: Player[] = playerNames.map((name: string, i: number) => {
       const id: string = createId('player');
       let isActive: boolean = false;
       if (name === localPlayer && gameType === GameType.remote) {
@@ -43,6 +45,7 @@ class RootStore {
       return {
         id,
         name,
+        color: shuffledColors[i],
         ...(gameType === GameType.remote ? { isActive } : undefined),
       };
     });

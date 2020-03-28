@@ -66,6 +66,14 @@ export default makeStyles((theme: Theme) => (
         marginLeft: 5
       }
     },
+    playerColor: {
+      display: 'inline-block',
+      width: 16,
+      height: 16,
+      border: '1px solid gray',
+      marginRight: 4,
+      borderRadius: 50
+    },
     createRuleContainer: {
       marginBottom: 20,
     },

@@ -22,6 +22,7 @@ export default ({ player }: Props) => {
 
   return useObserver(() => (
     <ListItem className={className}>
+      <span className={classes.playerColor} style={{ background: player.color }}></span>
       {player.name}
     </ListItem>
   ));

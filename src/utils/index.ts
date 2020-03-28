@@ -10,3 +10,24 @@ export function serializeGroup(obj: fabric.Object) {
 export function randomWithinRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+export const playerColors = [
+  'tomato',
+  'violet',
+  'turquoise',
+  'steelblue',
+  'springgreen',
+  'tan',
+  'midnightblue',
+  'yellow',
+  'lightgoldenrodyellow',
+  'indigo',
+  'fuchsia',
+  'darkseagreen',
+  'azure',
+  'whitesmoke',
+  'forestgreen',
+  'darkred',
+  'crimson',
+  'gold',
+];

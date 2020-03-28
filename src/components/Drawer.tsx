@@ -8,21 +8,16 @@ import { Player } from '../types';
 import { StoreContext } from './App';
 import PlayerName from './PlayerName';
 
-/**
- * will observe state and bold the name of the player whose turn it is
- */
 export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
   const { gameStore, playerStore } = store;
 
-  const skipTurn = () => {
-    store.advanceTurn();
-  };
+  const skipTurn = () => store.advanceTurn();
+  const flip = () => store.setPlayerAsBusy();
 
-  const flip = () => {
-    store.setPlayerAsBusy();
-  };
+  const canFlip = !gameStore.game.isPlayerBusy && 
+    gameStore.game.currentPlayerId === gameStore.localPlayerId;
 
   return useObserver(() => (
     <Drawer 
@@ -37,7 +32,7 @@ export default () => {
 
       <Button
         color="primary"
-        disabled={gameStore.game.isPlayerBusy}
+        disabled={!canFlip}
         onClick={flip}
       >
         Flip
@@ -47,7 +42,7 @@ export default () => {
       <Button 
         color="secondary"
         onClick={skipTurn}
-        disabled={gameStore.game.isPlayerBusy}
+        disabled={!canFlip}
       >
         Skip turn
       </Button>

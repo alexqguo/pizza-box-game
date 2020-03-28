@@ -120,8 +120,11 @@ export default () => {
 
   const canSubmit = !!state.currentShape && !state.isIntersecting && !!state.inputText;
 
-  if (gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped) {
-    console.log(gameStore.game.isPlayerBusy, gameStore.game.hasFlipped);
+  if (
+    gameStore.game.isPlayerBusy && 
+    !gameStore.game.hasFlipped &&
+    gameStore.localPlayerId === gameStore.game.currentPlayerId
+  ) {
     flip().then((point: Point) => {
       rootStore.setIndicatorLocation(point);
 

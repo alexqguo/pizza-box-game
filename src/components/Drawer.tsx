@@ -4,7 +4,7 @@ import { List, Divider, Drawer, Box, Button, IconButton } from '@material-ui/cor
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HelpIcon from '@material-ui/icons/Help';
 import useStyles from '../styles';
-import { Player } from '../types';
+import { Player, GameType } from '../types';
 import { StoreContext } from './App';
 import PlayerName from './PlayerName';
 
@@ -17,7 +17,7 @@ export default () => {
   const flip = () => store.setPlayerAsBusy();
 
   const canFlip = !gameStore.game.isPlayerBusy && 
-    gameStore.game.currentPlayerId === gameStore.localPlayerId;
+    (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId);
 
   return useObserver(() => (
     <Drawer 

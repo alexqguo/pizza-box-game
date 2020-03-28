@@ -6,7 +6,7 @@ import Canvas, { getCanvas, doesTargetIntersect, flip, getObjectAtPoint, randomi
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeGroup } from '../utils';
-import { Rule, Point } from '../types';
+import { Rule, Point, GameType } from '../types';
 import rootStore from '../stores';
 
 interface State {
@@ -123,7 +123,7 @@ export default () => {
   if (
     gameStore.game.isPlayerBusy && 
     !gameStore.game.hasFlipped &&
-    gameStore.localPlayerId === gameStore.game.currentPlayerId
+    (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId)
   ) {
     flip().then((point: Point) => {
       rootStore.setIndicatorLocation(point);

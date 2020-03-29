@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { fabric } from 'fabric';
 import { Tooltip } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { throttle } from 'lodash';
+import useStyles from '../styles';
 import { ObjWithRuleId, Rule, Point } from '../types';
 import { randomWithinRange, getArea } from '../utils';
 import RootStore from '../stores';
@@ -225,9 +227,13 @@ export default class Canvas extends PureComponent<{}, State> {
     return (
       <div>
         <Tooltip 
-          title={this.state.tooltipStr || ''} 
+          title={this.state.tooltipStr ? 
+            <span style={{ fontSize: '1.7rem', lineHeight: '1.7rem' }}>
+              {this.state.tooltipStr}
+            </span>
+            : ''} 
           open={!!this.state.tooltipStr}
-          placement="top"
+          placement="top-start"
         >
           <div>
             {/* DO NOT PUT ANTHING ELSE IN HERE */}

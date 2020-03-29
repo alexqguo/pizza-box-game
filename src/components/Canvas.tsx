@@ -3,7 +3,6 @@ import { fabric } from 'fabric';
 import { Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { throttle } from 'lodash';
-import useStyles from '../styles';
 import { ObjWithRuleId, Rule, Point } from '../types';
 import { randomWithinRange, getArea } from '../utils';
 import RootStore from '../stores';
@@ -186,6 +185,13 @@ const determineFlipCoords = (): Promise<Point> => {
   });
 }
 
+const CustomTooltip = withStyles((theme) => ({
+  tooltip: {
+    maxWidth: 800,
+    fontSize: theme.typography.pxToRem(22),
+  },
+}))(Tooltip);
+
 export default class Canvas extends PureComponent<{}, State> {
   constructor(props: {}) {
     super(props);
@@ -226,9 +232,9 @@ export default class Canvas extends PureComponent<{}, State> {
   render() {
     return (
       <div>
-        <Tooltip 
+        <CustomTooltip 
           title={this.state.tooltipStr ? 
-            <span style={{ fontSize: '1.7rem', lineHeight: '1.7rem' }}>
+            <span>
               {this.state.tooltipStr}
             </span>
             : ''} 
@@ -241,7 +247,7 @@ export default class Canvas extends PureComponent<{}, State> {
               boxShadow: '0px 0px 5px 0px rgba(100,100,100,0.5)'
             }} />
           </div>
-        </Tooltip>
+        </CustomTooltip>
       </div>
     );
   }

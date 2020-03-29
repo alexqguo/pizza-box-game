@@ -45,6 +45,8 @@ Options:
 * Break up some of the larger components
 * Add (and remove?) players on the fly
 * Free draw shapes instead of squares
+  * During drawing, constantly check isTargetTransparent on the drawing point and as soon as it isn't flag it
+  * On draw end, shape needs to surround the quarter
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
 * Error boundary so the whole app doesn't crash

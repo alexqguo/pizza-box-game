@@ -64,10 +64,11 @@ export default () => {
     const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
 
     const playerColor = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'color');
-    const shape = new fabric.Circle({
+    const shape = new fabric.Rect({
       left: initialPlacement[0],
       top: initialPlacement[1],
-      radius: INITIAL_RADIUS,
+      width: INITIAL_RADIUS * 2,
+      height: INITIAL_RADIUS * 2,
       fill: playerColor,
       hasControls: true,
       lockMovementX: true,

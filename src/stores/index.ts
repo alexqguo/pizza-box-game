@@ -67,8 +67,9 @@ class RootStore {
     // The initial shapes
     const ruleData: Rule[] = playerData.map((p: Player, i: number) => {
       const ruleId: string = createId('rule');
-      const shape = new fabric.Circle({
-        radius: 36,
+      const shape = new fabric.Rect({
+        width: 60,
+        height: 60,
         fill: p.color,
         originX: 'center',
         originY: 'center',

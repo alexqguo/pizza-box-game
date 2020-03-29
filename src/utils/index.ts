@@ -11,6 +11,15 @@ export function randomWithinRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+export function getArea(obj: fabric.Object) {
+  switch (obj.type) {
+    case 'rect': 
+      return obj.getScaledWidth() * obj.getScaledHeight();
+    default:
+      return 0; // Not implemented yet. Should only be called on a rect
+  }
+}
+
 export const playerColors = [
   'tomato',
   'violet',

@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 import { Tooltip } from '@material-ui/core';
 import { throttle } from 'lodash';
 import { ObjWithRuleId, Rule, Point } from '../types';
-import { randomWithinRange } from '../utils';
+import { randomWithinRange, getArea } from '../utils';
 import RootStore from '../stores';
 
 interface State {
@@ -12,6 +12,7 @@ interface State {
 
 const QUARTER_RADIUS = 6;
 const INDICATOR_RADIUS = 100;
+export const MAX_AREA = 20000;
 
 let canvas: fabric.Canvas;
 
@@ -215,8 +216,9 @@ export default class Canvas extends PureComponent<{}, State> {
       if (!targetObj) return;
 
       const isIntersecting: boolean = doesTargetIntersect(targetObj);
-      targetObj.set('fill', isIntersecting ? 'red' : (targetObj as any).originalFill);
-    }, 50)); // Consider debouncing
+      const isTooLarge: boolean = getArea(targetObj) > MAX_AREA;
+      targetObj.set('fill', isIntersecting || isTooLarge ? 'red' : (targetObj as any).originalFill);
+    }, 50));
   }
 
   render() {

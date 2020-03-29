@@ -29,8 +29,6 @@ Options:
 * Others
 
 ## Remaining sequence of work
-* Better collision detection - convert to squares for now
-* Implement better area checking/enforce max size of new shape
 * Event log
 * Fix quarter showing up on top of the new shape
 * Better (or possibly random?) placement of the initial rules

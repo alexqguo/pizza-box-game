@@ -9,17 +9,18 @@ import Canvas, {
   getObjectAtPoint,
   randomizePoint,
   isPointWithinCanvas,
+  MAX_AREA,
 } from './Canvas';
 import { StoreContext } from './App';
 import useStyles from '../styles';
-import { createId, serializeObject } from '../utils';
+import { createId, serializeObject, getArea } from '../utils';
 import { Rule, Point, GameType, ObjWithRuleId } from '../types';
 import rootStore from '../stores';
 
 interface State {
   inputText?: string,
   currentShape?: fabric.Object,
-  isIntersecting?: boolean,
+  isInvalid?: boolean,
   existingShape?: fabric.Object,
 }
 
@@ -92,9 +93,11 @@ export default () => {
     // @ts-ignore stupid interface is wrong
     const targetObj: fabric.Object = e.transform.target;
     if (!targetObj) return;
-    // TODO: also enforce max area
     const isIntersecting: boolean = doesTargetIntersect(targetObj);
-    dispatch({ type: 'merge', newState: { isIntersecting }});
+    const isTooLarge: boolean = getArea(targetObj) > MAX_AREA;
+    dispatch({ type: 'merge', newState: {
+      isInvalid: isIntersecting || isTooLarge
+    }});
   };
 
   useEffect(() => {
@@ -133,7 +136,7 @@ export default () => {
     });
   };
 
-  const canSubmit = !!state.currentShape && !state.isIntersecting && !!state.inputText;
+  const canSubmit = !!state.currentShape && !state.isInvalid && !!state.inputText;
 
   if (
     gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped &&

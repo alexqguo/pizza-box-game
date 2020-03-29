@@ -64,7 +64,7 @@ export default () => {
     // TODO: check if enough space on canvas
     const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
 
-    const playerColor = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'color');
+    const playerColor = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'color');
     const shape = new fabric.Rect({
       left: initialPlacement[0],
       top: initialPlacement[1],
@@ -124,9 +124,9 @@ export default () => {
         data: serializeObject(shape)
       };
       
-      const name = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-      await rootStore.createMessage(`${name} created a new rule: ${state.inputText}`);
-      await rootStore.createRule(newRule);
+      const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+      await store.createMessage(`${name} created a new rule: ${state.inputText}`);
+      await store.createRule(newRule);
       dispatch({ type: 'clear' }); // Clear state
     }
   };
@@ -153,19 +153,23 @@ export default () => {
         if (isPointWithinCanvas(quarterLocation)) {
           newShapeHandler(quarterLocation);
         } else {
-          const name = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-          store.setAlertMessage(`${name} missed the board and drinks four!`);
+          const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+          const message = `${name} missed the board and drinks four!`;
+          store.createMessage(message)
+          store.setAlertMessage(message);
         }
 
         rootStore.clearIndicatorLocation();
       }, 2500);
     });
   } else if (state.existingShape) {
-    const name = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     const ruleText = ruleStore.rules
       .get((state.existingShape as ObjWithRuleId).ruleId)
       .displayText;
-    store.setAlertMessage(`${name} -- ${ruleText}`);
+    const message = `${name} -- ${ruleText}`;
+    store.createMessage(message);
+    store.setAlertMessage(message);
     dispatch({ type: 'clear' });
   }
 

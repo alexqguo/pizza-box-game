@@ -13,7 +13,12 @@ export default () => {
   const store = useContext(StoreContext);
   const { gameStore, playerStore, messageStore } = store;
 
-  const skipTurn = () => store.advanceTurn();
+  const skipTurn = () => {
+    // store.createMessage
+    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    store.createMessage(`${name} skipped their turn.`);
+    store.advanceTurn();
+  };
   const flip = () => store.setPlayerAsBusy();
 
   const canFlip = !gameStore.game.isPlayerBusy && 

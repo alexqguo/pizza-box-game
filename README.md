@@ -30,8 +30,7 @@ Options:
 
 ## Remaining sequence of work
 * Fix quarter showing up on top of the new shape
-* Add help info/rules
-* End game condition
+* Ensure check once new shape is being created
 
 ## Known bugs
 * If you leave the screen after you've flipped but before you've submitted your rule, when you rejoin the quarter will be there but you cannot create a rule to continue

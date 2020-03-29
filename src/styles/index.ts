@@ -95,4 +95,4 @@ export default makeStyles((theme: Theme) => (
       flexDirection: 'column-reverse'
     }
   })
-));
+), { index: 1 });

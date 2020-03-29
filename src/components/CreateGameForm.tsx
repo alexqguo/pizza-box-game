@@ -73,7 +73,7 @@ export default ({ closeModal }: Props) => {
     <Box>
       <Typography paragraph>
         Welcome to online pizza box game!
-        Inspired by <a rel="noopener" target="_blank" href="https://www.reddit.com/r/AskReddit/comments/7m6g6h/drinkers_of_reddit_what_are_some_insanely_good/drs4wil/">this Reddit comment</a>.
+        Inspired by <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/AskReddit/comments/7m6g6h/drinkers_of_reddit_what_are_some_insanely_good/drs4wil/">this Reddit comment</a>.
         Once you start the game, click the help icon in the bottom left corner to see the rules.
       </Typography>
 

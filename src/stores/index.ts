@@ -1,26 +1,30 @@
 import { fabric } from 'fabric';
 import { shuffle } from 'lodash';
 import GameStore from './gameStore';
-import { SessionData, GameData, Rule, Player, Point, GameType } from '../types';
+import { SessionData, GameData, Rule, Player, Point, GameType, Message } from '../types';
 import { db } from '../firebase';
 import { createId, serializeObject, playerColors } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
+import MessageStore from './messageStore';
 
 class RootStore {
   gameStore: GameStore;
   playerStore: PlayerStore;
   ruleStore: RuleStore;
+  messageStore: MessageStore;
   prefix: string = '';
   gameId: string = '';
   gameRef: firebase.database.Reference | null = null;
   playerRef: firebase.database.Reference | null = null;
   ruleRef: firebase.database.Reference | null = null;
+  messageRef: firebase.database.Reference | null = null;
   
   constructor() {
     this.gameStore = new GameStore();
     this.playerStore = new PlayerStore();
     this.ruleStore = new RuleStore();
+    this.messageStore = new MessageStore();
   }
 
   /**
@@ -107,10 +111,15 @@ class RootStore {
       alertMessage: '',
     };
 
+    const initialMessage: Message = {
+      displayString: `${playerNames.join(', ')} started the game.`
+    };
+
     const sessionData: SessionData = {
       game: gameData,
       players: playerData,
       rules: ruleData,
+      messages: [initialMessage],
     }
 
     this.subscribeToGame();
@@ -126,6 +135,14 @@ class RootStore {
     }
 
     this.advanceTurn();
+  }
+
+  async createMessage(message: string) {
+    if (this.messageRef) {
+      await this.messageRef.push().set({
+        displayString: message
+      });
+    }
   }
 
   /**
@@ -218,6 +235,11 @@ class RootStore {
       this.ruleStore.addRule(value);
     });
     // TODO: consider a 'child_removed' listener here as well if it ever becomes necessary
+
+    this.messageRef = db.ref(`${this.prefix}/messages`);
+    this.messageRef.on('child_added', (snap: firebase.database.DataSnapshot) => {
+      this.messageStore.addMessage(snap.val());
+    });
 
     window.addEventListener('unload', async () => {
       if (this.gameStore.localPlayerId) {

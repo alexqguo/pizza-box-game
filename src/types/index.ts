@@ -6,6 +6,7 @@ export interface SessionData {
   game: GameData,
   players: Player[],
   rules: Rule[],
+  messages: Message[],
 }
 
 export interface Player {
@@ -20,6 +21,10 @@ export interface Rule {
   playerId: string, // ID of the player who created the rule
   displayText: string,
   data: string, // SVG representation (for now...)
+}
+
+export interface Message {
+  displayString: string,
 }
 
 export interface GameData {

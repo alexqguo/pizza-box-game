@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 import { useObserver } from 'mobx-react';
-import { List, Divider, Drawer, Box, Button, IconButton } from '@material-ui/core';
+import { List, Divider, Drawer, Box, Button, IconButton, ListItem } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HelpIcon from '@material-ui/icons/Help';
 import useStyles from '../styles';
-import { Player, GameType } from '../types';
+import { Player, GameType, Message } from '../types';
 import { StoreContext } from './App';
 import PlayerName from './PlayerName';
 
 export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
-  const { gameStore, playerStore } = store;
+  const { gameStore, playerStore, messageStore } = store;
 
   const skipTurn = () => store.advanceTurn();
   const flip = () => store.setPlayerAsBusy();
@@ -51,6 +51,15 @@ export default () => {
       <List>
         {playerStore.players.map((p: Player) => (
           <PlayerName player={p} key={p.id} />
+        ))}
+      </List>
+      <Divider />
+
+      <List className={classes.messageList}>
+        {messageStore.messages.reverse().map((m: Message, i: number) => (
+          <ListItem key={i}>
+            {m.displayString}
+          </ListItem>
         ))}
       </List>
       <Divider />

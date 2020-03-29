@@ -124,6 +124,8 @@ export default () => {
         data: serializeObject(shape)
       };
       
+      const name = rootStore.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+      await rootStore.createMessage(`${name} created a new rule: ${state.inputText}`);
       await rootStore.createRule(newRule);
       dispatch({ type: 'clear' }); // Clear state
     }

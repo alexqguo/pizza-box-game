@@ -86,6 +86,13 @@ export default makeStyles((theme: Theme) => (
     },
     alertText: {
       fontSize: '1.5rem'
+    },
+    messageList: {
+      height: 200,
+      maxHeight: 200,
+      overflowY: 'scroll',
+      display: 'flex',
+      flexDirection: 'column-reverse'
     }
   })
 ));

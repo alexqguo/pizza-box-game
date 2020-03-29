@@ -29,9 +29,11 @@ Options:
 * Others
 
 ## Remaining sequence of work
+* Better hover state for rules
 * Event log
 * Fix quarter showing up on top of the new shape
 * Better (or possibly random?) placement of the initial rules
+* Add help info/rules
 * End game condition
 
 ## Known bugs

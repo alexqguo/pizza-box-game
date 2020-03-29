@@ -1,3 +1,5 @@
+import { Point } from '../types';
+
 export function createId(prefix?: string) {
   return `${prefix ? prefix + '__' : ''}${Math.random().toString(36).substring(2)}${Date.now().toString(36)}`;
 };
@@ -41,3 +43,19 @@ export const playerColors = [
   // 'azure',
   // 'whitesmoke',
 ];
+
+const SEPARATOR = 100;
+export function getInitialPositions(n: number, canvasHeight: number, canvasWidth: number) {
+  const results: Point[] = [];
+  const top = canvasHeight / 2;
+  let left = canvasWidth / 2;
+
+  results.push({ x: left, y: top });
+  for (let i = 1; i < n; i++) {
+    const difference = i * SEPARATOR * (i % 2 === 0 ? -1 : 1);
+    left = left + difference;
+    results.push({ x: left, y: top });
+  }
+
+  return results;
+}

@@ -3,10 +3,11 @@ import { shuffle } from 'lodash';
 import GameStore from './gameStore';
 import { SessionData, GameData, Rule, Player, Point, GameType, Message } from '../types';
 import { db } from '../firebase';
-import { createId, serializeObject, playerColors } from '../utils';
+import { createId, serializeObject, playerColors, getInitialPositions } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
 import MessageStore from './messageStore';
+import { getCanvas } from '../components/Canvas';
 
 class RootStore {
   gameStore: GameStore;
@@ -47,6 +48,7 @@ class RootStore {
    * @param localPlayer
    */
   async createGame(playerNames: string[], localPlayer: string, gameType: string) {
+    const canvas: fabric.Canvas = getCanvas();
     const gameId: string = createId('game');
     this.prefix = `sessions/${gameId}`;
     this.gameId = gameId;
@@ -69,6 +71,8 @@ class RootStore {
     });
 
     // The initial shapes
+    const initialPositions: Point[] = getInitialPositions(
+      playerNames.length, canvas.getHeight(), canvas.getWidth());
     const ruleData: Rule[] = playerData.map((p: Player, i: number) => {
       const ruleId: string = createId('rule');
       const shape = new fabric.Rect({
@@ -78,8 +82,8 @@ class RootStore {
         originX: 'center',
         originY: 'center',
         selectable: false,
-        left: 60 * (i + 1),
-        top: 60 * (i + 1),
+        left: initialPositions[i].x,
+        top: initialPositions[i].y,
         // @ts-ignore Additional properties
         ruleId, 
         originalFill: p.color

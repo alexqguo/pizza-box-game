@@ -95,6 +95,7 @@ export default ({ closeModal }: Props) => {
                 variant="contained"
                 color="secondary"
                 size="small"
+                disabled={players.length >= 8}
                 onClick={() => setPlayers([...players, ''])}
               >
                 + Player

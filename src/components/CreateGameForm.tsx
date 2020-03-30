@@ -9,7 +9,9 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
+  Tooltip,
 } from '@material-ui/core';
+import HelpIcon from '@material-ui/icons/Help';
 import useStyles from '../styles';
 import { GameType } from '../types';
 import RootStore from '../stores';
@@ -108,8 +110,24 @@ export default ({ closeModal }: Props) => {
             <Grid item xs={6}>
               <FormLabel component="legend">Are you playing locally or remotely?</FormLabel>
               <RadioGroup value={gameType} onChange={({ target }) => handleRadioChange(target)}>
-                <FormControlLabel value={GameType.local} control={<Radio />} label="Local" />
-                <FormControlLabel value={GameType.remote} control={<Radio />} label="Remote" />
+                <FormControlLabel value={GameType.local} control={<Radio />} label={
+                  <>
+                    Local
+                    <Tooltip placement="top" className={classes.gameFormIcon}
+                      title="Playing with friends in the same room. The game is controlled on this device.">
+                      <HelpIcon color="action" />
+                    </Tooltip>
+                  </>
+                } />
+                <FormControlLabel value={GameType.remote} control={<Radio />} label={
+                  <>
+                    Remote
+                    <Tooltip placement="top" className={classes.gameFormIcon}
+                      title="Playing with friends, each on their own computer. The game is shared across devices, and each player takes their turn from their device.">
+                      <HelpIcon color="action" />
+                    </Tooltip>
+                  </>
+                } />
               </RadioGroup>
 
               {gameType === GameType.remote ? 

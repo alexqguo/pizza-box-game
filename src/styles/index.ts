@@ -46,6 +46,10 @@ export default makeStyles((theme: Theme) => (
     gameFormTextField: {
       marginBottom: 5
     },
+    gameFormIcon: {
+      fontSize: '0.85rem',
+      marginLeft: 3
+    },
     gameModalTabs: {
       marginBottom: 16,
     },

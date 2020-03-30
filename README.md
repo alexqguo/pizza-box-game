@@ -32,7 +32,6 @@ Options:
 None??
 
 ## Future features/changes
-* Online/offline indicator for players in Drawer
 * Add button to skip the turn in case something goes wrong and the game breaks
   * Give it a warning message and create Message for it
 * Theme MUI for consistent primary/secondary colors
@@ -48,6 +47,7 @@ None??
 * Error boundary so the whole app doesn't crash
 * Background image for the canvas
 * Customize shape of the canvas
+* Max number of players in a game (10?)
 * Separate alerts into their own store if the functionality grows
 
 ## Questions

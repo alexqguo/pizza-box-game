@@ -4,6 +4,7 @@ import { TextField, Button, Box } from '@material-ui/core';
 import { fabric } from 'fabric';
 import Canvas, {
   getCanvas,
+  getIntersectingObjects,
   doesTargetIntersect,
   flip,
   getObjectAtPoint,
@@ -79,13 +80,13 @@ export default () => {
       originalFill: playerColor,
     });
 
-    // TODO: check if enough space on canvas
-    if (!doesTargetIntersect(shape)) {
+    const intersectingShapes = getIntersectingObjects(shape);
+    if (intersectingShapes.length) {
+      handleExistingShape(intersectingShapes[0]);
+    } else {
       await rootStore.setQuarterLocation(pointer);
       canvas.add(shape);
       dispatch({ type: 'merge', newState: { currentShape: shape }});
-    } else {
-      
     }
   };
 
@@ -98,11 +99,25 @@ export default () => {
     dispatch({ type: 'merge', newState: {
       isInvalid: isIntersecting || isTooLarge
     }});
+    // todo - save to local storage
+  };
+
+  const handleExistingShape = (shape: fabric.Object) => {
+    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    const ruleText = ruleStore.rules
+      .get((state.existingShape as ObjWithRuleId).ruleId)
+      .displayText;
+    const message = `${name} -- ${ruleText}`;
+    store.createMessage(message);
+    store.setAlertMessage(message);
+    dispatch({ type: 'clear' });
   };
 
   useEffect(() => {
     const canvas = getCanvas();
     canvas.on('object:scaled', scaledHandler);
+
+    // todo - check local storage, if there's a quarter and no local shape, use LS
   }, []);
 
   const createRule = async () => {
@@ -163,14 +178,7 @@ export default () => {
       }, 2500);
     });
   } else if (state.existingShape) {
-    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-    const ruleText = ruleStore.rules
-      .get((state.existingShape as ObjWithRuleId).ruleId)
-      .displayText;
-    const message = `${name} -- ${ruleText}`;
-    store.createMessage(message);
-    store.setAlertMessage(message);
-    dispatch({ type: 'clear' });
+    handleExistingShape(state.existingShape);
   }
 
   return useObserver(() => (

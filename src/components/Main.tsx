@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import { useObserver } from 'mobx-react';
-import { TextField, Button, Box } from '@material-ui/core';
+import { TextField, Button, Box, Typography } from '@material-ui/core';
 import { fabric } from 'fabric';
 import Canvas, {
   getCanvas,
@@ -221,6 +221,10 @@ export default () => {
       </Box>
       
       <Canvas />
+
+      <Typography variant="caption" display="block" gutterBottom>
+        {gameStore.game.id}
+      </Typography>
 
       {window.location.hostname === 'localhost' ? 
         <>

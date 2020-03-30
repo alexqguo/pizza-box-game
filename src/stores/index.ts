@@ -176,8 +176,8 @@ class RootStore {
     });
   }
 
-  setQuarterLocation(loc: Point) {
-    this.gameRef?.update({
+  async setQuarterLocation(loc: Point) {
+    await this.gameRef?.update({
       quarterLocation: loc,
     });
   }

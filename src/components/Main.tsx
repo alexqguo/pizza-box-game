@@ -50,7 +50,7 @@ export default () => {
   const { gameStore, ruleStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
 
-  const newShapeHandler = (pointer: Point) => {
+  const newShapeHandler = async (pointer: Point) => {
     const existingShape: fabric.Object | null = getObjectAtPoint(pointer);
     if (existingShape) {
       dispatch({
@@ -81,7 +81,7 @@ export default () => {
 
     // TODO: check if enough space on canvas
     if (!doesTargetIntersect(shape)) {
-      rootStore.setQuarterLocation(pointer);
+      await rootStore.setQuarterLocation(pointer);
       canvas.add(shape);
       dispatch({ type: 'merge', newState: { currentShape: shape }});
     } else {

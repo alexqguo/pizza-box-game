@@ -23,7 +23,9 @@ export default () => {
   const classes = useStyles();
 
   useEffect(() => {
-    if (window.location.hostname === 'localhost') {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (window.location.hostname === 'localhost' || urlParams.has('debug')) {
       (window as any).rootStore = RootStore;
       (window as any).c = getCanvas();
       (window as any).fabric = fabric;

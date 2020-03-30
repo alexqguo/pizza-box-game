@@ -51,6 +51,7 @@ export default () => {
   const store = useContext(StoreContext);
   const { gameStore, ruleStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
+  const isCurrentPlayer = gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId;
 
   const newShapeHandler = async (pointer: Point) => {
     const existingShape: fabric.Object | null = getObjectAtPoint(pointer);
@@ -116,8 +117,7 @@ export default () => {
   const modifiedHandler = (e: fabric.IEvent) => {
     // @ts-ignore stupid interface is wrong
     const targetObj: fabric.Object = e.transform.target;
-    if (targetObj && 
-      (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId)) {
+    if (targetObj && isCurrentPlayer) {
       window.localStorage.setItem('localShape', serializeObject(targetObj));
     }
   };
@@ -164,10 +164,7 @@ export default () => {
   const localShape = window.localStorage.getItem('localShape');
   const canSubmit = !!state.currentShape && !state.isInvalid && !!state.inputText;
 
-  if (
-    gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped &&
-    (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId)
-  ) {
+  if (gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped && isCurrentPlayer) {
     flip().then((point: Point) => {
       rootStore.setIndicatorLocation(point);
 
@@ -188,7 +185,7 @@ export default () => {
     });
   } else if (state.existingShape) {
     handleExistingShape(state.existingShape);
-  } else if (localShape && gameStore.game.quarterLocation && !state.currentShape) {
+  } else if (localShape && gameStore.game.quarterLocation && !state.currentShape && isCurrentPlayer) {
     const existingShape = JSON.parse(localShape);
     enlivenObjects([existingShape], (objects: fabric.Object[]) => {
       dispatch({

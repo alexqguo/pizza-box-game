@@ -64,9 +64,7 @@ export default () => {
       return;
     };
 
-    // TODO: check if enough space on canvas
     const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
-
     const playerColor = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'color');
     const shape = new fabric.Rect({
       left: initialPlacement[0],
@@ -164,7 +162,6 @@ export default () => {
   const localShape = window.localStorage.getItem('localShape');
   const canSubmit = !!state.currentShape && !state.isInvalid && !!state.inputText;
 
-  console.log(gameStore.game.isPlayerBusy, !gameStore.game.hasFlipped, isCurrentPlayer);
   if (gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped && isCurrentPlayer) {
     flip().then((point: Point) => {
       rootStore.setIndicatorLocation(point);

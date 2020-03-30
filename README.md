@@ -33,9 +33,10 @@ None??
 
 ## Future features/changes
 * Online/offline indicator for players in Drawer
-* Add button to skip the turn in case something goes wrong and the game breaks
-  * Give it a warning message and create Message for it
+* Dev/Prod modes instead of 'localhost' checks everywhere
 * Theme MUI for consistent primary/secondary colors
+* Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
+  * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
 * Fix RootStore typing with TS
   * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
 * Break up some of the larger components

@@ -246,6 +246,13 @@ class RootStore {
       this.messageStore.addMessage(snap.val());
     });
 
+    if (window.location.hostname !== 'localhost') {
+      // Don't do this for localhost
+      window.addEventListener('beforeunload', (e: Event) => {
+        e.preventDefault();
+        e.returnValue = true;
+      });
+    }
     window.addEventListener('unload', async () => {
       if (this.gameStore.localPlayerId) {
         // TODO: firebase has to have a better way to do this

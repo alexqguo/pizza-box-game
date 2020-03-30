@@ -12,6 +12,7 @@ import { List,
 } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HelpIcon from '@material-ui/icons/Help';
+import ErrorIcon from '@material-ui/icons/Error';
 import useStyles from '../styles';
 import { Player, GameType, Message } from '../types';
 import { StoreContext } from './App';
@@ -20,16 +21,23 @@ import PlayerName from './PlayerName';
 export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isPanicModalOpen, setIsPanicModalOpen] = useState(false);
   const { gameStore, playerStore, messageStore } = store;
 
+  const flip = () => store.setPlayerAsBusy();
   const skipTurn = () => {
-    // store.createMessage
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     store.createMessage(`${name} skipped their turn.`);
     store.advanceTurn();
   };
-  const flip = () => store.setPlayerAsBusy();
+  const panic = () => {
+    const localName = store.getPropertyOfPlayer(gameStore.localPlayerId, 'name');
+    const currentName = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    store.createMessage(`${localName} hit the panic button and skipped ${currentName}'s turn.`);
+    store.advanceTurn();
+    setIsPanicModalOpen(false);
+  };
 
   const canFlip = !gameStore.game.isPlayerBusy && 
     (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId);
@@ -97,10 +105,37 @@ export default () => {
         >
           <GitHubIcon />
         </IconButton>
-        <IconButton color="default" aria-label="Help" onClick={() => setIsModalOpen(true)}>
+        <IconButton color="default" aria-label="Help" onClick={() => setIsHelpModalOpen(true)}>
           <HelpIcon />
         </IconButton>
-        <Modal className={classes.modal} open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <IconButton aria-label="Panic" onClick={() => setIsPanicModalOpen(true)}>
+          <ErrorIcon color="error" />
+        </IconButton>
+
+        <Modal className={classes.modal} open={isPanicModalOpen} onClose={() => setIsPanicModalOpen(false)}>
+          <div className={classes.modalPaper}>
+            <Typography variant="h4">
+              Oops!
+            </Typography>
+            <Typography paragraph>
+              Did something go wrong with the game and you got stuck?
+              If so, you can press this "Panic" button to skip the current turn which will hopefully reset the game and allow you to continue.
+            </Typography>
+            <Typography paragraph>
+              <strong>Only press this if the game is broken!</strong>&nbsp;
+              Otherwise you will interrupt the current player's turn.
+            </Typography>
+            <Button variant="contained" color="primary" onClick={() => setIsPanicModalOpen(false)}>
+              Take me back to the game
+            </Button>
+            &nbsp;
+            <Button variant="contained" color="secondary" onClick={() => panic()}>
+              Panic!
+            </Button>
+          </div>
+        </Modal>
+
+        <Modal className={classes.modal} open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)}>
           <div className={classes.modalPaper}>
             <Typography paragraph>
               The rules are simple: you start off with each player's name drawn on the board.

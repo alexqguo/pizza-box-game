@@ -154,6 +154,7 @@ class RootStore {
    * TODO: this code is rough and prone to failures. Fix it!
    */
   advanceTurn() {
+    window.localStorage.removeItem('localShape');
     const playerIds: string[] = this.playerStore.players.map((p: Player) => p.id);
     const currentPlayerIdx: number = playerIds.indexOf(this.gameStore.game.currentPlayerId);
     const nextPlayerIdx: number = (currentPlayerIdx + 1) % playerIds.length;

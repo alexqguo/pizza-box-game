@@ -29,10 +29,11 @@ Options:
 * Others
 
 ## Remaining sequence of work
-* If you leave the screen after you've flipped but before you've submitted your rule, when you rejoin the quarter will be there but you cannot create a rule to continue
-  * Maybe keep the currentShape in localStorage
+None??
 
 ## Future features/changes
+* Add button to skip the turn in case something goes wrong and the game breaks
+  * Give it a warning message and create Message for it
 * Theme MUI for consistent primary/secondary colors
 * Fix RootStore typing with TS
   * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type

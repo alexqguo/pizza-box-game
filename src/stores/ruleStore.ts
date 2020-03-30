@@ -7,7 +7,7 @@ import { getCanvas } from '../components/Canvas';
  * Hydrates the canvas from a list of objects
  * @param objectsToAdd List of objects representing Fabric objects
  */
-const enlivenObjects = (objectsToAdd: Object[]) => {
+export const enlivenObjects = (objectsToAdd: Object[], cb?: Function) => {
   const canvas = getCanvas();
 
   // @ts-ignore This function works just fine with just the objects and callback
@@ -19,6 +19,10 @@ const enlivenObjects = (objectsToAdd: Object[]) => {
     objects.forEach((o: fabric.Object) => canvas.add(o));
     canvas.renderOnAddRemove = origRenderOnAddRemove;
     canvas.renderAll();
+    
+    if (cb) {
+      cb(objects);
+    }
   });
 };
 

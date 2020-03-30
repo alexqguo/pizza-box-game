@@ -16,7 +16,8 @@ import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeObject, getArea } from '../utils';
 import { Rule, Point, GameType, ObjWithRuleId } from '../types';
-import rootStore from '../stores';
+import rootStore from '../stores'; // Is this needed? StoreContex should suffice
+import { enlivenObjects } from '../stores/ruleStore';
 
 interface State {
   inputText?: string,
@@ -99,7 +100,6 @@ export default () => {
     dispatch({ type: 'merge', newState: {
       isInvalid: isIntersecting || isTooLarge
     }});
-    // todo - save to local storage
   };
 
   const handleExistingShape = (shape: fabric.Object) => {
@@ -113,11 +113,19 @@ export default () => {
     dispatch({ type: 'clear' });
   };
 
+  const modifiedHandler = (e: fabric.IEvent) => {
+    // @ts-ignore stupid interface is wrong
+    const targetObj: fabric.Object = e.transform.target;
+    if (targetObj && 
+      (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId)) {
+      window.localStorage.setItem('localShape', serializeObject(targetObj));
+    }
+  };
+
   useEffect(() => {
     const canvas = getCanvas();
     canvas.on('object:scaled', scaledHandler);
-
-    // todo - check local storage, if there's a quarter and no local shape, use LS
+    canvas.on('object:modified', modifiedHandler);
   }, []);
 
   const createRule = async () => {
@@ -153,6 +161,7 @@ export default () => {
     });
   };
 
+  const localShape = window.localStorage.getItem('localShape');
   const canSubmit = !!state.currentShape && !state.isInvalid && !!state.inputText;
 
   if (
@@ -179,6 +188,14 @@ export default () => {
     });
   } else if (state.existingShape) {
     handleExistingShape(state.existingShape);
+  } else if (localShape && gameStore.game.quarterLocation && !state.currentShape) {
+    const existingShape = JSON.parse(localShape);
+    enlivenObjects([existingShape], (objects: fabric.Object[]) => {
+      dispatch({
+        type: 'merge',
+        newState: { currentShape: objects[0] }
+      });
+    });
   }
 
   return useObserver(() => (

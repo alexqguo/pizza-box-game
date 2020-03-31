@@ -135,12 +135,16 @@ const determineFlipCoords = (): Promise<Point> => {
       fontSize: 12,
       top: 0,
       left: 0,
+      selectable: false,
+      hasControls: false,
     });
     let ySpeed = baseSpeed;
     const yIndicator = new fabric.Text('➡', {
       fontSize: 12,
       top: 0,
       left: 0,
+      selectable: false,
+      hasControls: false,
     });
   
     const render = () => {

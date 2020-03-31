@@ -115,7 +115,7 @@ export default () => {
   const modifiedHandler = (e: fabric.IEvent) => {
     // @ts-ignore stupid interface is wrong
     const targetObj: fabric.Object = e.transform.target;
-    if (targetObj && isCurrentPlayer) {
+    if (targetObj && (targetObj as any).originalFill && isCurrentPlayer) {
       window.localStorage.setItem('localShape', serializeObject(targetObj));
     }
   };

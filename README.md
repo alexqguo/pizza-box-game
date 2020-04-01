@@ -28,10 +28,12 @@ Options:
 * [two.js](https://two.js.org/)
 * Others
 
-## Remaining sequence of work
-None??
-
 ## Future features/changes
+* User can scroll through the messages when the modal is up
+* At the end of the game can view all messages, maybe on a separate page
+* Formatting of messages
+  * Show the current player, timestamp, author of rule they landed on
+* Possibly remove initial spaces
 * Online/offline indicator for players in Drawer
 * Dev/Prod modes instead of 'localhost' checks everywhere
 * Theme MUI for consistent primary/secondary colors

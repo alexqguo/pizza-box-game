@@ -14,8 +14,9 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import HelpIcon from '@material-ui/icons/Help';
 import ErrorIcon from '@material-ui/icons/Error';
 import useStyles from '../styles';
-import { Player, GameType, Message } from '../types';
+import { Player, GameType } from '../types';
 import { StoreContext } from './App';
+import MessageList from './MessageList';
 import PlayerName from './PlayerName';
 
 export default () => {
@@ -23,7 +24,7 @@ export default () => {
   const store = useContext(StoreContext);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isPanicModalOpen, setIsPanicModalOpen] = useState(false);
-  const { gameStore, playerStore, messageStore } = store;
+  const { gameStore, playerStore } = store;
 
   const flip = () => store.setPlayerAsBusy();
   const skipTurn = () => {
@@ -78,11 +79,7 @@ export default () => {
       </List>
       <Divider />
 
-      <List className={classes.messageList}>
-        {messageStore.messages.reverse().map((m: Message, i: number) => (
-          <LI key={i}>{m.displayString}</LI>
-        ))}
-      </List>
+      <MessageList />
       <Divider />
 
       <Button onClick={() => {}}>

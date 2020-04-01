@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { useObserver } from 'mobx-react';
-import { Modal, Button } from '@material-ui/core';
+import { Modal, Button, Grid } from '@material-ui/core';
 import useStyles from '../styles';
 import { StoreContext } from './App';
+import MessageList from './MessageList';
 import { GameType } from '../types';
 
 export default () => {
@@ -21,13 +22,21 @@ export default () => {
   return useObserver(() => (
     <Modal open={!!gameStore.game.alertMessage} className={classes.modal}>
       <div className={classes.modalPaper}>
-        <p className={classes.alertText}>{gameStore.game.alertMessage}</p>
+        <Grid container spacing={3}>
+          <Grid item xs={8}>
+            <p className={classes.alertText}>{gameStore.game.alertMessage}</p>
+            
+            {canCloseModal ? 
+              <Button color="secondary" size="small" onClick={closeModal} variant="contained">
+                Dismiss
+              </Button>
+            : null}
+          </Grid>
 
-        {canCloseModal ? 
-          <Button color="secondary" size="small" onClick={closeModal} variant="contained">
-            Dismiss
-          </Button>
-        : null}
+          <Grid item xs={4}>
+            <MessageList />
+          </Grid>
+        </Grid>
       </div>
     </Modal>
   ));

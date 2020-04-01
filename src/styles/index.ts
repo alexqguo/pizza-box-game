@@ -92,8 +92,8 @@ export default makeStyles((theme: Theme) => (
       fontSize: '1.5rem'
     },
     messageList: {
-      height: 200,
-      maxHeight: 200,
+      height: 300,
+      maxHeight: 300,
       overflowY: 'scroll',
       display: 'flex',
       flexDirection: 'column-reverse'

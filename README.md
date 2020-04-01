@@ -29,7 +29,6 @@ Options:
 * Others
 
 ## Future features/changes
-* User can scroll through the messages when the modal is up
 * At the end of the game can view all messages, maybe on a separate page
 * Formatting of messages
   * Show the current player, timestamp, author of rule they landed on

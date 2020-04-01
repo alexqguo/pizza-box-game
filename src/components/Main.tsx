@@ -104,7 +104,7 @@ export default () => {
   const handleExistingShape = (shape: fabric.Object) => {
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     const ruleText = ruleStore.rules
-      .get((state.existingShape as ObjWithRuleId).ruleId)
+      .get((shape as ObjWithRuleId).ruleId)
       .displayText;
     const message = `${name} -- ${ruleText}`;
     store.createMessage(message);

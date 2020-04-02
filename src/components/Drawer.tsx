@@ -13,8 +13,9 @@ import { List,
 import GitHubIcon from '@material-ui/icons/GitHub';
 import HelpIcon from '@material-ui/icons/Help';
 import ErrorIcon from '@material-ui/icons/Error';
+import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 import useStyles from '../styles';
-import { Player, GameType } from '../types';
+import { Player, GameType, Message } from '../types';
 import { StoreContext } from './App';
 import MessageList from './MessageList';
 import PlayerName from './PlayerName';
@@ -24,7 +25,8 @@ export default () => {
   const store = useContext(StoreContext);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isPanicModalOpen, setIsPanicModalOpen] = useState(false);
-  const { gameStore, playerStore } = store;
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const { gameStore, playerStore, messageStore } = store;
 
   const flip = () => store.setPlayerAsBusy();
   const skipTurn = () => {
@@ -38,6 +40,17 @@ export default () => {
     store.createMessage(`${localName} hit the panic button and skipped ${currentName}'s turn.`);
     store.advanceTurn();
     setIsPanicModalOpen(false);
+  };
+  const downloadMessages = () => {
+    const rawMessages: string[] = messageStore.messages
+      .map((m: Message) => m.displayString)
+      .join('\n');
+    const downloadElement: HTMLAnchorElement = document.createElement('a');
+    downloadElement.setAttribute('href', `data:text/plain;charset=utf-8,${rawMessages}`);
+    downloadElement.setAttribute('download', `messages_${gameStore.game.id}.txt`);
+    document.body.appendChild(downloadElement);
+    downloadElement.click();
+    document.body.removeChild(downloadElement);
   };
 
   const canFlip = !gameStore.game.isPlayerBusy && 
@@ -105,6 +118,9 @@ export default () => {
         <IconButton color="default" aria-label="Help" onClick={() => setIsHelpModalOpen(true)}>
           <HelpIcon />
         </IconButton>
+        <IconButton color="default" aria-label="Settings" onClick={() => setIsSettingsModalOpen(true)}>
+          <SettingsRoundedIcon />
+        </IconButton>
         <IconButton aria-label="Panic" onClick={() => setIsPanicModalOpen(true)}>
           <ErrorIcon color="error" />
         </IconButton>
@@ -128,6 +144,17 @@ export default () => {
             &nbsp;
             <Button variant="contained" color="secondary" onClick={() => panic()}>
               Panic!
+            </Button>
+          </div>
+        </Modal>
+
+        <Modal className={classes.modal} open={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)}>
+          <div className={classes.modalPaper}>
+            <Typography paragraph>
+              Game settings!
+            </Typography>
+            <Button variant="contained" color="primary" onClick={downloadMessages}>
+              Download messages
             </Button>
           </div>
         </Modal>

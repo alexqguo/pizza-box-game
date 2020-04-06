@@ -29,7 +29,11 @@ Options:
 * Others
 
 ## Future features/changes
-* At the end of the game can view all messages, maybe on a separate page
+* Alert when it's your turn
+* Message for shape validation
+* Timer on people's turns
+* Can reposition shape as long as it contains the quarter
+* Pick a preset of rules to start your game
 * Formatting of messages
   * Show the current player, timestamp, author of rule they landed on
 * Possibly remove initial spaces

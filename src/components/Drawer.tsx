@@ -56,6 +56,11 @@ export default () => {
   const canFlip = !gameStore.game.isPlayerBusy && 
     (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId);
 
+  // TODO: fix this logic. It's lazy and counts on this only rendering once per turn
+  if (canFlip && gameStore.game.id) {
+    (document.getElementById('notification-audio') as HTMLAudioElement).play();
+  }
+
   return useObserver(() => (
     <Drawer 
       variant="permanent" 
@@ -93,11 +98,6 @@ export default () => {
       <Divider />
 
       <MessageList />
-      <Divider />
-
-      <Button onClick={() => {}}>
-        Add player
-      </Button>
       <Divider />
 
       {gameStore.game.type === GameType.remote ?  

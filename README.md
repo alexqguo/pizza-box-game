@@ -30,7 +30,6 @@ Options:
 
 ## Future features/changes
 ### Functional
-* Alert when it's your turn
 * Message for shape validation
 * Timer on people's turns, how long it takes to start their turn
 * Can reposition shape as long as it contains the quarter

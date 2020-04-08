@@ -50,6 +50,7 @@ Options:
 * Customize shape of the canvas
 
 ### Bugs
+* Window unload event to register a user as offline seems to have issues
 * You can move a shape loaded from localstorage
 * The flip indicators can go a bit past the boundaries of the board if you time it correctly
 

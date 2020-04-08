@@ -29,32 +29,35 @@ Options:
 * Others
 
 ## Future features/changes
+### Functional
 * Alert when it's your turn
 * Message for shape validation
-* Timer on people's turns
+* Timer on people's turns, how long it takes to start their turn
 * Can reposition shape as long as it contains the quarter
 * Pick a preset of rules to start your game
+  * Possibly remove initial spaces, or have different loadouts/presets
 * Formatting of messages
   * Show the current player, timestamp, author of rule they landed on
-* Possibly remove initial spaces
 * Online/offline indicator for players in Drawer
-* Dev/Prod modes instead of 'localhost' checks everywhere
-* Theme MUI for consistent primary/secondary colors
 * Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
   * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
-* Fix RootStore typing with TS
-  * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
-* Break up some of the larger components
 * Add (and remove?) players on the fly
 * Free draw shapes instead of squares
   * During drawing, constantly check isTargetTransparent on the drawing point and as soon as it isn't flag it
   * On draw end, shape needs to surround the quarter
+* Background image for the canvas
+* Customize shape of the canvas
+
+### Bugs
+* You can move a shape loaded from localstorage
+* The flip indicators can go a bit past the boundaries of the board if you time it correctly
+
+### Technical improvements
+* Dev/Prod modes instead of 'localhost' checks everywhere
+* Theme MUI for consistent primary/secondary colors
+* Fix RootStore typing with TS
+  * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
+* Break up some of the larger components
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
 * Error boundary so the whole app doesn't crash
-* Background image for the canvas
-* Customize shape of the canvas
-* Separate alerts into their own store if the functionality grows
-
-## Questions
-* What is the end game condition? Should there even be one?

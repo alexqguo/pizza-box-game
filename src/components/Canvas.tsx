@@ -222,7 +222,7 @@ export default class Canvas extends PureComponent<{}, State> {
       });
     });
 
-    canvas.on('object:scaling', throttle((e: fabric.IEvent) => {
+    const objectModifiedHandler = throttle((e: fabric.IEvent) => {
       // @ts-ignore The TS interface doesn't have target on transform for some reason
       const targetObj: fabric.Object = e.transform.target;
       if (!targetObj) return;
@@ -230,7 +230,10 @@ export default class Canvas extends PureComponent<{}, State> {
       const isIntersecting: boolean = doesTargetIntersect(targetObj);
       const isTooLarge: boolean = getArea(targetObj) > MAX_AREA;
       targetObj.set('fill', isIntersecting || isTooLarge ? 'red' : (targetObj as any).originalFill);
-    }, 50));
+    }, 50);
+
+    canvas.on('object:scaling', objectModifiedHandler);
+    canvas.on('object:rotating', objectModifiedHandler);
   }
 
   render() {

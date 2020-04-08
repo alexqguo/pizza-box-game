@@ -34,6 +34,8 @@ Options:
 * Message for shape validation
 * Timer on people's turns, how long it takes to start their turn
 * Can reposition shape as long as it contains the quarter
+* Tell people how to actually play the game. Needs WAY more instruction
+  * This could be a thing in the drawer that has a message telling the player what to do
 * Pick a preset of rules to start your game
   * Possibly remove initial spaces, or have different loadouts/presets
 * Formatting of messages

@@ -71,6 +71,7 @@ export default () => {
       top: initialPlacement[1],
       width: INITIAL_RADIUS * 2,
       height: INITIAL_RADIUS * 2,
+      strokeWidth: 0,
       fill: playerColor,
       hasControls: true,
       lockMovementX: true,

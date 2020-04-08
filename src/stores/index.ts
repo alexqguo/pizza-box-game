@@ -79,6 +79,7 @@ class RootStore {
         width: 60,
         height: 60,
         fill: p.color,
+        strokeWidth: 0,
         originX: 'center',
         originY: 'center',
         selectable: false,

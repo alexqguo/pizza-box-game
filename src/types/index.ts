@@ -38,6 +38,15 @@ export interface GameData {
   alertMessage: string,
 }
 
+export interface ShapeValidation {
+  isValid: boolean,
+  errors: ShapeValidationError[],
+}
+
+export interface ShapeValidationError {
+  message: string
+}
+
 export enum GameType {
   local = 'local',
   remote = 'remote',

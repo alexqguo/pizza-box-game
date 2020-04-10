@@ -79,7 +79,7 @@ export default makeStyles((theme: Theme) => (
       borderRadius: 50
     },
     createRuleContainer: {
-      marginBottom: 20,
+      marginBottom: 10,
     },
     createRuleInput: {
       width: 400,
@@ -97,6 +97,10 @@ export default makeStyles((theme: Theme) => (
       overflowY: 'scroll',
       display: 'flex',
       flexDirection: 'column-reverse'
+    },
+    validationErrors: {
+      fontSize: '0.75rem',
+      color: theme.palette.error.main
     }
   })
 ), { index: 1 });

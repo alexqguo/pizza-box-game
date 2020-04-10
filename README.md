@@ -30,7 +30,6 @@ Options:
 
 ## Future features/changes
 ### Functional
-* Message for shape validation
 * Timer on people's turns, how long it takes to start their turn
 * Can reposition shape as long as it contains the quarter
 * Tell people how to actually play the game. Needs WAY more instruction
@@ -51,7 +50,7 @@ Options:
 
 ### Bugs
 * Window unload event to register a user as offline seems to have issues
-* You can move a shape loaded from localstorage
+* You can move a shape loaded from localstorage, also validation will not run initially
 * The flip indicators can go a bit past the boundaries of the board if you time it correctly
 
 ### Technical improvements

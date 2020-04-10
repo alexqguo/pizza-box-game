@@ -33,7 +33,6 @@ export default class RuleStore {
    * TODO: Remove this if it's not used anymore
    */
   @action setRules = (rules: Rule[]) => {
-    console.log(rules);
     // TODO: optimize this. Maybe we can only subscribe to rule UPDATES and not wholesale changes
     // Also, this can be done with a reduce
     const objectsToAddToCanvas: Object[] = rules.filter((r: Rule) => !this.rules.has(r.id))

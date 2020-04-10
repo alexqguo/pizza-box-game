@@ -9,7 +9,7 @@ import RuleStore from './ruleStore';
 import MessageStore from './messageStore';
 import { getCanvas } from '../components/Canvas';
 
-class RootStore {
+export class RootStore {
   gameStore: GameStore;
   playerStore: PlayerStore;
   ruleStore: RuleStore;

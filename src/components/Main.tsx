@@ -5,24 +5,23 @@ import { fabric } from 'fabric';
 import Canvas, {
   getCanvas,
   getIntersectingObjects,
-  doesTargetIntersect,
   flip,
   getObjectAtPoint,
   randomizePoint,
   isPointWithinCanvas,
-  MAX_AREA,
 } from './Canvas';
 import { StoreContext } from './App';
 import useStyles from '../styles';
-import { createId, serializeObject, getArea } from '../utils';
-import { Rule, Point, GameType, ObjWithRuleId } from '../types';
-import rootStore from '../stores'; // Is this needed? StoreContex should suffice
+import { createId, serializeObject } from '../utils';
+import { Rule, Point, GameType, ObjWithRuleId, ShapeValidation } from '../types';
+import { RootStore } from '../stores';
+import { getValidationManager } from '../validation';
 import { enlivenObjects } from '../stores/ruleStore';
 
 interface State {
   inputText?: string,
   currentShape?: fabric.Object,
-  isInvalid?: boolean,
+  validation?: ShapeValidation,
   existingShape?: fabric.Object,
 }
 
@@ -48,7 +47,7 @@ const reducer = (state: State, action: Dispatch) => {
 export default () => {
   const canvas = getCanvas();
   const classes = useStyles();
-  const store = useContext(StoreContext);
+  const store: RootStore = useContext(StoreContext);
   const { gameStore, ruleStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
   const isCurrentPlayer = gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId;
@@ -60,7 +59,7 @@ export default () => {
         type: 'merge',
         newState: { existingShape }
       });
-      rootStore.setQuarterLocation(pointer);
+      store.setQuarterLocation(pointer);
       return;
     };
 
@@ -85,7 +84,7 @@ export default () => {
     if (intersectingShapes.length) {
       handleExistingShape(intersectingShapes[0]);
     } else {
-      await rootStore.setQuarterLocation(pointer);
+      await store.setQuarterLocation(pointer);
       canvas.add(shape);
       dispatch({ type: 'merge', newState: { currentShape: shape }});
     }
@@ -95,17 +94,17 @@ export default () => {
     // @ts-ignore stupid interface is wrong
     const targetObj: fabric.Object = e.transform.target;
     if (!targetObj) return;
-    const isIntersecting: boolean = doesTargetIntersect(targetObj);
-    const isTooLarge: boolean = getArea(targetObj) > MAX_AREA;
+    const validation: ShapeValidation = getValidationManager().validate(targetObj);
+
     dispatch({ type: 'merge', newState: {
-      isInvalid: isIntersecting || isTooLarge
+      validation,
     }});
   };
 
   const handleExistingShape = (shape: fabric.Object) => {
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     const ruleText = ruleStore.rules
-      .get((shape as ObjWithRuleId).ruleId)
+      .get((shape as ObjWithRuleId).ruleId)!
       .displayText;
     const message = `${name} -- ${ruleText}`;
     store.createMessage(message);
@@ -116,7 +115,9 @@ export default () => {
   const modifiedHandler = (e: fabric.IEvent) => {
     // @ts-ignore stupid interface is wrong
     const targetObj: fabric.Object = e.transform.target;
-    if (targetObj && (targetObj as any).originalFill && isCurrentPlayer) {
+    if (!targetObj) return;
+
+    if ((targetObj as any).originalFill && isCurrentPlayer) {
       window.localStorage.setItem('localShape', serializeObject(targetObj));
     }
   };
@@ -161,11 +162,12 @@ export default () => {
   };
 
   const localShape = window.localStorage.getItem('localShape');
-  const canSubmit = !!state.currentShape && !state.isInvalid && !!state.inputText;
+  const canSubmit = !!state.currentShape && !!state.inputText &&
+    state.validation && state.validation.isValid;
 
   if (gameStore.game.isPlayerBusy && !gameStore.game.hasFlipped && isCurrentPlayer) {
     flip().then((point: Point) => {
-      rootStore.setIndicatorLocation(point);
+      store.setIndicatorLocation(point);
 
       setTimeout(() => {
         const quarterLocation: Point = randomizePoint(point);
@@ -179,7 +181,7 @@ export default () => {
           store.setAlertMessage(message);
         }
 
-        rootStore.clearIndicatorLocation();
+        store.clearIndicatorLocation();
       }, 2500);
     });
   } else if (state.existingShape) {
@@ -216,6 +218,11 @@ export default () => {
         >
           Create
         </Button>
+
+        <div className={classes.validationErrors}>
+          {state.validation && state.validation.errors.map(e => e.message).join(', ')}
+          &nbsp;
+        </div>
       </Box>
       
       <Canvas />

@@ -3,9 +3,10 @@ import { fabric } from 'fabric';
 import { Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { throttle } from 'lodash';
-import { ObjWithRuleId, Rule, Point } from '../types';
-import { randomWithinRange, getArea } from '../utils';
+import { ObjWithRuleId, Rule, Point, ShapeValidation } from '../types';
+import { randomWithinRange } from '../utils';
 import RootStore from '../stores';
+import { initValidationManager, getValidationManager } from '../validation';
 
 interface State {
   tooltipStr: string | null;
@@ -13,7 +14,6 @@ interface State {
 
 const QUARTER_RADIUS = 6;
 const INDICATOR_RADIUS = 100;
-export const MAX_AREA = 20000;
 
 let canvas: fabric.Canvas;
 
@@ -206,6 +206,8 @@ export default class Canvas extends PureComponent<{}, State> {
 
   componentDidMount() {
     canvas = new fabric.Canvas('c');
+    initValidationManager(canvas);
+
     canvas.on('mouse:over', (e: fabric.IEvent) => {
       if (e.target) {
         const ruleId: string = (e.target as ObjWithRuleId).ruleId;
@@ -227,9 +229,8 @@ export default class Canvas extends PureComponent<{}, State> {
       const targetObj: fabric.Object = e.transform.target;
       if (!targetObj) return;
 
-      const isIntersecting: boolean = doesTargetIntersect(targetObj);
-      const isTooLarge: boolean = getArea(targetObj) > MAX_AREA;
-      targetObj.set('fill', isIntersecting || isTooLarge ? 'red' : (targetObj as any).originalFill);
+      const validation: ShapeValidation = getValidationManager().validate(targetObj);
+      targetObj.set('fill', validation.isValid ? (targetObj as any).originalFill : 'red');
     }, 50);
 
     canvas.on('object:scaling', objectModifiedHandler);

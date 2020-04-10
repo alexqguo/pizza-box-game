@@ -58,6 +58,7 @@ Options:
 * Theme MUI for consistent primary/secondary colors
 * Fix RootStore typing with TS
   * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
+  * UPDATE: this has already been fixed in Main.tsx, just need to make the fix everywhere else
 * Break up some of the larger components
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.

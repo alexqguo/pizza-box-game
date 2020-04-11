@@ -20,21 +20,42 @@ import { StoreContext } from './App';
 import MessageList from './MessageList';
 import PlayerName from './PlayerName';
 
+// 120 seconds until your turn gets skipped
+const TIME_LIMIT = 120;
+let intervals: number[] = [];
+
+const clearIntervals = () => {
+  intervals.forEach((i: number) => window.clearInterval(i));
+};
+const createInterval = (fn: Function, n: number) => {
+  intervals.push(window.setInterval(fn, n));
+};
+
 export default () => {
   const classes = useStyles();
   const store = useContext(StoreContext);
+  const [currentPlayerId, setCurrentPlayerId] = useState('');
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isPanicModalOpen, setIsPanicModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(TIME_LIMIT);
   const { gameStore, playerStore, messageStore } = store;
 
-  const flip = () => store.setPlayerAsBusy();
-  const skipTurn = () => {
-    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-    store.createMessage(`${name} skipped their turn.`);
-    store.advanceTurn();
+  const flip = () => {
+    clearIntervals();
+    store.setPlayerAsBusy();
   };
+  const advanceTurn = (message: String) => {
+    clearIntervals();
+    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    store.createMessage(`${name} ${message}`);
+    store.advanceTurn();
+    setTimeRemaining(TIME_LIMIT);
+  };
+  const skipTurn = () => advanceTurn(' skipped their turn.');
+  const outOfTime = () => advanceTurn(' ran out of time.');
   const panic = () => {
+    clearIntervals();
     const localName = store.getPropertyOfPlayer(gameStore.localPlayerId, 'name');
     const currentName = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     store.createMessage(`${localName} hit the panic button and skipped ${currentName}'s turn.`);
@@ -52,13 +73,25 @@ export default () => {
     downloadElement.click();
     document.body.removeChild(downloadElement);
   };
+  const startTurn = () => {
+    (document.getElementById('notification-audio') as HTMLAudioElement).play();
+    clearIntervals(); // Just in case
+    setTimeRemaining(TIME_LIMIT);
+    setCurrentPlayerId(gameStore.game.currentPlayerId);
+    createInterval(() => {
+      setTimeRemaining(timeRemaining => timeRemaining! - 1);
+    }, 1000);
+  }
 
   const canFlip = !gameStore.game.isPlayerBusy && 
     (gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId);
 
-  // TODO: fix this logic. It's lazy and counts on this only rendering once per turn
-  if (canFlip && gameStore.game.id) {
-    (document.getElementById('notification-audio') as HTMLAudioElement).play();
+  if (canFlip && gameStore.game.id && currentPlayerId !== gameStore.game.currentPlayerId) {
+    startTurn();
+  }
+
+  if (timeRemaining === 0) {
+    outOfTime();
   }
 
   return useObserver(() => (
@@ -78,6 +111,9 @@ export default () => {
         onClick={flip}
       >
         Flip
+        {timeRemaining && canFlip ? 
+          <span className={classes.sm}>&nbsp;{timeRemaining}</span>
+        : null}
       </Button>
       <Divider />
 

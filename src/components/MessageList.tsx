@@ -12,7 +12,7 @@ export default () => {
   
   return useObserver(() => (
     <List className={classes.messageList}>
-      {messageStore.messages.reverse().map((m: Message, i: number) => (
+      {messageStore.messages.slice().reverse().map((m: Message, i: number) => (
         <ListItem key={i}>{m.displayString}</ListItem>
       ))}
     </List>

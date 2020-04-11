@@ -30,7 +30,6 @@ Options:
 
 ## Future features/changes
 ### Functional
-* Timer on people's turns, how long it takes to start their turn
 * Can reposition shape as long as it contains the quarter
   * A bit tricky since this needs to be checked on movement, scaling and rotation (can possibly avoid rotation issues if you use the quarter as the rotate point)
 * Tell people how to actually play the game. Needs WAY more instruction
@@ -64,3 +63,6 @@ Options:
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
 * Error boundary so the whole app doesn't crash
+* Prevent game components from rendering before the game actually starts. Will reduce a lot of random null checks that are there
+* Fix error about updating from within a child component in Drawer when a player's time expires
+* If a player is not logged into the game, the timer will not run to skip their turn. Can hit the panic button in this case

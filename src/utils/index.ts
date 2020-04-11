@@ -6,7 +6,13 @@ export function createId(prefix?: string) {
 
 export function serializeObject(obj: fabric.Object) {
   // This... can't be right. Why doesn't "selectable" show up normally?
-  return JSON.stringify(obj.toJSON(['selectable', 'ruleId', 'originalFill']));
+  return JSON.stringify(
+    obj.toJSON([
+      'selectable',
+      'ruleId',
+      'originalFill'
+    ])
+  );
 }
 
 export function randomWithinRange(min: number, max: number) {

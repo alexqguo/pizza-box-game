@@ -90,17 +90,6 @@ export default () => {
     }
   };
 
-  const scaledHandler = (e: fabric.IEvent) => {
-    // @ts-ignore stupid interface is wrong
-    const targetObj: fabric.Object = e.transform.target;
-    if (!targetObj) return;
-    const validation: ShapeValidation = getValidationManager().validate(targetObj);
-
-    dispatch({ type: 'merge', newState: {
-      validation,
-    }});
-  };
-
   const handleExistingShape = (shape: fabric.Object) => {
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     const ruleText = ruleStore.rules
@@ -117,14 +106,19 @@ export default () => {
     const targetObj: fabric.Object = e.transform.target;
     if (!targetObj) return;
 
+    // Save to localStorage
     if ((targetObj as any).originalFill && isCurrentPlayer) {
       window.localStorage.setItem('localShape', serializeObject(targetObj));
     }
+
+    const validation: ShapeValidation = getValidationManager().validate(targetObj);
+    dispatch({ type: 'merge', newState: {
+      validation,
+    }});
   };
 
   useEffect(() => {
     const canvas = getCanvas();
-    canvas.on('object:scaled', scaledHandler);
     canvas.on('object:modified', modifiedHandler);
   }, []);
 

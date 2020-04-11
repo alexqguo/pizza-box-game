@@ -233,8 +233,11 @@ export default class Canvas extends PureComponent<{}, State> {
       targetObj.set('fill', validation.isValid ? (targetObj as any).originalFill : 'red');
     }, 50);
 
+    const objectMovingHandler = (e: fabric.IEvent) => {};
+
     canvas.on('object:scaling', objectModifiedHandler);
     canvas.on('object:rotating', objectModifiedHandler);
+    canvas.on('object:moving', objectMovingHandler);
   }
 
   render() {

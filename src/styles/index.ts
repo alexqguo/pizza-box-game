@@ -91,9 +91,6 @@ export default makeStyles((theme: Theme) => (
     alertText: {
       fontSize: '1.5rem'
     },
-    sm: {
-      fontSize: '0.75rem',
-    },
     messageList: {
       height: 300,
       maxHeight: 300,

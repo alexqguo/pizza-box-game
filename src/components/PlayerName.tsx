@@ -15,6 +15,7 @@ export default ({ player }: Props) => {
   const { gameStore } = store;
   const isCurrentPlayer: boolean = player.id === gameStore.game.currentPlayerId;
   let className = '';
+  if (player.isActive === false) className += `${classes.offlinePlayer} `;
   if (isCurrentPlayer) {
     className += `${classes.currentPlayer} `;
     className += gameStore.game.isPlayerBusy ? classes.busyPlayer : classes.idlePlayer;

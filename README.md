@@ -39,7 +39,6 @@ Options:
   * Possibly remove initial spaces, or have different loadouts/presets
 * Formatting of messages
   * Show the current player, timestamp, author of rule they landed on
-* Online/offline indicator for players in Drawer
 * Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
   * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
 * Add (and remove?) players on the fly

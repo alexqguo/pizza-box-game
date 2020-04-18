@@ -56,6 +56,9 @@ export default makeStyles((theme: Theme) => (
     currentPlayer: {
       fontWeight: 'bold',
     },
+    offlinePlayer: {
+      opacity: '50%',
+    },
     idlePlayer: {
       '&::after': {
         content: '"👈"', // Who the fuck knows why it needs quotes but it does

@@ -101,6 +101,14 @@ export default makeStyles((theme: Theme) => (
     validationErrors: {
       fontSize: '0.75rem',
       color: theme.palette.error.main
+    },
+    areaIndicatorContainer: {
+      display: 'inline-block',
+      width: 1000,
+    },
+    areaIndicatorItem: {
+      display: 'inline-block',
+      height: 5,
     }
   })
 ), { index: 1 });

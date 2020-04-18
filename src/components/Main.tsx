@@ -10,6 +10,7 @@ import Canvas, {
   randomizePoint,
   isPointWithinCanvas,
 } from './Canvas';
+import AreaIndicator from './AreaIndicator';
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeObject } from '../utils';
@@ -129,10 +130,10 @@ export default () => {
       shape.selectable = false;
       shape.hasControls = false;
       const ruleId: string = createId('rule');
-      // @ts-ignore Adding additional property
-      shape.ruleId = ruleId;
       shape.selectable = false;
       shape.hasControls = false;
+      // @ts-ignore Adding additional property
+      shape.ruleId = ruleId;
 
       const newRule: Rule = {
         id: ruleId,
@@ -143,6 +144,7 @@ export default () => {
       
       const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
       await store.createMessage(`${name} created a new rule: ${state.inputText}`);
+      getCanvas().remove(shape); // Remove the shape we just created as a copy is about to get hydrated from firebase
       await store.createRule(newRule);
       dispatch({ type: 'clear' }); // Clear state
     }
@@ -220,6 +222,7 @@ export default () => {
       </Box>
       
       <Canvas />
+      <AreaIndicator />
 
       <Typography variant="caption" display="block" gutterBottom>
         {gameStore.game.id}

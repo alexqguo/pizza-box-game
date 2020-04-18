@@ -13,7 +13,7 @@ interface State {
 }
 
 const QUARTER_RADIUS = 6;
-const INDICATOR_RADIUS = 100;
+const INDICATOR_RADIUS = 130;
 
 let canvas: fabric.Canvas;
 

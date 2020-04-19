@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { useObserver } from 'mobx-react';
-import { Modal, Button, Grid } from '@material-ui/core';
+import { Modal, Button, Grid, ExpansionPanel } from '@material-ui/core';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import useStyles from '../styles';
 import { StoreContext } from './App';
 import MessageList from './MessageList';
@@ -34,7 +36,14 @@ export default () => {
           </Grid>
 
           <Grid item xs={4}>
-            <MessageList />
+            <ExpansionPanel>
+              <ExpansionPanelSummary>
+                Game history
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <MessageList />
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
           </Grid>
         </Grid>
       </div>

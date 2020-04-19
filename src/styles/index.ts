@@ -85,7 +85,7 @@ export default makeStyles((theme: Theme) => (
       marginBottom: 10,
     },
     createRuleInput: {
-      width: 400,
+      width: 600,
     },
     createRuleButton: {
       verticalAlign: 'bottom',

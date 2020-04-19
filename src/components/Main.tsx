@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import { useObserver } from 'mobx-react';
-import { TextField, Button, Box, Typography } from '@material-ui/core';
+import { TextField, Button, ButtonGroup, Box, Typography } from '@material-ui/core';
 import { fabric } from 'fabric';
 import Canvas, {
   getCanvas,
@@ -203,17 +203,24 @@ export default () => {
           disabled={(!state.currentShape)}
           onChange={({ target }) => { updateInputText(target) }}
           value={state.inputText || ''}
+          error={state.validation?.isValid === false}
         />
-        <Button 
+        <ButtonGroup
           variant="contained" 
           color="primary" 
           size="small"
           className={classes.createRuleButton}
-          disabled={!canSubmit}
-          onClick={createRule}
         >
-          Create
-        </Button>
+          <Button 
+            disabled={!canSubmit}
+            onClick={createRule}
+          >
+            Create
+          </Button>
+          <Button>
+            🤔
+          </Button>
+        </ButtonGroup>
 
         <div className={classes.validationErrors}>
           {state.validation && state.validation.errors.map(e => e.message).join(', ')}

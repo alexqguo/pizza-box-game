@@ -52,6 +52,7 @@ Options:
 * Window unload event to register a user as offline seems to have issues
 * You can move a shape loaded from localstorage, also validation will not run initially
 * The flip indicators can go a bit past the boundaries of the board if you time it correctly
+* The shape controls can go past the boundaries of the board and get hidden
 
 ### Technical improvements
 * Dev/Prod modes instead of 'localhost' checks everywhere

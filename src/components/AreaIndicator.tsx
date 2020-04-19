@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { fabric } from 'fabric';
 import { useObserver } from 'mobx-react';
+import { Tooltip } from '@material-ui/core';
 import useStyles from '../styles';
 import { RootStore } from '../stores';
-import { Rule, ObjWithRuleId } from '../types';
+import { ObjWithRuleId } from '../types';
 import { getArea } from '../utils';
 import { getCanvas } from './Canvas';
 import { StoreContext } from './App';
@@ -31,12 +32,18 @@ export default () => {
     return (
       <div className={classes.areaIndicatorContainer}>
         {Object.entries(areas).map(([key, value]) => {
+          const name = store.getPropertyOfPlayer(key, 'name');
+          const percentage = (value / totalArea) * 100;
           const styles = {
-            width: `${(value / totalArea) * 100}%`,
+            width: `${percentage}%`,
             backgroundColor: store.getPropertyOfPlayer(key, 'color'),
           };
 
-          return <span style={styles} className={classes.areaIndicatorItem}></span>
+          return (
+            <Tooltip title={`${name} - ${Math.round(percentage)}%`} placement="top">
+              <span style={styles} className={classes.areaIndicatorItem}></span>
+            </Tooltip>
+          );
         })}
       </div>
     );

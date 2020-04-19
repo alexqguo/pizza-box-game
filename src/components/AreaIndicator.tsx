@@ -40,7 +40,7 @@ export default () => {
           };
 
           return (
-            <Tooltip title={`${name} - ${Math.round(percentage)}%`} placement="top">
+            <Tooltip title={`${name} - ${Math.round(percentage)}%`} placement="top" key={key}>
               <span style={styles} className={classes.areaIndicatorItem}></span>
             </Tooltip>
           );

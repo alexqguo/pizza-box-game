@@ -13,7 +13,8 @@ interface State {
 }
 
 const QUARTER_RADIUS = 6;
-const INDICATOR_RADIUS = 130;
+const INDICATOR_RADIUS = 110;
+const BASE_SPEED = 45;
 
 let canvas: fabric.Canvas;
 
@@ -125,12 +126,11 @@ const determineFlipCoords = (): Promise<Point> => {
   return new Promise((resolve) => {
 
     let raf: number;
-    const baseSpeed = 50;
     const canvasWidth = canvas.getWidth();
     const canvasHeight = canvas.getHeight();
     const coords: number[] = [];
   
-    let xSpeed = baseSpeed;
+    let xSpeed = BASE_SPEED;
     const xIndicator = new fabric.Text('⬇', {
       fontSize: 12,
       top: 0,
@@ -138,7 +138,7 @@ const determineFlipCoords = (): Promise<Point> => {
       selectable: false,
       hasControls: false,
     });
-    let ySpeed = baseSpeed;
+    let ySpeed = BASE_SPEED;
     const yIndicator = new fabric.Text('➡', {
       fontSize: 12,
       top: 0,

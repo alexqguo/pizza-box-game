@@ -102,7 +102,7 @@ export default () => {
 
       {gameStore.game.type === GameType.remote ?  
         <>
-          <Button href={`/?join=${gameStore.game.id}`} rel="noopener" target="_blank">
+          <Button href={`/#${gameStore.game.id}`} rel="noopener" target="_blank">
             Share game
           </Button>
           <Divider />

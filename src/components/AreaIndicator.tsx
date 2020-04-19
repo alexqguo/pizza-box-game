@@ -12,7 +12,7 @@ import { StoreContext } from './App';
 export default () => {
   const classes = useStyles();
   const store: RootStore = useContext(StoreContext);
-  const { ruleStore } = store; // Cannot destructure past this point for observer to work
+  const { ruleStore } = store;
 
   const renderIndicator = () => {
     const areas: { [key: string]: number } = {}; // playerId -> total area for that player

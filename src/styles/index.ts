@@ -112,6 +112,12 @@ export default makeStyles((theme: Theme) => (
     areaIndicatorItem: {
       display: 'inline-block',
       height: 5,
+    },
+    ruleSuggestionPopoverContent: {
+      height: 300,
+      width: 300,
+      overflowY: 'scroll',
+      marginLeft: -10
     }
   })
 ), { index: 1 });

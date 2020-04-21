@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { TextField, Button, ButtonGroup, Box, Typography } from '@material-ui/core';
 import { fabric } from 'fabric';
@@ -18,6 +18,7 @@ import { Rule, Point, GameType, ObjWithRuleId, ShapeValidation } from '../types'
 import { RootStore } from '../stores';
 import { getValidationManager } from '../validation';
 import { enlivenObjects } from '../stores/ruleStore';
+import RuleSuggestionPopover from './RuleSuggestionPopover';
 
 interface State {
   inputText?: string,
@@ -51,6 +52,8 @@ export default () => {
   const store: RootStore = useContext(StoreContext);
   const { gameStore, ruleStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null); // Is this really how I have to do this?
   const isCurrentPlayer = gameStore.game.type === GameType.local || gameStore.localPlayerId === gameStore.game.currentPlayerId;
 
   const newShapeHandler = async (pointer: Point) => {
@@ -157,6 +160,16 @@ export default () => {
     });
   };
 
+  const openPopover = (currentTarget: HTMLElement) => {
+    setPopoverAnchor(currentTarget);
+    setIsPopoverOpen(true);
+  };
+
+  const closePopover = () => {
+    setPopoverAnchor(null);
+    setIsPopoverOpen(false);
+  }
+
   const localShape = window.localStorage.getItem('localShape');
   const canSubmit = !!state.currentShape && !!state.inputText &&
     state.validation && state.validation.isValid;
@@ -217,10 +230,11 @@ export default () => {
           >
             Create
           </Button>
-          <Button>
+          <Button onClick={({ currentTarget }) => openPopover(currentTarget)}>
             🤔
           </Button>
         </ButtonGroup>
+        <RuleSuggestionPopover open={isPopoverOpen} popoverAnchor={popoverAnchor} closePopover={closePopover} />
 
         <div className={classes.validationErrors}>
           {state.validation && state.validation.errors.map(e => e.message).join(', ')}

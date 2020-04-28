@@ -27,7 +27,7 @@ export default (props: Props) => {
       }}
     >
       <div className={classes.ruleSuggestionPopoverContent}>
-        <ul>{rules.map((rule: string) => <li>{rule}</li>)}</ul>
+        <ul>{rules.map((rule: string, i: number) => <li key={i}>{rule}</li>)}</ul>
       </div>
     </Popover>
   );

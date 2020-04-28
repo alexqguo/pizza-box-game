@@ -118,6 +118,9 @@ export default makeStyles((theme: Theme) => (
       width: 300,
       overflowY: 'scroll',
       marginLeft: -10
-    }
+    },
+    timesLanded: {
+      fontSize: '0.75rem',
+    },
   })
 ), { index: 1 });

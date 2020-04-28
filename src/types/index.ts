@@ -21,6 +21,7 @@ export interface Rule {
   playerId: string, // ID of the player who created the rule
   displayText: string,
   data: string, // SVG representation (for now...)
+  timesLanded: number, // For now. In the future should tell who landed
 }
 
 export interface Message {
@@ -35,7 +36,18 @@ export interface GameData {
   indicatorLocation: Point | null,
   hasFlipped: boolean,
   type: string,
-  alertMessage: string,
+  alert: Alert | null,
+}
+
+export enum AlertType {
+  text = 'text',
+  rule = 'rule',
+}
+
+export interface Alert {
+  type: AlertType,
+  message?: string,
+  ruleId?: string,
 }
 
 export interface ShapeValidation {

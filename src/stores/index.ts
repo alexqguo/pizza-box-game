@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 import { shuffle } from 'lodash';
 import GameStore from './gameStore';
-import { SessionData, GameData, Rule, Player, Point, GameType, Message } from '../types';
+import { SessionData, GameData, Rule, Player, Point, GameType, Message, Alert } from '../types';
 import { db } from '../firebase';
 import { createId, serializeObject, playerColors, getInitialPositions } from '../utils';
 import PlayerStore from './playerStore';
@@ -102,6 +102,7 @@ export class RootStore {
         playerId: p.id,
         displayText: `${p.name} drinks!`,
         data: serializeObject(shape),
+        timesLanded: 0,
       };
     });
 
@@ -113,7 +114,7 @@ export class RootStore {
       indicatorLocation: null,
       hasFlipped: false,
       type: gameType,
-      alertMessage: '',
+      alert: null,
     };
 
     const initialMessage: Message = {
@@ -195,12 +196,18 @@ export class RootStore {
     this.gameRef?.update({ indicatorLocation: null });
   }
 
-  async setAlertMessage(alertMessage: string) {
-    await this.gameRef?.update({ alertMessage });
+  async setAlert(alert: Alert) {
+    await this.gameRef?.update({ alert });
   }
 
-  async clearAlertMessage() {
-    await this.gameRef?.update({ alertMessage: null });
+  async clearAlert() {
+    await this.gameRef?.update({ alert: null });
+  }
+  
+  async addCountForRule(ruleId: string) {
+    const ruleSnap = await this.ruleRef?.orderByChild('id').equalTo(ruleId).once('value');
+    const [key, rule] = Object.entries(ruleSnap!.val())[0];
+    db.ref(`${this.prefix}/rules/${key}`).update({ timesLanded: (rule as Rule).timesLanded + 1 });
   }
 
   // TODO: enforce propName
@@ -234,11 +241,13 @@ export class RootStore {
       this.playerStore.setPlayers(value);
     });
 
-    // Subscriibe the ruleStore to Firebase
+    // Subscribe the ruleStore to Firebase
     this.ruleRef = db.ref(`${this.prefix}/rules`);
     this.ruleRef.on('child_added', (snap: firebase.database.DataSnapshot) => {
-      const value: Rule = snap.val();
-      this.ruleStore.addRule(value);
+      this.ruleStore.addRule(snap.val() as Rule);
+    });
+    this.ruleRef.on('child_changed', (snap: firebase.database.DataSnapshot) => {
+      this.ruleStore.updateRule(snap.val() as Rule);
     });
     // TODO: consider a 'child_removed' listener here as well if it ever becomes necessary
 
@@ -248,7 +257,7 @@ export class RootStore {
     });
 
     if (window.location.hostname !== 'localhost') {
-      // Don't do this for localhost
+      // Don't do this for localhost. Why did I put this here?
       window.addEventListener('beforeunload', (e: Event) => {
         e.preventDefault();
         e.returnValue = true;

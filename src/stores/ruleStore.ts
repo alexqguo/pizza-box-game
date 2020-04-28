@@ -33,4 +33,13 @@ export default class RuleStore {
     this.rules.set(rule.id, rule);
     enlivenObjects([JSON.parse(rule.data)]);
   }
+
+  @action updateRule = (rule: Rule) => {
+    /**
+     * We shouldn't need to call enlivenObjects here as nothing visual got added.
+     * This just exists for updating timesLanded. If we ever DO begin to update the 
+     * actual fabric shape data, then just roll everything into addRule.
+     */
+    this.rules.set(rule.id, rule);
+  }
 }

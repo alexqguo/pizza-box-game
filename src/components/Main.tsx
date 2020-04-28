@@ -14,7 +14,7 @@ import AreaIndicator from './AreaIndicator';
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeObject } from '../utils';
-import { Rule, Point, GameType, ObjWithRuleId, ShapeValidation } from '../types';
+import { Rule, Point, GameType, ObjWithRuleId, ShapeValidation, AlertType } from '../types';
 import { RootStore } from '../stores';
 import { getValidationManager } from '../validation';
 import { enlivenObjects } from '../stores/ruleStore';
@@ -96,12 +96,17 @@ export default () => {
 
   const handleExistingShape = (shape: fabric.Object) => {
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    const ruleId = (shape as ObjWithRuleId).ruleId;
     const ruleText = ruleStore.rules
-      .get((shape as ObjWithRuleId).ruleId)!
+      .get(ruleId)!
       .displayText;
     const message = `${name} -- ${ruleText}`;
+    store.addCountForRule(ruleId);
     store.createMessage(message);
-    store.setAlertMessage(message);
+    store.setAlert({
+      ruleId,
+      type: AlertType.rule,
+    });
     dispatch({ type: 'clear' });
   };
 
@@ -142,7 +147,8 @@ export default () => {
         id: ruleId,
         playerId: gameStore.game.currentPlayerId,
         displayText: state.inputText,
-        data: serializeObject(shape)
+        data: serializeObject(shape),
+        timesLanded: 0,
       };
       
       const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
@@ -187,7 +193,10 @@ export default () => {
           const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
           const message = `${name} missed the board and drinks four!`;
           store.createMessage(message)
-          store.setAlertMessage(message);
+          store.setAlert({
+            type: AlertType.text,
+            message,
+          });
         }
 
         store.clearIndicatorLocation();

@@ -203,7 +203,7 @@ export class RootStore {
   async clearAlert() {
     await this.gameRef?.update({ alert: null });
   }
-  
+
   async addCountForRule(ruleId: string) {
     const ruleSnap = await this.ruleRef?.orderByChild('id').equalTo(ruleId).once('value');
     const [key, rule] = Object.entries(ruleSnap!.val())[0];

@@ -48,7 +48,6 @@ Options:
   * On draw end, shape needs to surround the quarter
 * Background image for the canvas
 * Customize shape of the canvas
-* List how many times a space has been landed on
 
 ### Bugs
 * Window unload event to register a user as offline seems to have issues

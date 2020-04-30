@@ -101,6 +101,9 @@ export default makeStyles((theme: Theme) => (
       display: 'flex',
       flexDirection: 'column-reverse'
     },
+    messageListItem: {
+      display: 'inline',
+    },
     validationErrors: {
       fontSize: '0.75rem',
       color: theme.palette.error.main

@@ -14,7 +14,15 @@ import AreaIndicator from './AreaIndicator';
 import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeObject } from '../utils';
-import { Rule, Point, GameType, ObjWithRuleId, ShapeValidation, AlertType } from '../types';
+import {
+  Rule,
+  Point,
+  GameType,
+  ObjWithRuleId,
+  ShapeValidation,
+  MessageType,
+  AlertType
+} from '../types';
 import { RootStore } from '../stores';
 import { getValidationManager } from '../validation';
 import { enlivenObjects } from '../stores/ruleStore';
@@ -50,7 +58,7 @@ export default () => {
   const canvas = getCanvas();
   const classes = useStyles();
   const store: RootStore = useContext(StoreContext);
-  const { gameStore, ruleStore } = store; // Cannot destructure past this point for observer to work
+  const { gameStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null); // Is this really how I have to do this?
@@ -95,14 +103,13 @@ export default () => {
   };
 
   const handleExistingShape = (shape: fabric.Object) => {
-    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     const ruleId = (shape as ObjWithRuleId).ruleId;
-    const ruleText = ruleStore.rules
-      .get(ruleId)!
-      .displayText;
-    const message = `${name} -- ${ruleText}`;
     store.addCountForRule(ruleId);
-    store.createMessage(message);
+    store.createMessage({
+      type: MessageType.rule,
+      playerIds: [gameStore.game.currentPlayerId],
+      ruleId
+    });
     store.setAlert({
       ruleId,
       type: AlertType.rule,
@@ -151,10 +158,13 @@ export default () => {
         timesLanded: 0,
       };
       
-      const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-      await store.createMessage(`${name} created a new rule: ${state.inputText}`);
       getCanvas().remove(shape); // Remove the shape we just created as a copy is about to get hydrated from firebase
       await store.createRule(newRule);
+      await store.createMessage({
+        type: MessageType.createRule,
+        playerIds: [gameStore.game.currentPlayerId],
+        ruleId,
+      });
       dispatch({ type: 'clear' }); // Clear state
     }
   };
@@ -192,7 +202,10 @@ export default () => {
         } else {
           const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
           const message = `${name} missed the board and drinks four!`;
-          store.createMessage(message)
+          store.createMessage({
+            type: MessageType.missBoard,
+            playerIds: [gameStore.game.currentPlayerId],
+          });
           store.setAlert({
             type: AlertType.text,
             message,

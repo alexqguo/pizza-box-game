@@ -15,36 +15,40 @@ import HelpIcon from '@material-ui/icons/Help';
 import ErrorIcon from '@material-ui/icons/Error';
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 import useStyles from '../styles';
-import { Player, GameType, Message } from '../types';
+import { Player, GameType, MessageType } from '../types';
 import { StoreContext } from './App';
 import MessageList from './MessageList';
 import PlayerName from './PlayerName';
+import { RootStore } from '../stores';
 
 export default () => {
   const classes = useStyles();
-  const store = useContext(StoreContext);
+  const store: RootStore = useContext(StoreContext);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isPanicModalOpen, setIsPanicModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const { gameStore, playerStore, messageStore } = store;
+  const { gameStore, playerStore } = store;
 
   const flip = () => store.setPlayerAsBusy();
   const skipTurn = () => {
-    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-    store.createMessage(`${name} skipped their turn.`);
+    store.createMessage({
+      type: MessageType.skip,
+      playerIds: [gameStore.game.currentPlayerId],
+    });
     store.advanceTurn();
   };
   const panic = () => {
-    const localName = store.getPropertyOfPlayer(gameStore.localPlayerId, 'name');
-    const currentName = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-    store.createMessage(`${localName} hit the panic button and skipped ${currentName}'s turn.`);
+    const localId = gameStore.game.type === GameType.remote ? gameStore.localPlayerId : gameStore.game.currentPlayerId;
+    store.createMessage({
+      type: MessageType.panic,
+      playerIds: [localId, gameStore.game.currentPlayerId],
+    });
     store.advanceTurn();
     setIsPanicModalOpen(false);
   };
   const downloadMessages = () => {
-    const rawMessages: string[] = messageStore.messages
-      .map((m: Message) => m.displayString)
-      .join('\n');
+    // Should find a better way to do this
+    const rawMessages = document.getElementById('message-list')!.innerText;
     const downloadElement: HTMLAnchorElement = document.createElement('a');
     downloadElement.setAttribute('href', `data:text/plain;charset=utf-8,${rawMessages}`);
     downloadElement.setAttribute('download', `messages_${gameStore.game.id}.txt`);

@@ -38,8 +38,6 @@ Options:
   * This could be a thing in the drawer that has a message telling the player what to do
 * Pick a preset of rules to start your game
   * Possibly remove initial spaces, or have different loadouts/presets
-* Formatting of messages
-  * Show the current player, timestamp, author of rule they landed on
 * Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
   * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
 * Add (and remove?) players on the fly
@@ -63,5 +61,5 @@ Options:
   * UPDATE: this has already been fixed in Main.tsx, just need to make the fix everywhere else
 * Break up some of the larger components
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
+  * ...or move all the firebase actions into their respective stores rather than throwing everything into the root store. 
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
-* Error boundary so the whole app doesn't crash

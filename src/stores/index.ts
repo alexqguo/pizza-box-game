@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 import { shuffle } from 'lodash';
 import GameStore from './gameStore';
-import { SessionData, GameData, Rule, Player, Point, GameType, Message, Alert } from '../types';
+import { SessionData, GameData, Rule, Player, Point, GameType, Message, Alert, MessageType } from '../types';
 import { db } from '../firebase';
 import { createId, serializeObject, playerColors, getInitialPositions } from '../utils';
 import PlayerStore from './playerStore';
@@ -118,7 +118,9 @@ export class RootStore {
     };
 
     const initialMessage: Message = {
-      displayString: `${playerNames.join(', ')} started the game.`
+      type: MessageType.gameStart,
+      playerIds: playerData.map((p: Player) => p.id),
+      // customText: `${playerNames.join(', ')} started the game.`,
     };
 
     const sessionData: SessionData = {
@@ -143,11 +145,9 @@ export class RootStore {
     this.advanceTurn();
   }
 
-  async createMessage(message: string) {
+  async createMessage(message: Message) {
     if (this.messageRef) {
-      await this.messageRef.push().set({
-        displayString: message
-      });
+      await this.messageRef.push().set(message);
     }
   }
 
@@ -208,6 +208,16 @@ export class RootStore {
     const ruleSnap = await this.ruleRef?.orderByChild('id').equalTo(ruleId).once('value');
     const [key, rule] = Object.entries(ruleSnap!.val())[0];
     db.ref(`${this.prefix}/rules/${key}`).update({ timesLanded: (rule as Rule).timesLanded + 1 });
+  }
+
+  // TODO: should move this to the playerStore and convert to a set to avoid this
+  getPlayer(playerId: string): Player | null {
+    let player: Player | null = null;
+    this.playerStore.players.forEach((p: Player) => {
+      if (p.id === playerId) player = p;
+    });
+
+    return player;
   }
 
   // TODO: enforce propName

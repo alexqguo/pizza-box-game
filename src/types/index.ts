@@ -24,8 +24,19 @@ export interface Rule {
   timesLanded: number, // For now. In the future should tell who landed
 }
 
+export enum MessageType {
+  skip = 'skip',
+  panic = 'panic',
+  missBoard = 'missBoard',
+  rule = 'rule',
+  createRule = 'createRule',
+  gameStart = 'gameStart',
+}
+
 export interface Message {
-  displayString: string,
+  type: MessageType,
+  playerIds: string[],
+  ruleId?: string,
 }
 
 export interface GameData {

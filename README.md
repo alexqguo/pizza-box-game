@@ -30,10 +30,6 @@ Options:
 
 ## Future features/changes
 ### Functional
-* Can reposition shape as long as it contains the quarter
-  * A bit tricky since this needs to be checked on movement, scaling and rotation (can possibly avoid rotation issues if you use the quarter as the rotate point)
-  * Or, allow players to reposition freely and just validate at the end whether or not the quarter is contained
-  * Would also be good to make it so that shapes cannot extend past the edge of the canvas as part of this change
 * Tell people how to actually play the game. Needs WAY more instruction
   * This could be a thing in the drawer that has a message telling the player what to do
 * Pick a preset of rules to start your game

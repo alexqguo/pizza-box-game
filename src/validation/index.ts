@@ -2,6 +2,7 @@ import { fabric } from 'fabric';
 import { ShapeValidation, ShapeValidationError } from '../types';
 import { doesTargetIntersect } from '../components/Canvas';
 import { getArea } from '../utils';
+import RootStore from '../stores';
 
 const MAX_AREA = 25000;
 
@@ -14,6 +15,7 @@ export default class ValidationManager {
     this.validations = [
       this._validateArea,
       this._validateIntersection,
+      this._validateOnQuarter,
     ];
   }
 
@@ -38,6 +40,13 @@ export default class ValidationManager {
     if (!(getArea(shape) > MAX_AREA)) return null;
     return {
       message: 'Your shape is too large',
+    };
+  }
+
+  _validateOnQuarter(shape: fabric.Object): ShapeValidationError | null {
+    if (shape.containsPoint(RootStore.gameStore.game.quarterLocation as fabric.Point)) return null;
+    return {
+      message: 'Your shape is not on top of the quarter',
     };
   }
 }

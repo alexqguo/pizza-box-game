@@ -85,8 +85,8 @@ export default () => {
       strokeWidth: 0,
       fill: playerColor,
       hasControls: true,
-      lockMovementX: true,
-      lockMovementY: true,
+      lockMovementX: false,
+      lockMovementY: false,
       centeredScaling: true,
       // @ts-ignore
       originalFill: playerColor,

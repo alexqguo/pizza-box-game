@@ -12,6 +12,12 @@ interface State {
   tooltipStr: string | null;
 }
 
+interface IntersectionObject extends fabric.Object {
+  refreshLast: boolean,
+  lastLeft: number,
+  lastTop: number,
+}
+
 const QUARTER_RADIUS = 6;
 const INDICATOR_RADIUS = 120;
 const BASE_SPEED = 45;
@@ -233,7 +239,32 @@ export default class Canvas extends PureComponent<{}, State> {
       targetObj.set('fill', validation.isValid ? (targetObj as any).originalFill : 'red');
     }, 50);
 
-    const objectMovingHandler = (e: fabric.IEvent) => {};
+    const objectMovingHandler = (e: fabric.IEvent) => {
+      // Definitely did not rip off this code from SO. Nope, definitely did not do that
+      const intersectCheck = (activeObject: IntersectionObject) => {
+        activeObject.setCoords();
+        if (activeObject.refreshLast !== false) activeObject.refreshLast = true;
+
+        if (
+          // It's not actually a fabric Point object, but it contains x/y the same so it's compatible
+          !activeObject.containsPoint(RootStore.gameStore.game.quarterLocation as fabric.Point)
+          && typeof activeObject.lastLeft === 'number'
+        ) {
+          activeObject.left = activeObject.lastLeft;
+          activeObject.top = activeObject.lastTop;
+          activeObject.refreshLast = false;
+        } else {
+          activeObject.refreshLast = true;
+        }
+
+        if (activeObject.refreshLast) {
+          activeObject.lastLeft = activeObject.left!;
+          activeObject.lastTop = activeObject.top!;
+        }
+      };
+
+      intersectCheck(e.target as IntersectionObject);
+    };
 
     canvas.on('object:scaling', objectModifiedHandler);
     canvas.on('object:rotating', objectModifiedHandler);

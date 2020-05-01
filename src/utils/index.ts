@@ -52,19 +52,3 @@ export const playerColors = [
   // Too red
   //
 ];
-
-const SEPARATOR = 100;
-export function getInitialPositions(n: number, canvasHeight: number, canvasWidth: number) {
-  const results: Point[] = [];
-  const top = canvasHeight / 2;
-  let left = canvasWidth / 2;
-
-  results.push({ x: left, y: top });
-  for (let i = 1; i < n; i++) {
-    const difference = i * SEPARATOR * (i % 2 === 0 ? -1 : 1);
-    left = left + difference;
-    results.push({ x: left, y: top });
-  }
-
-  return results;
-}

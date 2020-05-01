@@ -159,10 +159,11 @@ export default () => {
       };
       
       getCanvas().remove(shape); // Remove the shape we just created as a copy is about to get hydrated from firebase
-      await store.createRule(newRule);
+      const playerId = gameStore.game.currentPlayerId; // Save playerId
+      await store.createRule(newRule); // This advances the turn and currentPlayerId changes
       await store.createMessage({
         type: MessageType.createRule,
-        playerIds: [gameStore.game.currentPlayerId],
+        playerIds: [playerId], // Use the playerId from when the shape was actually created
         ruleId,
       });
       dispatch({ type: 'clear' }); // Clear state

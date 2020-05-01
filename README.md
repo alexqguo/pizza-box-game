@@ -36,7 +36,7 @@ Options:
   * Possibly remove initial spaces, or have different loadouts/presets
 * Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
   * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
-* Add (and remove?) players on the fly
+* Add/remove players on the fly
 * Free draw shapes instead of squares
   * During drawing, constantly check isTargetTransparent on the drawing point and as soon as it isn't flag it
   * On draw end, shape needs to surround the quarter
@@ -45,9 +45,10 @@ Options:
 
 ### Bugs
 * Window unload event to register a user as offline seems to have issues
-* You can move a shape loaded from localstorage, also validation will not run initially
 * The flip indicators can go a bit past the boundaries of the board if you time it correctly
 * The shape controls can go past the boundaries of the board and get hidden
+  * Probably less of an issue now that you can reposition your shape
+* I think you can create a game with an empty player name :/
 
 ### Technical improvements
 * Dev/Prod modes instead of 'localhost' checks everywhere

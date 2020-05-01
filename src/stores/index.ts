@@ -1,13 +1,11 @@
-import { fabric } from 'fabric';
 import { shuffle } from 'lodash';
 import GameStore from './gameStore';
 import { SessionData, GameData, Rule, Player, Point, GameType, Message, Alert, MessageType } from '../types';
 import { db } from '../firebase';
-import { createId, serializeObject, playerColors, getInitialPositions } from '../utils';
+import { createId, playerColors } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
 import MessageStore from './messageStore';
-import { getCanvas } from '../components/Canvas';
 
 export class RootStore {
   gameStore: GameStore;
@@ -48,7 +46,6 @@ export class RootStore {
    * @param localPlayer
    */
   async createGame(playerNames: string[], localPlayer: string, gameType: string) {
-    const canvas: fabric.Canvas = getCanvas();
     const gameId: string = createId('game');
     this.prefix = `sessions/${gameId}`;
     this.gameId = gameId;
@@ -70,42 +67,6 @@ export class RootStore {
       };
     });
 
-    // The initial shapes
-    const initialPositions: Point[] = getInitialPositions(
-      playerNames.length, canvas.getHeight(), canvas.getWidth());
-    const ruleData: Rule[] = playerData.map((p: Player, i: number) => {
-      const ruleId: string = createId('rule');
-      const shape = new fabric.Rect({
-        width: 60,
-        height: 60,
-        fill: p.color,
-        strokeWidth: 0,
-        originX: 'center',
-        originY: 'center',
-        selectable: false,
-        left: initialPositions[i].x,
-        top: initialPositions[i].y,
-        // @ts-ignore Additional properties
-        ruleId, 
-        originalFill: p.color
-      });
-
-      /**
-       * Can create a text object and group here if we want
-       * 
-       * text = new fabric.Text('text', { ... })
-       * group = new fabric.Group([shape, text], { ... })
-       */
-
-      return {
-        id: ruleId,
-        playerId: p.id,
-        displayText: `${p.name} drinks!`,
-        data: serializeObject(shape),
-        timesLanded: 0,
-      };
-    });
-
     const gameData: GameData = {
       id: gameId,
       currentPlayerId: playerData[0].id,
@@ -120,13 +81,12 @@ export class RootStore {
     const initialMessage: Message = {
       type: MessageType.gameStart,
       playerIds: playerData.map((p: Player) => p.id),
-      // customText: `${playerNames.join(', ')} started the game.`,
     };
 
     const sessionData: SessionData = {
       game: gameData,
       players: playerData,
-      rules: ruleData,
+      rules: [],
       messages: [initialMessage],
     }
 

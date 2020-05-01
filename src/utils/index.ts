@@ -1,5 +1,3 @@
-import { Point } from '../types';
-
 export function createId(prefix?: string) {
   if (window.location.hostname === 'localhost') prefix = `${prefix}-dev`;
   return `${prefix ? prefix + '__' : ''}${Math.random().toString(36).substring(2)}${Date.now().toString(36)}`;

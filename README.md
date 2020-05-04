@@ -30,10 +30,16 @@ Options:
 
 ## Future features/changes
 ### Functional
-* Tell people how to actually play the game. Needs WAY more instruction
-  * This could be a thing in the drawer that has a message telling the player what to do
+* Spectator mode
+  * Players can join, but as a spectator player type
+  * Game will not include spectators when deciding whose turn it is
+  * Spectators can be shown in the player indicator as "Spectators: Player, Other Player, etc."
+  * Spectators can choose to join the game for real
+  * Players who are inactive can become spectators
 * Pick a preset of rules to start your game
   * Possibly remove initial spaces, or have different loadouts/presets
+* Tell people how to actually play the game. Needs WAY more instruction
+  * This could be a thing in the drawer that has a message telling the player what to do
 * Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
   * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
 * Free draw shapes instead of squares
@@ -41,7 +47,6 @@ Options:
   * On draw end, shape needs to surround the quarter and lock movement? 
 * Background image for the canvas
 * Customize shape of the canvas
-* Spectator mode
 * Remove player?
 
 ### Bugs

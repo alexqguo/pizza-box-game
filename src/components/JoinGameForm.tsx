@@ -70,8 +70,11 @@ export default ({ gameId, closeModal }: Props) => {
     } else {
       if (state.gameSearchStatus !== GameSearchStatus.found) {
         db.ref(`sessions/${state.gameId}/players`).on('value', (snap: firebase.database.DataSnapshot) => {
+          const playersSnap = snap.val();
+          // If a new player has been added, firebase uses a map here instead
+          const players = Array.isArray(playersSnap) ? playersSnap : Object.values(playersSnap);
           updateState({
-            players: snap.val(),
+            players,
             gameSearchStatus: GameSearchStatus.found,
             gameType: game.type,
           });

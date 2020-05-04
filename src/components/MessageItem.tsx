@@ -2,13 +2,14 @@ import React, { useContext } from 'react';
 import { StoreContext } from './App';
 import MessagePlayerName from './MessagePlayerName';
 import { Message, MessageType, } from '../types';
+import { RootStore } from '../stores';
 
 interface Props {
   message: Message
 }
 
 export default ({ message }: Props) => {
-  const store = useContext(StoreContext);
+  const store: RootStore = useContext(StoreContext);
 
   const getContent = (message: Message) => {
     switch (message.type) {
@@ -31,14 +32,14 @@ export default ({ message }: Props) => {
         return (
           <>
             <MessagePlayerName playerId={message.playerIds[0]} /> landed on:&nbsp;
-            <strong>{store.ruleStore.rules.get(message.ruleId).displayText}</strong>
+            <strong>{store.ruleStore.rules.get(message.ruleId!)!.displayText}</strong>
           </>
         );
       case MessageType.createRule:
         return (
           <>
             <MessagePlayerName playerId={message.playerIds[0]} /> created a new rule:&nbsp;
-            <strong>{store.ruleStore.rules.get(message.ruleId).displayText}</strong>
+            <strong>{store.ruleStore.rules.get(message.ruleId!)!.displayText}</strong>
           </>
         );
       case MessageType.gameStart:
@@ -47,6 +48,12 @@ export default ({ message }: Props) => {
             {message.playerIds
               .map<React.ReactNode>((playerId: string) => <MessagePlayerName key={playerId} playerId={playerId} />)
               .reduce((prev, curr) => [prev, ', ', curr])} started a new game!
+          </>
+        );
+      case MessageType.newPlayer:
+        return (
+          <>
+            <MessagePlayerName playerId={message.playerIds[0]} /> joined the game!
           </>
         );
       default: throw new Error('Unrecognized message type');

@@ -36,12 +36,13 @@ Options:
   * Possibly remove initial spaces, or have different loadouts/presets
 * Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
   * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
-* Add/remove players on the fly
 * Free draw shapes instead of squares
   * During drawing, constantly check isTargetTransparent on the drawing point and as soon as it isn't flag it
-  * On draw end, shape needs to surround the quarter
+  * On draw end, shape needs to surround the quarter and lock movement? 
 * Background image for the canvas
 * Customize shape of the canvas
+* Spectator mode
+* Remove player?
 
 ### Bugs
 * Window unload event to register a user as offline seems to have issues
@@ -53,10 +54,8 @@ Options:
 ### Technical improvements
 * Dev/Prod modes instead of 'localhost' checks everywhere
 * Theme MUI for consistent primary/secondary colors
-* Fix RootStore typing with TS
-  * Becuase it exports the instantiated object and not the class itself we get an error saying that it refers to a value not a type
-  * UPDATE: this has already been fixed in Main.tsx, just need to make the fix everywhere else
 * Break up some of the larger components
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
   * ...or move all the firebase actions into their respective stores rather than throwing everything into the root store. 
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.
+* Separate dev/prod firebase db instances

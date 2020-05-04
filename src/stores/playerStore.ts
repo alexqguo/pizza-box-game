@@ -4,7 +4,7 @@ import { Player } from '../types';
 export default class PlayerStore {
   @observable players: Player[] = [];
 
-  @action setPlayers = (players: Player[]) => {
-    this.players = players;
+  @action addPlayer = (player: Player) => {
+    this.players.push(player);
   }
 }

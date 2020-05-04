@@ -2,7 +2,7 @@ import { shuffle } from 'lodash';
 import GameStore from './gameStore';
 import { SessionData, GameData, Rule, Player, Point, GameType, Message, Alert, MessageType } from '../types';
 import { db } from '../firebase';
-import { createId, playerColors } from '../utils';
+import { createId, playerColors, chooseNewColor } from '../utils';
 import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
 import MessageStore from './messageStore';
@@ -92,6 +92,25 @@ export class RootStore {
 
     this.subscribeToGame();
     await db.ref(`${this.prefix}`).set(sessionData);
+  }
+
+  async createPlayer(name: string) {
+    if (!this.playerRef) return;
+    const playerId = createId('player');
+    const gameType = this.gameStore.game.type;
+    const existingColors = this.playerStore.players.map((p: Player) => p.color);
+    const color = chooseNewColor(existingColors);
+
+    await this.playerRef.push().set({
+      id: playerId,
+      name,
+      color,
+      ...(gameType === GameType.remote ? { isActive: false } : undefined),
+    });
+    await this.createMessage({
+      type: MessageType.newPlayer,
+      playerIds: [playerId]
+    });
   }
 
   /**
@@ -206,9 +225,8 @@ export class RootStore {
 
     // Subscribe the playerStore to Firebase
     this.playerRef = db.ref(`${this.prefix}/players`);
-    this.playerRef.on('value', (snap: firebase.database.DataSnapshot) => {
-      const value: Player[] = snap.val();
-      this.playerStore.setPlayers(value);
+    this.playerRef.on('child_added', (snap: firebase.database.DataSnapshot) => {
+      this.playerStore.addPlayer(snap.val() as Player);
     });
 
     // Subscribe the ruleStore to Firebase
@@ -219,7 +237,6 @@ export class RootStore {
     this.ruleRef.on('child_changed', (snap: firebase.database.DataSnapshot) => {
       this.ruleStore.updateRule(snap.val() as Rule);
     });
-    // TODO: consider a 'child_removed' listener here as well if it ever becomes necessary
 
     this.messageRef = db.ref(`${this.prefix}/messages`);
     this.messageRef.on('child_added', (snap: firebase.database.DataSnapshot) => {

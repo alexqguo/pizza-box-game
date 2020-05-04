@@ -27,26 +27,33 @@ export function getArea(obj: fabric.Object) {
   }
 }
 
+export function chooseNewColor(existingColors: string[]) {
+  const existingColorSet = new Set(existingColors);
+  for (let i = 0; i < playerColors.length; i++) {
+    const color = playerColors[i];
+    if (!existingColorSet.has(color)) return color;
+  }
+
+  return 'black';
+};
+
 export const playerColors = [
-  'tomato',
-  'violet',
-  'turquoise',
+  'greenyellow',
+  'lightblue',
+  'slategray',
+  'pink',
   'steelblue',
   'springgreen',
   'tan',
-  'midnightblue',
-  'yellow',
+  'blueviolet',
   'palegoldenrod',
   'indigo',
   'fuchsia',
   'darkseagreen',
   'forestgreen',
   'darkred',
-  'crimson',
+  'orange',
+  'lightgray',
   'gold',
-  // Too light
-  // 'azure',
-  // 'whitesmoke',
-  // Too red
-  //
+  'red'
 ];

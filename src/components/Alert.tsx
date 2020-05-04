@@ -7,10 +7,11 @@ import useStyles from '../styles';
 import { StoreContext } from './App';
 import MessageList from './MessageList';
 import { GameType, Alert, AlertType } from '../types';
+import { RootStore } from '../stores';
 
 export default () => {
   const classes = useStyles();
-  const store = useContext(StoreContext);
+  const store: RootStore = useContext(StoreContext);
   const { gameStore, ruleStore } = store;
 
   // Doesn't actually close the modal directly, but sends a firebase update
@@ -25,7 +26,7 @@ export default () => {
     if (!alert) return;
     if (alert.type === AlertType.text) return <>{alert.message}</>;
 
-    const rule = ruleStore.rules.get(alert.ruleId);
+    const rule = ruleStore.rules.get(alert.ruleId!);
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
     if (!rule || !name) return;
 
@@ -42,7 +43,7 @@ export default () => {
       <div className={classes.modalPaper}>
         <Grid container spacing={3}>
           <Grid item xs={8}>
-            <p className={classes.alertText}>{getAlertContent(gameStore.game.alert)}</p>
+            <p className={classes.alertText}>{getAlertContent(gameStore.game.alert!)}</p>
             
             {canCloseModal ? 
               <Button color="secondary" size="small" onClick={closeModal} variant="contained">

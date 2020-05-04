@@ -5,6 +5,7 @@ import { StoreContext } from './App';
 import MessageItem from './MessageItem';
 import useStyles from '../styles';
 import { Message } from '../types';
+import { RootStore } from '../stores';
 
 export const serializeMessageToRawText = (message: Message) => {
   return `this is a ${message.type} message`;
@@ -12,7 +13,7 @@ export const serializeMessageToRawText = (message: Message) => {
 
 export default () => {
   const classes = useStyles();
-  const store = useContext(StoreContext);
+  const store: RootStore = useContext(StoreContext);
   const { messageStore } = store;
   
   return useObserver(() => (

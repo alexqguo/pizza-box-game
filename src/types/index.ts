@@ -31,6 +31,7 @@ export enum MessageType {
   rule = 'rule',
   createRule = 'createRule',
   gameStart = 'gameStart',
+  newPlayer = 'newPlayer',
 }
 
 export interface Message {

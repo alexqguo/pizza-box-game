@@ -28,12 +28,16 @@ export default () => {
 
     const rule = ruleStore.rules.get(alert.ruleId!);
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    const authorName = store.getPropertyOfPlayer(rule?.playerId!, 'name');
     if (!rule || !name) return;
 
     return (
       <>
         {name}: {rule.displayText}
-        <div className={classes.timesLanded}>Times landed: {rule.timesLanded}</div>
+        <div className={classes.timesLanded}>
+          Created by <strong>{authorName}</strong>.
+          Times landed: {rule.timesLanded}
+        </div>
       </>
     )
   }; 

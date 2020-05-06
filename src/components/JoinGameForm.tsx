@@ -25,20 +25,34 @@ enum GameSearchStatus {
   notFound = 'notFound',
 }
 
+enum JoinGameComponent {
+  findGame = 'findGame',
+  playerSelection = 'playerSelection',
+  spectatorName = 'spectatorName'
+}
+
 interface State {
   gameId: string,
   gameSearchStatus: GameSearchStatus,
   gameType?: GameType,
   players?: Player[],
   selectedPlayerId: string,
+  isSpectator: boolean,
+  spectatorName: string,
+  components: { [key: string]: boolean }
 }
+
+const SPECTATOR = 'spectator';
 
 export default ({ gameId, closeModal }: Props) => {
   const classes = useStyles();
   const [state, setState] = useState<State>({
     gameId: gameId || '',
     gameSearchStatus: GameSearchStatus.notFound,
-    selectedPlayerId: ''
+    selectedPlayerId: '',
+    isSpectator: false,
+    spectatorName: '',
+    components: { [JoinGameComponent.findGame]: true, },
   });
   const updateState = (newState: Object) => {
     setState({ ...state, ...newState });
@@ -49,12 +63,8 @@ export default ({ gameId, closeModal }: Props) => {
     const snap: firebase.database.DataSnapshot = await db.ref(`sessions/${state.gameId}/game`).once('value');
     return snap.val();
   }
-
-  const onInputChange = (value: string) => {
-    updateState({
-      gameId: value,
-    });
-  }
+  const onInputChange = (value: string) => updateState({ gameId: value });
+  const onSpectatorNameChange = (value: string) => updateState({ spectatorName: value });
 
   const findGame = async () => {
     if (!state.gameId) return;
@@ -73,10 +83,12 @@ export default ({ gameId, closeModal }: Props) => {
           const playersSnap = snap.val();
           // If a new player has been added, firebase uses a map here instead
           const players = Array.isArray(playersSnap) ? playersSnap : Object.values(playersSnap);
+          state.components[JoinGameComponent.playerSelection] = true;
           updateState({
             players,
             gameSearchStatus: GameSearchStatus.found,
             gameType: game.type,
+            components: state.components,
           });
         });
       }
@@ -84,19 +96,39 @@ export default ({ gameId, closeModal }: Props) => {
   }
 
   const handleRadioChange = (target: HTMLInputElement) => {
+    const value = target.value;
+    const isSpectator = value === SPECTATOR;
+    state.components[JoinGameComponent.spectatorName] = isSpectator;
+
     updateState({
-      selectedPlayerId: target.value,
+      isSpectator,
+      selectedPlayerId: value,
+      components: state.components,
     });
   }
 
   const canJoin = () => {
-    if (state.gameSearchStatus !== GameSearchStatus.found) return false;
-    if (state.gameType === GameType.local) return true;
-    if (!state.selectedPlayerId || !state.players || state.players.length === 0) return false;
+    const { 
+      gameSearchStatus,
+      gameType,
+      selectedPlayerId,
+      isSpectator,
+      players,
+      spectatorName,
+    } = state;
 
-    const currentSelectedPlayer = state.players && state.players
-      .find((p: Player) => p.id === state.selectedPlayerId);
-    return !currentSelectedPlayer?.isActive;
+    if (gameSearchStatus !== GameSearchStatus.found) return false;
+    if (gameType === GameType.local) return true;
+    if (!selectedPlayerId || !players || players.length === 0) return false;
+    // if spectator and required info present and name unique, return true
+
+    if (isSpectator) {
+      const existingPlayer = players.find((p: Player) => p.name === spectatorName);
+      return !!spectatorName && !existingPlayer && players.length < 8 && false; // remove once this is ready
+    } else {
+      const currentSelectedPlayer = players.find((p: Player) => p.id === selectedPlayerId);
+      return !currentSelectedPlayer?.isActive;
+    }
   }
 
   const joinGame = async () => {
@@ -124,41 +156,66 @@ export default ({ gameId, closeModal }: Props) => {
     <Box>
       <form autoComplete="off">
         <div className={classes.formInputs}>
-          <Grid container alignItems="center" spacing={3}>
-            <Grid item xs={4}>
-              <TextField
-                label="Game ID"
-                size="small"
-                fullWidth
-                onChange={({ target }) => onInputChange(target.value)}
-                className={classes.gameFormTextField}
-                disabled={state.gameSearchStatus === GameSearchStatus.found}
-                defaultValue={gameId}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <Button size="small"
-                variant="contained"
-                color="primary"
-                disabled={!state.gameId || state.gameSearchStatus === GameSearchStatus.found}
-                onClick={findGame}>
-                Find game
-              </Button>
-            </Grid>
-          </Grid>
+            {state.components[JoinGameComponent.findGame] === true ?
+              <Grid container alignItems="center" spacing={3}>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Game ID"
+                    size="small"
+                    fullWidth
+                    onChange={({ target }) => onInputChange(target.value)}
+                    className={classes.gameFormTextField}
+                    disabled={state.gameSearchStatus === GameSearchStatus.found}
+                    defaultValue={gameId}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <Button size="small"
+                    variant="contained"
+                    color="primary"
+                    disabled={!state.gameId || state.gameSearchStatus === GameSearchStatus.found}
+                    onClick={findGame}>
+                    Find game
+                  </Button>
+                </Grid>
+              </Grid>
+            : null}
 
-          <Grid container alignItems="center" spacing={3}>
-            {state.players ? 
+          {state.components[JoinGameComponent.playerSelection] === true ? 
+            <Grid container alignItems="center" spacing={3}>
               <Grid item xs={4}>
                 <FormLabel component="legend">Who are you playing as?</FormLabel>
                 <RadioGroup value={state.selectedPlayerId} onChange={({ target }) => handleRadioChange(target)}>
-                  {state.players && state.players.map((p: Player) => (
+                  {state.players!.map((p: Player) => (
                     <FormControlLabel value={p.id} key={p.id} 
                       control={<Radio />} label={p.name} disabled={p.isActive} />
                   ))}
+
+                  {state.players!.length < 8 ?
+                    <>
+                      Or are you spectating? (this doesn't work yet)
+                      <FormControlLabel value={SPECTATOR} key={SPECTATOR} 
+                        control={<Radio />} label="Spectator" />
+                    </>
+                  : null}
                 </RadioGroup> 
-              </Grid> : null}
-          </Grid>
+              </Grid>
+            </Grid>
+          : null}
+
+          {state.components[JoinGameComponent.spectatorName] === true ?
+            <Grid container alignItems="center" spacing={3}>
+              <Grid item xs={4}>
+                <TextField
+                  label="Name"
+                  size="small"
+                  fullWidth
+                  onChange={({ target }) => onSpectatorNameChange(target.value)}
+                  className={classes.gameFormTextField}
+                />
+              </Grid>
+            </Grid>
+          : null}
         </div>
 
         <Button 

@@ -34,8 +34,9 @@ Options:
   * Players can join, but as a spectator player type
   * Game will not include spectators when deciding whose turn it is
   * Spectators can be shown in the player indicator as "Spectators: Player, Other Player, etc."
-  * Spectators can choose to join the game for real
+  * Spectators can choose to join the game for real, if there are less than 8 current players
   * Players who are inactive can become spectators
+  * Players can go from active to spectator
 * Pick a preset of rules to start your game
   * Possibly remove initial spaces, or have different loadouts/presets
 * Tell people how to actually play the game. Needs WAY more instruction
@@ -47,7 +48,6 @@ Options:
   * On draw end, shape needs to surround the quarter and lock movement? 
 * Background image for the canvas
 * Customize shape of the canvas
-* Remove player?
 
 ### Bugs
 * Window unload event to register a user as offline seems to have issues

@@ -54,7 +54,6 @@ Options:
 * The flip indicators can go a bit past the boundaries of the board if you time it correctly
 * The shape controls can go past the boundaries of the board and get hidden
   * Probably less of an issue now that you can reposition your shape
-* I think you can create a game with an empty player name :/
 
 ### Technical improvements
 * Dev/Prod modes instead of 'localhost' checks everywhere

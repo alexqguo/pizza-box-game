@@ -37,9 +37,10 @@ export default ({ closeModal }: Props) => {
      * - Close modal
      */
     const isValid = new Set(players).size === players.length;
+    const playerNames = players.filter((p: string) => isValidName(p));
 
     if (isValid) {
-      await RootStore.createGame(players, localPlayer, gameType);
+      await RootStore.createGame(playerNames, localPlayer, gameType);
       closeModal();
     }
   };

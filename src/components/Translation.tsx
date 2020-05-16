@@ -3,8 +3,6 @@ import en from '../i18n/en_US.json';
 import es from '../i18n/es_MX.json';
 
 const languages: {[key: string]: any} = {  en, es };
-// const langaugeGetter = (language: string): any => langauges[language]  
-
 const browserLanguage: string =  navigator?.language.split('-')[0] || 'en';
 
 export const LanguageContext = React.createContext<any>(en);

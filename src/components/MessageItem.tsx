@@ -3,6 +3,7 @@ import { StoreContext } from './App';
 import MessagePlayerName from './MessagePlayerName';
 import { Message, MessageType, } from '../types';
 import { RootStore } from '../stores';
+import {LanguageContext} from './Translation'
 
 interface Props {
   message: Message
@@ -10,35 +11,37 @@ interface Props {
 
 export default ({ message }: Props) => {
   const store: RootStore = useContext(StoreContext);
+  const i18n = useContext(LanguageContext);
+
 
   const getContent = (message: Message) => {
     switch (message.type) {
       case MessageType.skip:
-        return <><MessagePlayerName playerId={message.playerIds[0]} /> skipped their turn.</>;
+        return <><MessagePlayerName playerId={message.playerIds[0]} /> {i18n.skippedTheirTurn} </>;
       case MessageType.panic:
         return (
           <>
-            <MessagePlayerName playerId={message.playerIds[0]} /> panicked and skipped&nbsp;
-            <MessagePlayerName playerId={message.playerIds[1]} />'s turn.
+            <MessagePlayerName playerId={message.playerIds[0]} /> {i18n.panickedAndSkipped}&nbsp;
+            <MessagePlayerName playerId={message.playerIds[1]} />{i18n.panickedAndSkipped1}
           </>
         );
       case MessageType.missBoard:
         return (
           <>
-            <MessagePlayerName playerId={message.playerIds[0]} /> missed the board and drinks four!
+            <MessagePlayerName playerId={message.playerIds[0]} /> {i18n.missedTheBoard}!
           </>
         );
       case MessageType.rule:
         return (
           <>
-            <MessagePlayerName playerId={message.playerIds[0]} /> landed on:&nbsp;
+            <MessagePlayerName playerId={message.playerIds[0]} /> {i18n.landedOn}&nbsp;
             <strong>{store.ruleStore.rules.get(message.ruleId!)!.displayText}</strong>
           </>
         );
       case MessageType.createRule:
         return (
           <>
-            <MessagePlayerName playerId={message.playerIds[0]} /> created a new rule:&nbsp;
+            <MessagePlayerName playerId={message.playerIds[0]} /> {i18n.createdNewRule}&nbsp;
             <strong>{store.ruleStore.rules.get(message.ruleId!)!.displayText}</strong>
           </>
         );
@@ -47,13 +50,13 @@ export default ({ message }: Props) => {
           <>
             {message.playerIds
               .map<React.ReactNode>((playerId: string) => <MessagePlayerName key={playerId} playerId={playerId} />)
-              .reduce((prev, curr) => [prev, ', ', curr])} started a new game!
+              .reduce((prev, curr) => [prev, ', ', curr])} {i18n.startedANewGame}
           </>
         );
       case MessageType.newPlayer:
         return (
           <>
-            <MessagePlayerName playerId={message.playerIds[0]} /> joined the game!
+            <MessagePlayerName playerId={message.playerIds[0]} /> {i18n.joinedTheGame}
           </>
         );
       default: throw new Error('Unrecognized message type');

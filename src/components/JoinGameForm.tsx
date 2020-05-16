@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   TextField,
   Button,
@@ -13,6 +13,7 @@ import { db } from '../firebase';
 import store from '../stores';
 import useStyles from '../styles';
 import { GameData, GameType, Player } from '../types';
+import {LanguageContext} from './Translation'
 
 interface Props {
   gameId: string | null,
@@ -46,6 +47,7 @@ const SPECTATOR = 'spectator';
 
 export default ({ gameId, closeModal }: Props) => {
   const classes = useStyles();
+  const i18n = useContext(LanguageContext);
   const [state, setState] = useState<State>({
     gameId: gameId || '',
     gameSearchStatus: GameSearchStatus.notFound,
@@ -57,6 +59,7 @@ export default ({ gameId, closeModal }: Props) => {
   const updateState = (newState: Object) => {
     setState({ ...state, ...newState });
   }
+
 
   // These should be the only direct interactions with firebase other than the rootStore
   const getGame = async () => {
@@ -175,7 +178,7 @@ export default ({ gameId, closeModal }: Props) => {
                     color="primary"
                     disabled={!state.gameId || state.gameSearchStatus === GameSearchStatus.found}
                     onClick={findGame}>
-                    Find game
+                    {i18n.findGame}
                   </Button>
                 </Grid>
               </Grid>
@@ -193,7 +196,7 @@ export default ({ gameId, closeModal }: Props) => {
 
                   {state.players!.length < 8 ?
                     <>
-                      Or are you spectating? (this doesn't work yet)
+                      {i18n.expectating}
                       <FormControlLabel value={SPECTATOR} key={SPECTATOR} 
                         control={<Radio />} label="Spectator" />
                     </>
@@ -223,7 +226,7 @@ export default ({ gameId, closeModal }: Props) => {
           variant="contained" 
           color="primary" 
           onClick={joinGame}>
-          Join game
+          {i18n.joinGame}
         </Button>
       </form>
 

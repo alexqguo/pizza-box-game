@@ -5,6 +5,7 @@ import { StoreContext } from './App';
 import { RootStore } from '../stores';
 import useStyles from '../styles';
 import { Player } from '../types';
+import {LanguageContext} from './Translation'
 
 export default () => {
   const classes = useStyles();
@@ -14,6 +15,7 @@ export default () => {
   const existingPlayerNames = new Set(store.playerStore.players.map((p: Player) => p.name));
   const isValidName = (name: string) => !!name && !existingPlayerNames.has(name);
   const canSubmit = isValidName(playerName);
+  const i18n = useContext(LanguageContext);
 
   const onInputChange = (value: string) => setPlayerName(value);
   const cancel = () => {
@@ -30,8 +32,7 @@ export default () => {
       <Button
         disabled={store.playerStore.players.length >= 8}
         onClick={() => setIsModalOpen(true)}
-      >
-        Add player
+      >{i18n.addPlayer}
       </Button>
 
       <Modal className={classes.modal} open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -51,12 +52,12 @@ export default () => {
                 color="primary"
                 disabled={!canSubmit}
                 onClick={() => add()}>
-                Add
+                {i18n.add}
               </Button>&nbsp;
               <Button size="small"
                 variant="contained"
                 onClick={() => cancel()}>
-                Cancel
+                {i18n.cancel}
               </Button>
             </Grid>
           </Grid>

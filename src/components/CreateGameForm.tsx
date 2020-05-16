@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   TextField,
   Button,
@@ -15,6 +15,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import useStyles from '../styles';
 import { GameType } from '../types';
 import RootStore from '../stores';
+import {LanguageContext} from './Translation'
 
 interface Props {
   closeModal: Function
@@ -28,6 +29,7 @@ export default ({ closeModal }: Props) => {
   const [players, setPlayers] = useState<string[]>(['', ''])
   const [gameType, setGameType] = useState<string>('');
   const [localPlayer, setLocalPlayer] = useState<string>('');
+  const i18n = useContext(LanguageContext);
 
   const validateForm = async () => {
     // Begin shitty validation
@@ -75,9 +77,11 @@ export default ({ closeModal }: Props) => {
   return (
     <Box>
       <Typography paragraph>
-        Welcome to online pizza box game!
-        Inspired by <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/AskReddit/comments/7m6g6h/drinkers_of_reddit_what_are_some_insanely_good/drs4wil/">this Reddit comment</a>.
-        Once you start the game, click the help icon in the bottom left corner to see the rules.
+        {i18n.welcome}<br >
+        </br>{i18n.welcome1}
+        <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/AskReddit/comments/7m6g6h/drinkers_of_reddit_what_are_some_insanely_good/drs4wil/">
+          {i18n.welcome2}
+        </a> { i18n.welcome3}
       </Typography>
 
 
@@ -85,7 +89,7 @@ export default ({ closeModal }: Props) => {
         <div className={classes.formInputs}>
           <Grid container spacing={3}>
             <Grid item xs={6}>
-              <FormLabel component="legend">Enter the player names</FormLabel>
+              <FormLabel component="legend">{i18n.welcome}</FormLabel>
               {players.map((name: string, i: number) => (
                 <TextField
                   label="Name"
@@ -104,27 +108,27 @@ export default ({ closeModal }: Props) => {
                 disabled={players.length >= 8}
                 onClick={() => setPlayers([...players, ''])}
               >
-                + Player
+                {i18n.player}
               </Button>
             </Grid>
 
             <Grid item xs={6}>
-              <FormLabel component="legend">Are you playing locally or remotely?</FormLabel>
+              <FormLabel component="legend">{i18n.playingHow}</FormLabel>
               <RadioGroup value={gameType} onChange={({ target }) => handleRadioChange(target)}>
                 <FormControlLabel value={GameType.local} control={<Radio />} label={
                   <>
-                    Local
+                    {i18n.local}
                     <Tooltip placement="top" className={classes.gameFormIcon}
-                      title="Playing with friends in the same room. The game is controlled on this device.">
+                      title={i18n.toolTipPlayingWithFriendsLocal}>
                       <HelpIcon color="action" />
                     </Tooltip>
                   </>
                 } />
                 <FormControlLabel value={GameType.remote} control={<Radio />} label={
                   <>
-                    Remote
+                    {i18n.remote}
                     <Tooltip placement="top" className={classes.gameFormIcon}
-                      title="Playing with friends, each on their own computer. The game is shared across devices, and each player takes their turn from their device.">
+                      title={i18n.toolTipPlayingWithFriendsRemote}>
                       <HelpIcon color="action" />
                     </Tooltip>
                   </>
@@ -133,13 +137,13 @@ export default ({ closeModal }: Props) => {
 
               {gameType === GameType.remote ? 
                 <>
-                  <FormLabel component="legend">Who are you playing as?</FormLabel>
+                  <FormLabel component="legend">{i18n.playingAs}</FormLabel>
                   <RadioGroup value={localPlayer} onChange={({ target }) => handleLocalPlayerChange(target)}>
                     {players.filter((n: string) => !!n).map((name: string, i: number) => (
                       <FormControlLabel key={i} value={name} control={<Radio />} label={name} />
                     ))}
                   </RadioGroup>
-                  {players.filter((n: string) => !!n).length === 0 ? 'Please enter player names' : null}
+                  {players.filter((n: string) => !!n).length === 0 ? i18n.playersName : null}
                 </>
                 : null
               }
@@ -152,7 +156,7 @@ export default ({ closeModal }: Props) => {
           variant="contained" 
           color="primary" 
           onClick={validateForm}>
-          Start game
+          {i18n.startGame}
         </Button>
       </form>
     </Box>

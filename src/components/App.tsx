@@ -9,6 +9,7 @@ import useStyles from '../styles';
 import WelcomeModal from './WelcomeModal';
 import { getCanvas } from './Canvas';
 import RootStore from '../stores';
+import {LanguageProvider} from './Translation'
 
 export const StoreContext = React.createContext<any>(null);
 const StoreProvider = ({ children }: any) => {
@@ -34,14 +35,16 @@ export default () => {
   
   return (
     <StoreProvider>
-      <div className={classes.root} data-testid="asdf">
-        <CssBaseline />
-        <AppBar />
-        <Drawer />
-        <Main />
-        <WelcomeModal />
-        <Alert />
-      </div>
+      <LanguageProvider>
+        <div className={classes.root} data-testid="asdf">
+          <CssBaseline />
+          <AppBar />
+          <Drawer />
+          <Main />
+          <WelcomeModal />
+          <Alert />
+        </div>
+      </LanguageProvider>
     </StoreProvider>
   );
 };

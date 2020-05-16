@@ -27,6 +27,7 @@ import { RootStore } from '../stores';
 import { getValidationManager } from '../validation';
 import { enlivenObjects } from '../stores/ruleStore';
 import RuleSuggestionPopover from './RuleSuggestionPopover';
+import {LanguageContext} from './Translation'
 
 interface State {
   inputText?: string,
@@ -58,6 +59,7 @@ export default () => {
   const canvas = getCanvas();
   const classes = useStyles();
   const store: RootStore = useContext(StoreContext);
+  const i18n = useContext(LanguageContext);
   const { gameStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -202,7 +204,7 @@ export default () => {
           newShapeHandler(quarterLocation);
         } else {
           const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-          const message = `${name} missed the board and drinks four!`;
+          const message = `${name} ${i18n.missedTheBoard}`;
           store.createMessage({
             type: MessageType.missBoard,
             playerIds: [gameStore.game.currentPlayerId],
@@ -233,7 +235,7 @@ export default () => {
       <div className={classes.toolbarOffset} />
       <Box className={classes.createRuleContainer}>
         <TextField
-          label="Rule"
+          label={i18n.rule}
           size="small"
           className={classes.createRuleInput}
           disabled={(!state.currentShape)}
@@ -251,7 +253,7 @@ export default () => {
             disabled={!canSubmit}
             onClick={createRule}
           >
-            Create
+            {i18n.create}
           </Button>
           <Button onClick={({ currentTarget }) => openPopover(currentTarget)}>
             🤔
@@ -274,8 +276,8 @@ export default () => {
 
       {window.location.hostname === 'localhost' ? 
         <>
-          Game: {JSON.stringify(gameStore.game)}<br />
-          {'<Main>'} State: {JSON.stringify(state)}
+          {i18n.game}: {JSON.stringify(gameStore.game)}<br />
+          {'<Main>'} {i18n.state}: {JSON.stringify(state)}
         </> : null}
     </main>
   ));

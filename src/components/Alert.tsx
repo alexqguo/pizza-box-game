@@ -8,10 +8,12 @@ import { StoreContext } from './App';
 import MessageList from './MessageList';
 import { GameType, Alert, AlertType } from '../types';
 import { RootStore } from '../stores';
+import {LanguageContext} from './Translation'
 
 export default () => {
   const classes = useStyles();
   const store: RootStore = useContext(StoreContext);
+  const i18n = useContext(LanguageContext);
   const { gameStore, ruleStore } = store;
 
   // Doesn't actually close the modal directly, but sends a firebase update
@@ -35,8 +37,9 @@ export default () => {
       <>
         {name}: {rule.displayText}
         <div className={classes.timesLanded}>
-          Created by <strong>{authorName}</strong>.
-          Times landed: {rule.timesLanded}
+          {i18n.createdBy}:
+          <strong>{authorName}</strong>.
+        {i18n.timesLanded}: {rule.timesLanded}
         </div>
       </>
     )
@@ -51,7 +54,7 @@ export default () => {
             
             {canCloseModal ? 
               <Button color="secondary" size="small" onClick={closeModal} variant="contained">
-                Dismiss
+                {i18n.dismiss}
               </Button>
             : null}
           </Grid>
@@ -59,7 +62,7 @@ export default () => {
           <Grid item xs={4}>
             <ExpansionPanel>
               <ExpansionPanelSummary>
-                Game history
+                 {i18n.history}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <MessageList />

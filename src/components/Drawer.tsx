@@ -93,7 +93,7 @@ export default () => {
         onClick={skipTurn}
         disabled={!canFlip}
       >
-        Skip turn{i18n.skipturn}
+      {i18n.skipturn}
       </Button>
       <Divider />
 
@@ -113,7 +113,7 @@ export default () => {
       {gameStore.game.type === GameType.remote ?  
         <>
           <Button href={`/#${gameStore.game.id}`} rel="noopener" target="_blank">
-            Share game {i18n.sharegame}
+            {i18n.sharegame}
           </Button>
           <Divider />
         </>
@@ -175,15 +175,11 @@ export default () => {
               {i18n.rules}
             </Typography>
             <Typography paragraph>
-              Since this is an online game, a few adjustments have to be made to make the game playable. Here are some things to note:
+              {i18n.adjustments.line}
               <List disablePadding dense>
-                <LI>- Once your turn starts you can either flip the quarter by pressing "Flip", or just skip your turn</LI>
-                <LI>- When flipping, press the space bar to stop the indicator arrows once at a time</LI>
-                <LI>- Once your flip location is determined, a bit of randomization happens to simulate the uncertainty of flipping a quarter</LI>
-                <LI>- Be careful to make sure you don't miss the board entirely! The punishment will be severe!</LI>
-                <LI>- The shapes are squares/rectangles (for now). Feel free to resize or rotate as you'd like, but not too big!</LI>
-                <LI>- Once your shape is to your liking, type in your rule and press "Create"</LI>
-                <LI>- Currently the game does not end, you just play forever</LI>
+              { i18n.adjustments
+                  .adjustemntsElements
+              .map( (element: string) => <LI>{element}</LI> )} 
               </List>
             </Typography>
             <Typography paragraph>

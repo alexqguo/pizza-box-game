@@ -21,6 +21,7 @@ import AddPlayerButton from './AddPlayerButton';
 import MessageList from './MessageList';
 import PlayerName from './PlayerName';
 import { RootStore } from '../stores';
+import { LanguageContext } from './Translation'
 
 export default () => {
   const classes = useStyles();
@@ -29,6 +30,7 @@ export default () => {
   const [isPanicModalOpen, setIsPanicModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const { gameStore, playerStore } = store;
+  const i18n = useContext(LanguageContext);
 
   const flip = () => store.setPlayerAsBusy();
   const skipTurn = () => {
@@ -82,7 +84,7 @@ export default () => {
         disabled={!canFlip}
         onClick={flip}
       >
-        Flip
+        Flip {i18n.flip}
       </Button>
       <Divider />
 
@@ -91,7 +93,7 @@ export default () => {
         onClick={skipTurn}
         disabled={!canFlip}
       >
-        Skip turn
+        Skip turn{i18n.skipturn}
       </Button>
       <Divider />
 
@@ -111,7 +113,7 @@ export default () => {
       {gameStore.game.type === GameType.remote ?  
         <>
           <Button href={`/#${gameStore.game.id}`} rel="noopener" target="_blank">
-            Share game
+            Share game {i18n.sharegame}
           </Button>
           <Divider />
         </>
@@ -136,22 +138,22 @@ export default () => {
         <Modal className={classes.modal} open={isPanicModalOpen} onClose={() => setIsPanicModalOpen(false)}>
           <div className={classes.modalPaper}>
             <Typography variant="h4">
-              Oops!
+              {i18n.oops}
             </Typography>
             <Typography paragraph>
-              Did something go wrong with the game and you got stuck?
-              If so, you can press this "Panic" button to skip the current turn which will hopefully reset the game and allow you to continue.
+              {i18n.oppsExplain}
             </Typography>
             <Typography paragraph>
-              <strong>Only press this if the game is broken!</strong>&nbsp;
-              Otherwise you will interrupt the current player's turn.
+            
+              <strong>{i18n.oppsExplain2}</strong>&nbsp;
+              {i18n.oppsExplain3}
             </Typography>
             <Button variant="contained" color="primary" onClick={() => setIsPanicModalOpen(false)}>
-              Take me back to the game
+              {i18n.takeMeBack}
             </Button>
             &nbsp;
             <Button variant="contained" color="secondary" onClick={() => panic()}>
-              Panic!
+              {i18n.painc}
             </Button>
           </div>
         </Modal>
@@ -159,10 +161,10 @@ export default () => {
         <Modal className={classes.modal} open={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)}>
           <div className={classes.modalPaper}>
             <Typography paragraph>
-              Game settings!
+              {i18n.settings}
             </Typography>
             <Button variant="contained" color="primary" onClick={downloadMessages}>
-              Download messages
+              {i18n.downloadMessages}
             </Button>
           </div>
         </Modal>
@@ -170,11 +172,7 @@ export default () => {
         <Modal className={classes.modal} open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)}>
           <div className={classes.modalPaper}>
             <Typography paragraph>
-              The rules are simple: you start off with each player's name drawn on the board.
-              Players take turns flipping quarters onto the board. If a quarter lands on an empty space, you write a rule and draw a shape around it.
-              If the quarter lands on an existing rule, you must perform that rule.
-              If the quarter lands on any of the initial spaces, the player whose space it is must drink.
-              Keep going until the board is filled with rules.
+              {i18n.rules}
             </Typography>
             <Typography paragraph>
               Since this is an online game, a few adjustments have to be made to make the game playable. Here are some things to note:
@@ -189,7 +187,7 @@ export default () => {
               </List>
             </Typography>
             <Typography paragraph>
-              Have fun and drink responsibly! Feel free to open issues on my Github page.
+              {i18n.havefunanddrink}
             </Typography>
           </div>
         </Modal>

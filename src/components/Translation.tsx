@@ -1,10 +1,10 @@
 import React from 'react';
 
 const stringTranslation = {
-    welcome: `Welcome to online pizza box game!<br /> Inspired by`,
-    welcome1: `this`,
-    welcome2: `this Reddit comment.
-    Once you start the game, click the help icon in the bottom left corner to see the rules.`,
+    welcome: `Welcome to online pizza box game!`,
+    welcome1: `Inspired by `,
+    welcome2: `this Reddit comment.`,
+    welcome3: `Once you start the game, click the help icon in the bottom left corner to see the rules.`,
     enterName: `Enter the player names`,
     playingHow: `Are you playing locally or remotely?`,
     toolTipPlayingWithFriendsLocal: `Playing with friends in the same room. The game is controlled on this device.`,
@@ -25,7 +25,26 @@ const stringTranslation = {
     createdNewRule: ` created a new rule:`,
     startedANewGame: ` started a new game!`,
     joinedTheGame: `joined the game!`,
-
+    rule: `Rule`,
+    game: 'Game',
+    state: 'State',
+    create: `Create`,
+    oops: `Oops!`,
+    panic: `Panic!`,
+    player: `+ Player`,
+    settings: `Game settings!`,
+    oppsExplain: `Did something go wrong with the game and you got stuck?
+                  If so, you can press this "Panic" button to skip the current turn which will hopefully reset the game and allow you to continue.`,
+    oppsExplain2: `Only press this if the game is broken!`,
+    oppsExplain3: `Otherwise you will interrupt the current player's turn.`,
+    takeMeBack: `Take me back to the game`,
+    downloadMessage: `Download messages `,
+    rules: `The rules are simple: you start off with each player's name drawn on the board.
+    Players take turns flipping quarters onto the board. If a quarter lands on an empty space, you write a rule and draw a shape around it.
+    If the quarter lands on an existing rule, you must perform that rule.
+    If the quarter lands on any of the initial spaces, the player whose space it is must drink.
+    Keep going until the board is filled with rules.`,
+    havefunanddrink: `Have fun and drink responsibly! Feel free to open issues on my Github page.`
 }
 
 // import {LanguageContext} from './Translation'

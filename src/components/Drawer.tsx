@@ -153,7 +153,7 @@ export default () => {
             </Button>
             &nbsp;
             <Button variant="contained" color="secondary" onClick={() => panic()}>
-              {i18n.painc}
+              {i18n.panic}
             </Button>
           </div>
         </Modal>

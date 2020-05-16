@@ -40,6 +40,7 @@ const stringTranslation = {
     history: `Game history`,
     flip: `Flip`,
     skipturn: `Skip turn`,
+    downloadMessages: `Download Messages`,
     sharegame: `Share game`,
     timesLanded: `Times landed`,
     settings: `Game settings!`,

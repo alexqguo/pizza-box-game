@@ -13,7 +13,7 @@ import { db } from '../firebase';
 import store from '../stores';
 import useStyles from '../styles';
 import { GameData, GameType, Player } from '../types';
-import {LanguageContext} from './Translation'
+import { LanguageContext } from './Translation'
 
 interface Props {
   gameId: string | null,

@@ -15,15 +15,12 @@ import HelpIcon from '@material-ui/icons/Help';
 import useStyles from '../styles';
 import { GameType } from '../types';
 import RootStore from '../stores';
-import {LanguageContext} from './Translation'
+import { LanguageContext } from './Translation'
 
 interface Props {
   closeModal: Function
 }
 
-/**
- * hydrates initial game state once done
- */
 export default ({ closeModal }: Props) => {
   const classes = useStyles();
   const [players, setPlayers] = useState<string[]>(['', ''])

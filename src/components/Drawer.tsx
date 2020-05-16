@@ -84,7 +84,7 @@ export default () => {
         disabled={!canFlip}
         onClick={flip}
       >
-        Flip {i18n.flip}
+        {i18n.flip}
       </Button>
       <Divider />
 

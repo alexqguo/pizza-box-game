@@ -8,7 +8,7 @@ import { StoreContext } from './App';
 import MessageList from './MessageList';
 import { GameType, Alert, AlertType } from '../types';
 import { RootStore } from '../stores';
-import {LanguageContext} from './Translation'
+import { LanguageContext } from './Translation'
 
 export default () => {
   const classes = useStyles();

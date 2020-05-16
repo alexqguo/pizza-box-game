@@ -5,7 +5,7 @@ import { StoreContext } from './App';
 import { RootStore } from '../stores';
 import useStyles from '../styles';
 import { Player } from '../types';
-import {LanguageContext} from './Translation'
+import { LanguageContext } from './Translation'
 
 export default () => {
   const classes = useStyles();

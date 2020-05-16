@@ -3,7 +3,7 @@ import { StoreContext } from './App';
 import MessagePlayerName from './MessagePlayerName';
 import { Message, MessageType, } from '../types';
 import { RootStore } from '../stores';
-import {LanguageContext} from './Translation'
+import { LanguageContext } from './Translation'
 
 interface Props {
   message: Message
@@ -12,7 +12,6 @@ interface Props {
 export default ({ message }: Props) => {
   const store: RootStore = useContext(StoreContext);
   const i18n = useContext(LanguageContext);
-
 
   const getContent = (message: Message) => {
     switch (message.type) {

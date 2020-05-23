@@ -6,6 +6,7 @@ import {
   Box,
   RadioGroup,
   Radio,
+  Switch,
   FormControlLabel,
   FormLabel,
   Grid,
@@ -13,9 +14,10 @@ import {
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
 import useStyles from '../styles';
-import { GameType } from '../types';
+import { GameType, CreateGameOptions } from '../types';
 import RootStore from '../stores';
 import { LanguageContext } from './Translation'
+import { useInput } from '../hooks';
 
 interface Props {
   closeModal: Function
@@ -23,10 +25,11 @@ interface Props {
 
 export default ({ closeModal }: Props) => {
   const classes = useStyles();
-  const [players, setPlayers] = useState<string[]>(['', ''])
-  const [gameType, setGameType] = useState<string>('');
-  const [localPlayer, setLocalPlayer] = useState<string>('');
   const i18n = useContext(LanguageContext);
+  const [players, setPlayers] = useState<string[]>(['', ''])
+  const [gameType, gameTypeBind] = useInput('');
+  const [localPlayer, localPlayerBind] = useInput('');
+  const [quickStart, setQuickStart] = useState<boolean>(false);
 
   const validateForm = async () => {
     // Begin shitty validation
@@ -39,11 +42,18 @@ export default ({ closeModal }: Props) => {
     const playerNames = players.filter((p: string) => isValidName(p));
 
     if (isValid) {
-      await RootStore.createGame(playerNames, localPlayer, gameType);
+      const options: CreateGameOptions = {
+        playerNames,
+        localPlayer,
+        gameType,
+        quickStart,
+      };
+      await RootStore.createGame(options);
       closeModal();
     }
   };
 
+  const toggleQuickStart = () => setQuickStart(!quickStart);
   const isValidName = (name: string) => {
     // TODO: better validation will be needed
     return name !== '';
@@ -54,14 +64,6 @@ export default ({ closeModal }: Props) => {
     players[i] = inputValue
     setPlayers([...players]);
   };
-
-  const handleRadioChange = (target: HTMLInputElement) => {
-    setGameType(target.value);
-  }
-
-  const handleLocalPlayerChange = (target: HTMLInputElement) => {
-    setLocalPlayer(target.value);
-  }
 
   const determineSubmissionValidity = () => {
     const isValidGameType: boolean = gameType === GameType.local || gameType === GameType.remote;
@@ -111,7 +113,7 @@ export default ({ closeModal }: Props) => {
 
             <Grid item xs={6}>
               <FormLabel component="legend">{i18n.playingHow}</FormLabel>
-              <RadioGroup value={gameType} onChange={({ target }) => handleRadioChange(target)}>
+              <RadioGroup value={gameType} onChange={gameTypeBind.onChange}>
                 <FormControlLabel value={GameType.local} control={<Radio />} label={
                   <>
                     {i18n.local}
@@ -135,7 +137,7 @@ export default ({ closeModal }: Props) => {
               {gameType === GameType.remote ? 
                 <>
                   <FormLabel component="legend">{i18n.playingAs}</FormLabel>
-                  <RadioGroup value={localPlayer} onChange={({ target }) => handleLocalPlayerChange(target)}>
+                  <RadioGroup value={localPlayer} onChange={localPlayerBind.onChange}>
                     {players.filter((n: string) => !!n).map((name: string, i: number) => (
                       <FormControlLabel key={i} value={name} control={<Radio />} label={name} />
                     ))}
@@ -145,13 +147,28 @@ export default ({ closeModal }: Props) => {
                 : null
               }
             </Grid>
+
+            <Grid item xs={3}>
+              <FormControlLabel
+                control={<Switch checked={quickStart} onChange={toggleQuickStart} />}
+                label={
+                  <>
+                    {i18n.quickStart}
+                    <Tooltip placement="top" className={classes.gameFormIcon}
+                      title={i18n.quickStartExplanation}>
+                      <HelpIcon color="action" />
+                    </Tooltip>
+                  </>
+                }
+              />
+            </Grid>
           </Grid>
-          </div>
+        </div>
 
         <Button 
           disabled={!determineSubmissionValidity()}
           variant="contained" 
-          color="primary" 
+          color="primary"
           onClick={validateForm}>
           {i18n.startGame}
         </Button>

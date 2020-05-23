@@ -33,6 +33,8 @@
     "oops": "Oops!",
     "panic": "Panic!",
     "player": "+ Player",
+    "quickStart": "Quick start?",
+    "quickStartExplanation": "Start the game with some rules prefilled on the board",
     "createdBy": "Created by",
     "dismiss": "Dismiss",
     "history": "Game history",

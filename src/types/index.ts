@@ -2,6 +2,13 @@ export interface BaseProps {
   store: Object
 }
 
+export interface CreateGameOptions {
+  playerNames: string[],
+  localPlayer: string,
+  gameType: GameType,
+  quickStart: boolean
+}
+
 export interface SessionData {
   game: GameData,
   players: Player[],

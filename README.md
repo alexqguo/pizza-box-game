@@ -37,15 +37,13 @@ Options:
   * Spectators can choose to join the game for real, if there are less than 8 current players
   * Players who are inactive can become spectators
   * Players can go from active to spectator
-* Pick a preset of rules to start your game
-  * Possibly remove initial spaces, or have different loadouts/presets
 * Tell people how to actually play the game. Needs WAY more instruction
   * This could be a thing in the drawer that has a message telling the player what to do
 * Consider different behavior - quarter first appears on its own then the current player has to click it to initiate new shape creation. Will make localStorage unnecessary
   * In theory you can still break the game if you leave the page right after flipping and not having modified your shape at least one time
 * Free draw shapes instead of squares
   * During drawing, constantly check isTargetTransparent on the drawing point and as soon as it isn't flag it
-  * On draw end, shape needs to surround the quarter and lock movement? 
+  * On draw end, shape needs to surround the quarter and lock movement?
 * Background image for the canvas
 * Customize shape of the canvas
 
@@ -59,6 +57,7 @@ Options:
 * Dev/Prod modes instead of 'localhost' checks everywhere
 * Theme MUI for consistent primary/secondary colors
 * Break up some of the larger components
+* Paginate message list
 * Use a proxy dynamic API caller to update firebase instead of a big mess of one off functions
   * ...or move all the firebase actions into their respective stores rather than throwing everything into the root store. 
 * Maybe write a framework or library for this type of game which handles common logic such as local/remote game, active players, creating/joining games, etc.

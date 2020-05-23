@@ -1,6 +1,6 @@
 import { shuffle } from 'lodash';
 import GameStore from './gameStore';
-import { SessionData, GameData, Rule, Player, Point, GameType, Message, Alert, MessageType } from '../types';
+import { SessionData, GameData, Rule, Player, Point, GameType, Message, Alert, MessageType, CreateGameOptions } from '../types';
 import { db } from '../firebase';
 import { createId, playerColors, chooseNewColor } from '../utils';
 import PlayerStore from './playerStore';
@@ -42,10 +42,10 @@ export class RootStore {
    * This basically hydrates the entire game in firebase.
    * Also in charge of setting prefix instance var.
    * Should only be called once.
-   * @param playerNames 
-   * @param localPlayer
+   * @param options
    */
-  async createGame(playerNames: string[], localPlayer: string, gameType: string) {
+  async createGame(options: CreateGameOptions) {
+    const { playerNames, localPlayer, gameType, quickStart } = options;
     const gameId: string = createId('game');
     this.prefix = `sessions/${gameId}`;
     this.gameId = gameId;
@@ -83,10 +83,12 @@ export class RootStore {
       playerIds: playerData.map((p: Player) => p.id),
     };
 
+    const ruleData: Rule[] = quickStart ? RuleStore.getQuickStartRules() : [];
+
     const sessionData: SessionData = {
       game: gameData,
       players: playerData,
-      rules: [],
+      rules: ruleData,
       messages: [initialMessage],
     }
 

@@ -30,6 +30,7 @@ export default () => {
 
     const rule = ruleStore.rules.get(alert.ruleId!);
     const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+    // authorName can be empty for a quick start rule. Should come up with a more elegant solution
     const authorName = store.getPropertyOfPlayer(rule?.playerId!, 'name');
     if (!rule || !name) return;
 
@@ -37,9 +38,11 @@ export default () => {
       <>
         {name}: {rule.displayText}
         <div className={classes.timesLanded}>
-          {i18n.createdBy}:
-          <strong>{authorName}</strong>.
-        {i18n.timesLanded}: {rule.timesLanded}
+          { authorName ? <>
+            {i18n.createdBy}:&nbsp;
+            <strong>{authorName}</strong>.&nbsp;
+            </> : null}
+          {i18n.timesLanded}: {rule.timesLanded}
         </div>
       </>
     )

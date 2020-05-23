@@ -177,9 +177,11 @@ export default () => {
             <Typography paragraph>
               {i18n.adjustments.line}
               <List disablePadding dense>
-              { i18n.adjustments
-                  .adjustemntsElements
-              .map( (element: string) => <LI>{element}</LI> )} 
+                {
+                  i18n.adjustments
+                    .adjustemntsElements
+                    .map((element: string, i: number) => <LI key={i}>{element}</LI> )
+                }
               </List>
             </Typography>
             <Typography paragraph>

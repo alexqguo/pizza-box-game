@@ -33,6 +33,8 @@
     "oops": "¡Ups!",
     "panic": "Panico!",
     "player": "+ Jugador",
+    "quickStart": "Incio rápido?",
+    "quickStartExplanation": "Comienza el juego con algunas reglas que ya están en el tablero",
     "createdBy": "Creado por",
     "dismiss": "cerrar",
     "history": "Historial del juego",

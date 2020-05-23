@@ -1,6 +1,8 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export function createId(prefix?: string) {
   if (window.location.hostname === 'localhost') prefix = `${prefix}-dev`;
-  return `${prefix ? prefix + '__' : ''}${Math.random().toString(36).substring(2)}${Date.now().toString(36)}`;
+  return `${prefix ? prefix + '-' : ''}${uuidv4()}`;
 };
 
 export function serializeObject(obj: fabric.Object) {

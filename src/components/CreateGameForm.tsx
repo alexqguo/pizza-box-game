@@ -76,13 +76,12 @@ export default ({ closeModal }: Props) => {
   return (
     <Box>
       <Typography paragraph>
-        {i18n.welcome}<br >
-        </br>{i18n.welcome1}
+        {i18n.welcome}<br />
+        {i18n.welcome1}
         <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/AskReddit/comments/7m6g6h/drinkers_of_reddit_what_are_some_insanely_good/drs4wil/">
           {i18n.welcome2}
-        </a> { i18n.welcome3}
+        </a>. {i18n.welcome3}
       </Typography>
-
 
       <form autoComplete="off">
         <div className={classes.formInputs}>

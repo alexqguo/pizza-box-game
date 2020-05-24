@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { fabric } from 'fabric';
 import { Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { throttle } from 'lodash';
+import { throttle, clamp } from 'lodash';
 import { ObjWithRuleId, Rule, Point, ShapeValidation } from '../types';
 import { randomWithinRange } from '../utils';
 import RootStore from '../stores';
@@ -19,7 +19,7 @@ interface IntersectionObject extends fabric.Object {
 }
 
 const QUARTER_RADIUS = 6;
-const INDICATOR_RADIUS = 120;
+const INDICATOR_RADIUS = 110;
 const BASE_SPEED = 45;
 
 let canvas: fabric.Canvas;
@@ -110,7 +110,6 @@ export const fadeIndicator = (obj: fabric.Object) => {
 
 export const flip = async () => {
   return await determineFlipCoords();
-  // return await randomizePoint(coords);
 }
 
 /**
@@ -181,9 +180,9 @@ const determineFlipCoords = (): Promise<Point> => {
         e.preventDefault();
         // Really these should be the middle, not top/left, but no one will notice
         if (coords.length === 0) {
-          coords.push(xIndicator.left || 0);
+          coords.push(clamp(xIndicator.left!, 0, canvasWidth));
         } else if (coords.length === 1) {
-          coords.push(yIndicator.top || 0);
+          coords.push(clamp(yIndicator.top!, 0, canvasHeight));
           document.removeEventListener('keydown', keyHandler);
         }
       }

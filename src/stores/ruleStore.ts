@@ -52,12 +52,11 @@ export default class RuleStore {
 
   static getQuickStartRules = (): Rule[] => {
     let attempts = 0;
-    const quickStartRules: Rule[] = [];
     const shapes: ObjWithRuleId[] = [];
     const canvas = getCanvas();
     const shuffledRuleSuggestions = shuffle(rules);
 
-    while (quickStartRules.length < NUM_QUICK_START_RULES) {
+    while (shapes.length < NUM_QUICK_START_RULES) {
       if (++attempts > MAX_ATTEMPTS) break; // Just give up
 
       const id = createId('rule');

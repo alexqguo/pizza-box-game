@@ -46,6 +46,7 @@ Options:
   * On draw end, shape needs to surround the quarter and lock movement?
 * Background image for the canvas
 * Customize shape of the canvas
+* Validation messages need i18n
 
 ### Bugs
 * Window unload event to register a user as offline seems to have issues

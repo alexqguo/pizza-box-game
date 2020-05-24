@@ -143,11 +143,13 @@ export default () => {
     const shape: fabric.Object | undefined = state.currentShape;
 
     if (shape && state.inputText) {
-      shape.selectable = false;
-      shape.hasControls = false;
       const ruleId: string = createId('rule');
+
       shape.selectable = false;
       shape.hasControls = false;
+      shape.selectable = false;
+      shape.hasControls = false;
+      shape.fill = playerStore.players.get(gameStore.game.currentPlayerId)!.color;
       // @ts-ignore Adding additional property
       shape.ruleId = ruleId;
 

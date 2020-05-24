@@ -264,6 +264,7 @@ export default class Canvas extends PureComponent<{}, State> {
       };
 
       intersectCheck(e.target as IntersectionObject);
+      objectModifiedHandler(e);
     };
 
     canvas.on('object:scaling', objectModifiedHandler);

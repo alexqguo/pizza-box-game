@@ -78,7 +78,7 @@ export default class RuleStore {
 
       // Ensure it doesn't intersect with anything else
       const doesIntersect = shapes.some((s: fabric.Object) => s.intersectsWithObject(shape));
-      if (!doesIntersect) shapes.push(shape);
+      if (!doesIntersect) shapes.push(shape as ObjWithRuleId);
     }
 
     return shapes.map((s: ObjWithRuleId, i: number) => ({

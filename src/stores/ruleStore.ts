@@ -1,12 +1,13 @@
 import { observable, action } from 'mobx';
 import { fabric } from 'fabric';
 import { shuffle } from 'lodash';
-import { Rule } from '../types';
+import { Rule, ObjWithRuleId } from '../types';
 import { randomWithinRange as rand, createId, serializeObject } from '../utils';
 import { getCanvas } from '../components/Canvas';
 import rules from '../static/ruleSuggestions.json';
 
 const NUM_QUICK_START_RULES = 10;
+const MAX_ATTEMPTS = 25;
 
 /**
  * Hydrates the canvas from a list of objects
@@ -49,21 +50,20 @@ export default class RuleStore {
   }
 
   static getQuickStartRules = (): Rule[] => {
+    let attempts = 0;
     const quickStartRules: Rule[] = [];
+    const shapes: ObjWithRuleId[] = [];
     const canvas = getCanvas();
     const shuffledRuleSuggestions = shuffle(rules);
 
-    for (let i = 0; i < NUM_QUICK_START_RULES; i++) {
+    while (quickStartRules.length < NUM_QUICK_START_RULES) {
+      if (++attempts > MAX_ATTEMPTS) break; // Just give up
+
       const id = createId('rule');
-
-      // Get a random shade of grey
-      const randomShade = rand(50, 150);
-      const fillColor = `rgb(${randomShade}, ${randomShade}, ${randomShade})`;
-
       const shape = new fabric.Rect({
         width: rand(50, 200),
         height: rand(50, 200),
-        fill: fillColor,
+        fill: 'lightgrey',
         strokeWidth: 0,
         originX: 'center',
         originY: 'center',
@@ -73,18 +73,20 @@ export default class RuleStore {
         angle: rand(0, 360),
         // @ts-ignore additional properties
         ruleId: id,
-        originalFill: fillColor,
+        originalFill: 'lightgrey',
       });
 
-      quickStartRules.push({
-        id,
-        playerId: '__QUICKSTART__',
-        displayText: shuffledRuleSuggestions[i],
-        data: serializeObject(shape),
-        timesLanded: 0,
-      });
+      // Ensure it doesn't intersect with anything else
+      const doesIntersect = shapes.some((s: fabric.Object) => s.intersectsWithObject(shape));
+      if (!doesIntersect) shapes.push(shape);
     }
 
-    return quickStartRules;
+    return shapes.map((s: ObjWithRuleId, i: number) => ({
+      id: s.ruleId,
+      playerId: '__QUICKSTART__',
+      displayText: shuffledRuleSuggestions[i],
+      data: serializeObject(s),
+      timesLanded: 0,
+    }));
   }
 }

@@ -256,7 +256,7 @@ export default () => {
             {i18n.create}
           </Button>
           <Button onClick={({ currentTarget }) => openPopover(currentTarget)}>
-            🤔
+            <span role="img" aria-label="🤔">🤔</span>
           </Button>
         </ButtonGroup>
         <RuleSuggestionPopover open={isPopoverOpen} popoverAnchor={popoverAnchor} closePopover={closePopover} />

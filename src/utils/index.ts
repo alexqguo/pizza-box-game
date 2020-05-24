@@ -55,6 +55,5 @@ export const playerColors = [
   'forestgreen',
   'darkred',
   'orange',
-  'lightgray',
   'gold'
 ];

@@ -9,7 +9,7 @@ interface Props {
 
 export default ({ playerId }: Props) => {
   const store: RootStore = useContext(StoreContext);
-  const player: Player = store.getPlayer(playerId)!;
+  const player: Player = store.playerStore.players.get(playerId)!;
 
   return (
     <span style={{ color: player.color, fontWeight: 'bold' }}>

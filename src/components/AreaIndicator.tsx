@@ -4,6 +4,7 @@ import { useObserver } from 'mobx-react';
 import { Tooltip } from '@material-ui/core';
 import useStyles from '../styles';
 import { RootStore } from '../stores';
+import { QUICKSTART_PLAYER_ID } from '../stores/ruleStore';
 import { ObjWithRuleId } from '../types';
 import { getArea } from '../utils';
 import { getCanvas } from './Canvas';
@@ -12,7 +13,7 @@ import { StoreContext } from './App';
 export default () => {
   const classes = useStyles();
   const store: RootStore = useContext(StoreContext);
-  const { ruleStore } = store;
+  const { ruleStore, playerStore } = store;
 
   const renderIndicator = () => {
     const areas: { [key: string]: number } = {}; // playerId -> total area for that player
@@ -21,7 +22,7 @@ export default () => {
     getCanvas().getObjects().forEach((obj: fabric.Object) => {
       const { ruleId } = (obj as ObjWithRuleId);
       const playerId = ruleStore.rules.get(ruleId)?.playerId;
-      if (!playerId) return;
+      if (!playerId || playerId === QUICKSTART_PLAYER_ID) return;
 
       if (typeof areas[playerId] === 'undefined') areas[playerId] = 0;
       const area: number = getArea(obj);
@@ -32,11 +33,14 @@ export default () => {
     return (
       <div className={classes.areaIndicatorContainer}>
         {Object.entries(areas).map(([key, value]) => {
-          const name = store.getPropertyOfPlayer(key, 'name');
+          const player = playerStore.players.get(key);
+          if (!player) return null;
+
+          const name = player.name;
           const percentage = (value / totalArea) * 100;
           const styles = {
             width: `${percentage}%`,
-            backgroundColor: store.getPropertyOfPlayer(key, 'color'),
+            backgroundColor: player.color,
           };
 
           return (

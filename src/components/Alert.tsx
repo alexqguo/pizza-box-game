@@ -14,7 +14,7 @@ export default () => {
   const classes = useStyles();
   const store: RootStore = useContext(StoreContext);
   const i18n = useContext(LanguageContext);
-  const { gameStore, ruleStore } = store;
+  const { gameStore, ruleStore, playerStore } = store;
 
   // Doesn't actually close the modal directly, but sends a firebase update
   const closeModal = async () => {
@@ -29,10 +29,11 @@ export default () => {
     if (alert.type === AlertType.text) return <>{alert.message}</>;
 
     const rule = ruleStore.rules.get(alert.ruleId!);
-    const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
-    // authorName can be empty for a quick start rule. Should come up with a more elegant solution
-    const authorName = store.getPropertyOfPlayer(rule?.playerId!, 'name');
+    const name = playerStore.players.get(gameStore.game.currentPlayerId)?.name;
     if (!rule || !name) return;
+
+    // authorName can be empty for a quick start rule. Should come up with a more elegant solution
+    const authorName = playerStore.players.get(rule?.playerId)?.name;
 
     return (
       <>

@@ -8,6 +8,7 @@ import rules from '../static/ruleSuggestions.json';
 
 const NUM_QUICK_START_RULES = 10;
 const MAX_ATTEMPTS = 25;
+export const QUICKSTART_PLAYER_ID = '__QUICKSTART__';
 
 /**
  * Hydrates the canvas from a list of objects
@@ -83,7 +84,7 @@ export default class RuleStore {
 
     return shapes.map((s: ObjWithRuleId, i: number) => ({
       id: s.ruleId,
-      playerId: '__QUICKSTART__',
+      playerId: QUICKSTART_PLAYER_ID,
       displayText: shuffledRuleSuggestions[i],
       data: serializeObject(s),
       timesLanded: 0,

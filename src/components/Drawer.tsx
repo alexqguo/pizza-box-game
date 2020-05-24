@@ -15,7 +15,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import ErrorIcon from '@material-ui/icons/Error';
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 import useStyles from '../styles';
-import { Player, GameType, MessageType } from '../types';
+import { GameType, MessageType } from '../types';
 import { StoreContext } from './App';
 import AddPlayerButton from './AddPlayerButton';
 import MessageList from './MessageList';
@@ -93,13 +93,13 @@ export default () => {
         onClick={skipTurn}
         disabled={!canFlip}
       >
-      {i18n.skipturn}
+        {i18n.skipturn}
       </Button>
       <Divider />
 
       <List>
-        {playerStore.players.map((p: Player) => (
-          <PlayerName player={p} key={p.id} />
+        {playerStore.ids.map((id: string) => (
+          <PlayerName player={playerStore.players.get(id)!} key={id} />
         ))}
       </List>
       <Divider />

@@ -100,7 +100,7 @@ export class RootStore {
     if (!this.playerRef) return;
     const playerId = createId('player');
     const gameType = this.gameStore.game.type;
-    const existingColors = this.playerStore.players.map((p: Player) => p.color);
+    const existingColors = this.playerStore.colors;
     const color = chooseNewColor(existingColors);
 
     await this.playerRef.push().set({
@@ -138,10 +138,10 @@ export class RootStore {
    */
   advanceTurn() {
     window.localStorage.removeItem('localShape');
-    const playerIds: string[] = this.playerStore.players.map((p: Player) => p.id);
+    const playerIds: string[] = this.playerStore.ids;
     const currentPlayerIdx: number = playerIds.indexOf(this.gameStore.game.currentPlayerId);
     const nextPlayerIdx: number = (currentPlayerIdx + 1) % playerIds.length;
-    const nextPlayerId: string = this.playerStore.players[nextPlayerIdx].id;
+    const nextPlayerId: string = playerIds[nextPlayerIdx];
     this.gameRef?.update({
       currentPlayerId: nextPlayerId,
       isPlayerBusy: false,
@@ -191,28 +191,6 @@ export class RootStore {
     db.ref(`${this.prefix}/rules/${key}`).update({ timesLanded: (rule as Rule).timesLanded + 1 });
   }
 
-  // TODO: should move this to the playerStore and convert to a set to avoid this
-  getPlayer(playerId: string): Player | null {
-    let player: Player | null = null;
-    this.playerStore.players.forEach((p: Player) => {
-      if (p.id === playerId) player = p;
-    });
-
-    return player;
-  }
-
-  // TODO: enforce propName
-  getPropertyOfPlayer(playerId: string, propName: string) {
-    let value = '';
-    this.playerStore.players.forEach((p: Player) => {
-      if (p.id === playerId) {
-        value = (p as any)[propName];
-      }
-    });
-    
-    return value;
-  }
-
   /**
    * Hooks the user up to the Firebase instance, preexisting or not.
    * In charge of setting up the DB ref instance vars.
@@ -229,6 +207,9 @@ export class RootStore {
     this.playerRef = db.ref(`${this.prefix}/players`);
     this.playerRef.on('child_added', (snap: firebase.database.DataSnapshot) => {
       this.playerStore.addPlayer(snap.val() as Player);
+    });
+    this.playerRef.on('child_changed', (snap: firebase.database.DataSnapshot) => {
+      this.playerStore.updatePlayer(snap.val() as Player);
     });
 
     // Subscribe the ruleStore to Firebase

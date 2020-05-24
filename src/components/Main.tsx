@@ -60,7 +60,7 @@ export default () => {
   const classes = useStyles();
   const store: RootStore = useContext(StoreContext);
   const i18n = useContext(LanguageContext);
-  const { gameStore } = store; // Cannot destructure past this point for observer to work
+  const { gameStore, playerStore } = store; // Cannot destructure past this point for observer to work
   const [state, dispatch] = useReducer(reducer, {});
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null); // Is this really how I have to do this?
@@ -78,7 +78,7 @@ export default () => {
     };
 
     const initialPlacement: [number, number] = [pointer.x - INITIAL_RADIUS, pointer.y - INITIAL_RADIUS];
-    const playerColor = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'color');
+    const playerColor = playerStore.players.get(gameStore.game.currentPlayerId)!.color;
     const shape = new fabric.Rect({
       left: initialPlacement[0],
       top: initialPlacement[1],
@@ -136,8 +136,7 @@ export default () => {
   };
 
   useEffect(() => {
-    const canvas = getCanvas();
-    canvas.on('object:modified', modifiedHandler);
+    getCanvas().on('object:modified', modifiedHandler);
   }, []);
 
   const createRule = async () => {
@@ -203,7 +202,7 @@ export default () => {
         if (isPointWithinCanvas(quarterLocation)) {
           newShapeHandler(quarterLocation);
         } else {
-          const name = store.getPropertyOfPlayer(gameStore.game.currentPlayerId, 'name');
+          const name = playerStore.players.get(gameStore.game.currentPlayerId)?.name;
           const message = `${name} ${i18n.missedTheBoard}`;
           store.createMessage({
             type: MessageType.missBoard,

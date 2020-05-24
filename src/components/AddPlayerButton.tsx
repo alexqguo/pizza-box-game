@@ -4,7 +4,6 @@ import { Modal, Button, Grid, TextField } from '@material-ui/core';
 import { StoreContext } from './App';
 import { RootStore } from '../stores';
 import useStyles from '../styles';
-import { Player } from '../types';
 import { LanguageContext } from './Translation'
 
 export default () => {
@@ -12,7 +11,7 @@ export default () => {
   const store: RootStore = useContext(StoreContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [playerName, setPlayerName] = useState('');
-  const existingPlayerNames = new Set(store.playerStore.players.map((p: Player) => p.name));
+  const existingPlayerNames = new Set(store.playerStore.names);
   const isValidName = (name: string) => !!name && !existingPlayerNames.has(name);
   const canSubmit = isValidName(playerName);
   const i18n = useContext(LanguageContext);
@@ -30,7 +29,7 @@ export default () => {
   return useObserver(() => (
     <>
       <Button
-        disabled={store.playerStore.players.length >= 8}
+        disabled={store.playerStore.players.size >= 8}
         onClick={() => setIsModalOpen(true)}
       >{i18n.addPlayer}
       </Button>

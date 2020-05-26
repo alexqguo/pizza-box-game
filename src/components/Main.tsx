@@ -26,7 +26,7 @@ import { RootStore, StoreContext } from '../stores';
 import { getValidationManager } from '../validation';
 import { enlivenObjects } from '../stores/ruleStore';
 import RuleSuggestionPopover from './RuleSuggestionPopover';
-import { LanguageContext } from './Translation'
+import { LanguageContext } from './Translation';
 
 interface State {
   inputText?: string,

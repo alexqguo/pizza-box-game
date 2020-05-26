@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useObserver } from 'mobx-react';
 import { Modal, Button, Grid, TextField } from '@material-ui/core';
-import { StoreContext } from './App';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 import useStyles from '../styles';
 import { LanguageContext } from './Translation'
 

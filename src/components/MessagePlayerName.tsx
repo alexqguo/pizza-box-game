@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { Player } from '../types';
-import { StoreContext } from './App';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 
 interface Props {
   playerId: string

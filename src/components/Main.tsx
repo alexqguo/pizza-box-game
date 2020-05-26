@@ -11,7 +11,6 @@ import Canvas, {
   isPointWithinCanvas,
 } from './Canvas';
 import AreaIndicator from './AreaIndicator';
-import { StoreContext } from './App';
 import useStyles from '../styles';
 import { createId, serializeObject } from '../utils';
 import {
@@ -23,7 +22,7 @@ import {
   MessageType,
   AlertType
 } from '../types';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 import { getValidationManager } from '../validation';
 import { enlivenObjects } from '../stores/ruleStore';
 import RuleSuggestionPopover from './RuleSuggestionPopover';

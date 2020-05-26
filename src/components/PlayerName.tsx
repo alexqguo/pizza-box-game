@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import { ListItem } from '@material-ui/core';
-import { StoreContext } from './App';
 import useStyles from '../styles';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 import { Player } from '../types';
 
 interface Props {

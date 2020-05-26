@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { StoreContext } from './App';
 import MessagePlayerName from './MessagePlayerName';
 import { Message, MessageType, } from '../types';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 import { LanguageContext } from './Translation'
 
 interface Props {

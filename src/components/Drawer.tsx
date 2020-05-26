@@ -16,11 +16,10 @@ import ErrorIcon from '@material-ui/icons/Error';
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 import useStyles from '../styles';
 import { GameType, MessageType } from '../types';
-import { StoreContext } from './App';
 import AddPlayerButton from './AddPlayerButton';
 import MessageList from './MessageList';
 import PlayerName from './PlayerName';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 import { LanguageContext } from './Translation'
 
 export default () => {

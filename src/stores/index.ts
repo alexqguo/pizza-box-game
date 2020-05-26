@@ -7,6 +7,7 @@ import PlayerStore from './playerStore';
 import RuleStore from './ruleStore';
 import MessageStore from './messageStore';
 
+export { StoreContext, StoreProvider } from './context';
 export class RootStore {
   gameStore: GameStore;
   playerStore: PlayerStore;
@@ -251,5 +252,4 @@ export class RootStore {
 }
 
 const rootStore = new RootStore();
-
 export default rootStore;

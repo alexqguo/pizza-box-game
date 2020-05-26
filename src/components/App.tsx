@@ -8,17 +8,8 @@ import Main from './Main';
 import useStyles from '../styles';
 import WelcomeModal from './WelcomeModal';
 import { getCanvas } from './Canvas';
-import RootStore from '../stores';
-import { LanguageProvider } from './Translation'
-
-export const StoreContext = React.createContext<any>(null);
-const StoreProvider = ({ children }: any) => {
-  return (
-    <StoreContext.Provider value={RootStore}>
-      {children}
-    </StoreContext.Provider>
-  )
-};
+import RootStore, { StoreProvider } from '../stores';
+import { LanguageProvider } from './Translation';
 
 export default () => {
   const classes = useStyles();

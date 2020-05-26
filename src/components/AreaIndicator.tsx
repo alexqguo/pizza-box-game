@@ -3,12 +3,11 @@ import { fabric } from 'fabric';
 import { useObserver } from 'mobx-react';
 import { Tooltip } from '@material-ui/core';
 import useStyles from '../styles';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 import { QUICKSTART_PLAYER_ID } from '../stores/ruleStore';
 import { ObjWithRuleId } from '../types';
 import { getArea } from '../utils';
 import { getCanvas } from './Canvas';
-import { StoreContext } from './App';
 
 export default () => {
   const classes = useStyles();

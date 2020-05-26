@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import { useObserver } from 'mobx-react';
 import { List, ListItem } from '@material-ui/core';
-import { StoreContext } from './App';
 import MessageItem from './MessageItem';
 import useStyles from '../styles';
 import { Message } from '../types';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 
 export const serializeMessageToRawText = (message: Message) => {
   return `this is a ${message.type} message`;

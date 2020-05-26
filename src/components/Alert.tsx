@@ -4,10 +4,9 @@ import { Modal, Button, Grid, ExpansionPanel } from '@material-ui/core';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import useStyles from '../styles';
-import { StoreContext } from './App';
 import MessageList from './MessageList';
 import { GameType, Alert, AlertType } from '../types';
-import { RootStore } from '../stores';
+import { RootStore, StoreContext } from '../stores';
 import { LanguageContext } from './Translation'
 
 export default () => {

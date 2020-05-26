@@ -114,14 +114,23 @@ export const flip = async () => {
 
 /**
  * Takes a given x/y point and returns a new one within a small area of it.
- * Shows a little indicator on the canvas
+ * If that new point is off the board, bring it somewhat closer to reduce (but not eliminate)
+ * the possibility of missing the board.
+ * Shows a little indicator on the canvas.
  * @param coords 
  */
 export const randomizePoint = (coords: Point): Point => {
-  return {
-    x: randomWithinRange(coords.x - INDICATOR_RADIUS, coords.x + INDICATOR_RADIUS),
-    y: randomWithinRange(coords.y - INDICATOR_RADIUS, coords.y + INDICATOR_RADIUS),
-  };
+  let newX = randomWithinRange(coords.x - INDICATOR_RADIUS, coords.x + INDICATOR_RADIUS);
+  let newY = randomWithinRange(coords.y - INDICATOR_RADIUS, coords.y + INDICATOR_RADIUS)
+
+  // Since it's rather easy to miss the board, if your randomization causes you to miss, do
+  // a slight adjustment of half of the indicator radius
+  if (newX < 0) newX += INDICATOR_RADIUS / 2;
+  if (newX > canvas.getWidth()) newX -= INDICATOR_RADIUS / 2;
+  if (newY < 0) newY += INDICATOR_RADIUS / 2;
+  if (newY > canvas.getHeight()) newY -= INDICATOR_RADIUS / 2;
+
+  return { x: newX, y: newY };
 }
 
 /**

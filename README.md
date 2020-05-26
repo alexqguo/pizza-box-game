@@ -47,7 +47,6 @@ Options:
 * Background image for the canvas
 * Customize shape of the canvas
 * Validation messages need i18n
-* Adjustment for falling off the board
 
 ### Bugs
 * Window unload event to register a user as offline seems to have issues
